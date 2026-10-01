@@ -1,0 +1,7 @@
+# Not a workspace: pnpm 10+ reads its settings from this file.
+allowBuilds:
+  lefthook: true
+
+# Hooks and Makefiles go through `pnpm run` / `pnpm exec`: warn on stale deps
+# instead of reinstalling inside a hook that has no TTY.
+verifyDepsBeforeRun: warn

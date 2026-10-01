@@ -1,0 +1,40 @@
+# https://lefthook.dev — skip once with LEFTHOOK=0 git commit ...
+assert_lefthook_installed: true
+min_version: 1.7.0
+
+commit-msg:
+  commands:
+    commitlint:
+      run: pnpm exec commitlint --edit {1}
+
+pre-commit:
+  parallel: true
+  jobs:
+    - name: frontend-eslint
+      glob: "frontend/**/*.{js,cjs,mjs,ts,cts,mts,vue}"
+      root: "frontend/"
+      run: pnpm exec eslint --fix {staged_files}
+      stage_fixed: true
+
+    - name: frontend-prettier
+      glob: "frontend/**/*.{js,cjs,mjs,ts,cts,mts,vue,css,scss,html,json,md,yml,yaml}"
+      root: "frontend/"
+      run: pnpm exec prettier --write --ignore-unknown {staged_files}
+      stage_fixed: true
+
+    - name: backend-pre-commit
+      glob: "backend/**/*"
+      root: "backend/"
+      run: uv run pre-commit run --files {staged_files}
+      stage_fixed: true
+
+pre-push:
+  parallel: true
+  jobs:
+    - name: frontend-type-check
+      root: "frontend/"
+      run: pnpm run type-check
+
+    - name: backend-pre-commit-all
+      root: "backend/"
+      run: uv run pre-commit run --all-files
