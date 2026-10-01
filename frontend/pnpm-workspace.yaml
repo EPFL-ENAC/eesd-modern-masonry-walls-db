@@ -1,0 +1,5 @@
+# Not a workspace: pnpm 10+ reads its settings from this file.
+allowBuilds:
+  esbuild: true # checks the platform binary shipped as an optional dep
+
+verifyDepsBeforeRun: warn

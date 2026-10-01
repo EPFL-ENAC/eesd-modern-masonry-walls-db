@@ -1,0 +1,13 @@
+{
+  "app": {
+    "title": "Modern Masonry Walls DB"
+  },
+  "home": {
+    "intro": "A comprehensive database and collaborative resource for advancing seismic assessment of modern masonry walls."
+  },
+  "backend": {
+    "loading": "Loading backend information",
+    "version": "Backend: {name} {version}",
+    "error": "The backend did not answer: {error}"
+  }
+}
