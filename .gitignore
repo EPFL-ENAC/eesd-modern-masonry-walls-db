@@ -1,0 +1,8 @@
+secrets/
+node_modules/
+/.env
+.DS_Store
+.vscode/
+.idea/
+.claude/settings.local.json
+lefthook-local.yml

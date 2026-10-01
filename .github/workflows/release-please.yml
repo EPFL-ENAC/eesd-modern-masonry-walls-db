@@ -1,0 +1,25 @@
+# Keeps a release PR open on `main`. Merging it writes the changelog, bumps the
+# version files and creates the `v*.*.*` tag, whose push deploys prod.
+#
+# RELEASE_PLEASE_TOKEN must be a PAT (contents + pull-requests write): a tag
+# created with the default GITHUB_TOKEN triggers no workflow, so prod would
+# never deploy. Fallback: gh workflow run deploy.yml --ref v<version>
+name: release-please
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+  issues: write
+  pull-requests: write
+
+jobs:
+  release-please:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: googleapis/release-please-action@v4
+        with:
+          target-branch: main
+          token: ${{ secrets.RELEASE_PLEASE_TOKEN }}

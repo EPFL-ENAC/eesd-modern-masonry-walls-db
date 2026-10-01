@@ -1,0 +1,32 @@
+# https://github.com/EPFL-ENAC/epfl-enac-build-push-deploy-action#readme
+# dev branch -> dev overlay, v*.*.* tag -> prod overlay, in
+# enack8s-app-config/epfl-eesd/modernmasonrydatabase.
+name: deploy
+
+on:
+  push:
+    branches: [dev]
+    tags: ['v*.*.*']
+  # A tag created by release-please with a token that cannot trigger workflows
+  # deploys nothing; then run this by hand on the tag:
+  #   gh workflow run deploy.yml --ref v<version>
+  workflow_dispatch:
+
+# Two close pushes could finish in the wrong order and write the older digest
+# last, so a new run cancels the one still going.
+concurrency:
+  group: deploy-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    permissions:
+      contents: read
+      packages: write
+    uses: EPFL-ENAC/epfl-enac-build-push-deploy-action/.github/workflows/deploy.yml@v3.10.0
+    secrets:
+      token: ${{ secrets.CD_TOKEN }}
+    with:
+      org: epfl-eesd
+      repo: modernmasonrydatabase
+      build_context: '["./backend", "./frontend"]'
