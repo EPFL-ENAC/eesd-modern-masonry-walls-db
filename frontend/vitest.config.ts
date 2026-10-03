@@ -1,16 +1,6 @@
-import { fileURLToPath } from 'node:url'
-import { mergeConfig } from 'vite'
-import { configDefaults, defineConfig } from 'vitest/config'
-import viteConfig from './vite.config'
+import { defineConfig } from 'vitest/config'
 
-export default mergeConfig(
-  viteConfig,
-  defineConfig({
-    test: {
-      server: { deps: { inline: ['vuetify'] } },
-      environment: 'jsdom',
-      exclude: [...configDefaults.exclude, 'e2e/*'],
-      root: fileURLToPath(new URL('./', import.meta.url))
-    }
-  })
-)
+// Unit tests cover the pure data layer (src/lib, src/charts): no DOM, no Quasar.
+export default defineConfig({
+  test: { environment: 'node', include: ['tests/**/*.spec.ts'] }
+})

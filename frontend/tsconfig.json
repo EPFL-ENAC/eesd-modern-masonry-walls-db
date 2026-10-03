@@ -1,8 +1,13 @@
 {
-  "files": [],
-  "references": [
-    { "path": "./tsconfig.node.json" },
-    { "path": "./tsconfig.app.json" },
-    { "path": "./tsconfig.vitest.json" }
-  ]
+  "extends": "./.quasar/tsconfig.json",
+  "compilerOptions": {
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "noUncheckedIndexedAccess": true,
+    "resolveJsonModule": true,
+    // scripts/*.ts run on plain Node, which needs .ts in relative imports and
+    // only strips erasable syntax.
+    "allowImportingTsExtensions": true,
+    "erasableSyntaxOnly": true
+  }
 }

@@ -1,3 +1,8 @@
 dist/
 coverage/
+.quasar/
 pnpm-lock.yaml
+# Delivered or generated as-is
+public/data/
+src/assets/data/
+tests/fixtures/

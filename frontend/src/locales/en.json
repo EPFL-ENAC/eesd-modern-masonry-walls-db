@@ -1,13 +1,385 @@
 {
-  "app": {
-    "title": "Modern Masonry Walls DB"
+  "header": {
+    "home": "EPFL — Modern Masonry Database home",
+    "nav": "Main",
+    "lab": "Earthquake Engineering and Structural Dynamics"
   },
-  "home": {
-    "intro": "A comprehensive database and collaborative resource for advancing seismic assessment of modern masonry walls."
+  "nav": {
+    "overview": "Overview",
+    "database": "Database",
+    "documentation": "Documentation",
+    "submit": "Submit",
+    "others": "Others"
   },
-  "backend": {
-    "loading": "Loading backend information",
-    "version": "Backend: {name} {version}",
-    "error": "The backend did not answer: {error}"
+  "overview": {
+    "eyebrow": "Open data · ENAC · EESD",
+    "title": "Modern masonry database",
+    "lead": "Open database of {specimens} in-plane shear-compression tests on modern unreinforced masonry walls, collected from {references} experimental campaigns.",
+    "explore": "Explore the database",
+    "glossary": "Read the glossary",
+    "keySpecimens": "wall specimens tested in-plane",
+    "keyReferences": "referenced experimental campaigns",
+    "keyFields": "documented fields per specimen",
+    "contains": "What the database contains",
+    "selectHint": "Select a segment to filter the flows below. All {n} specimens shown.",
+    "selectedHint": "{n} of {total} specimens shown.",
+    "clear": "Clear selection",
+    "notReported": "Not reported",
+    "donuts": {
+      "unit_type": "Unit type",
+      "fm_group": "Failure mode",
+      "bin_H0_H": "Shear span ratio H₀/H",
+      "bin_H": "Height H [m]",
+      "bin_sigma0": "Axial stress σ₀ [MPa]"
+    },
+    "connect": "How parameters connect",
+    "colourBy": "Colour by unit type",
+    "flowHelp": "Each band is a group of specimens sharing the same categories on adjacent axes. Hover a band to see its count.",
+    "axes": {
+      "unit_type": "Unit type",
+      "fm_group": "Failure mode",
+      "bin_H": "H [m]",
+      "bin_H_L": "H/L",
+      "bin_H0_H": "H₀/H",
+      "bin_sigma0": "σ₀ [MPa]",
+      "bin_fm": "fₘ [MPa]",
+      "bin_drift_u": "δᵤ [%]"
+    },
+    "flowNode": "{n} specimens",
+    "flowCount": "{n} specimens · {pct}% of total",
+    "flowSummary": "Parallel-sets chart of {n} specimens across unit type, failure mode, height, aspect ratio, shear span ratio, axial stress, masonry strength and ultimate drift"
+  },
+  "categories": {
+    "HC": "HC — hollow clay",
+    "SB-C": "SB-C — solid clay brick",
+    "AAC": "AAC — aerated concrete",
+    "CS": "CS — calcium silicate",
+    "LAC": "LAC — lightweight concrete",
+    "SB-CS": "SB-CS — solid CS brick",
+    "CB": "CB — concrete brick",
+    "HCB": "HCB — hollow concrete block",
+    "Shear": "S — shear",
+    "Hybrid": "H- — hybrid",
+    "Flexure": "F — flexure",
+    "Other": "SL, G, D — other"
+  },
+  "footer": {
+    "cite": "How to cite",
+    "dataset": "Dataset",
+    "lastUpdate": "Last update {date}",
+    "counts": "{specimens} specimens · {fields} fields",
+    "maintained": "Maintained by",
+    "lab": "EESD laboratory, EPFL ENAC",
+    "handoff-Q8-address": "[EESD postal address, open question 8]"
+  },
+  "database": {
+    "views": "Database views",
+    "table": "Master data table",
+    "visuals": "Data visuals"
+  },
+  "filters": {
+    "title": "Filters",
+    "reset": "Reset filters",
+    "min": "Min",
+    "max": "Max",
+    "notReported": "Not reported",
+    "groups": {
+      "specimen": "Specimen / material",
+      "test": "Test conditions",
+      "response": "Response",
+      "availability": "Data availability"
+    },
+    "items": {
+      "unit_type": "Unit type",
+      "bed": "Bed joints",
+      "head": "Head joints",
+      "h": "Height H [m]",
+      "h0h": "Shear span ratio H₀/H",
+      "s0": "Axial stress σ₀ [MPa]",
+      "fm_group": "Failure mode",
+      "has": "Data"
+    },
+    "has": {
+      "fd": "F-d curve",
+      "envelope": "Envelope curve",
+      "bilinear": "Bilinear curve",
+      "cracks": "Crack results",
+      "photos": "Setup / material photos"
+    },
+    "range": "{min} – {max}",
+    "search": "Search: {q}"
+  },
+  "joints": {
+    "GP": "GP — general purpose",
+    "TL": "TL — thin layer",
+    "F": "F — filled",
+    "TF": "TF — thin filled",
+    "MP": "MP — mortar pocket",
+    "UTG": "UTG — unfilled, tongue and groove",
+    "U": "U — unfilled"
+  },
+  "fieldShort": {
+    "1": "N°",
+    "3": "Specimen",
+    "4": "Unit",
+    "5": "Courses",
+    "9": "Bed",
+    "10": "Head",
+    "11": "Void",
+    "30": "Failure"
+  },
+  "fieldCategories": {
+    "I": "General",
+    "II": "Wall",
+    "III": "Material",
+    "IV": "Test setup",
+    "V": "Response",
+    "VI": "Bilinear",
+    "VII": "Cracks"
+  },
+  "table": {
+    "search": "Search specimen or reference",
+    "export": "Export",
+    "count": "{n} of {total} specimens",
+    "hint": "Select a row to open its specimen panel",
+    "removeFilter": "Remove filter {filter}",
+    "fixed": "fixed",
+    "rows": "Rows {from}–{to} of {n} · sorted by {field}",
+    "rowsDesc": "Rows {from}–{to} of {n} · sorted by {field}, descending",
+    "noRows": "No specimen matches these filters.",
+    "previous": "Previous page",
+    "next": "Next page",
+    "page": "Page {n}"
+  },
+  "export": {
+    "title": "Export",
+    "specimens": "Specimens",
+    "filtered": "Filtered",
+    "full": "Full database",
+    "include": "Include",
+    "items": {
+      "table": "Data table ({n} fields)",
+      "curves": "F-d curves",
+      "envelopes": "Envelopes and bilinear",
+      "figures": "Figures",
+      "references": "References (.csv)"
+    },
+    "download": "Download {n} specimens",
+    "busy": "Preparing…",
+    "failed": "Download failed: {reason}",
+    "note": "Several files are bundled as a .zip, in the same folder structure as the documentation."
+  },
+  "columns": {
+    "title": "Columns",
+    "showAll": "Show all {n} columns",
+    "category": "{name}: {shown} of {total} columns shown"
+  },
+  "failureModes": {
+    "S": "S — shear",
+    "F": "F — flexure",
+    "SL": "SL — sliding",
+    "G": "G — gaping",
+    "D": "D — uncertain",
+    "hybrid": "{code} — hybrid"
+  },
+  "specimen": {
+    "label": "Specimen {name}",
+    "eyebrow": "Specimen · N° {n}",
+    "reference": "Reference",
+    "copyLink": "Copy reference link",
+    "copied": "Link copied",
+    "downloadAll": "Download all",
+    "closePanel": "Close specimen panel",
+    "close": "Close",
+    "views": "Specimen views",
+    "missing": "–",
+    "tabs": {
+      "curves": "Curves and response",
+      "gallery": "Photo and crack gallery",
+      "data": "Complete data",
+      "files": "Citations and raw files"
+    },
+    "layers": "Layers",
+    "layer": {
+      "fd": "F-d curve",
+      "envelope": "Envelope",
+      "bilinear": "Bilinear"
+    },
+    "legend": {
+      "fd": "F-d curve (cyclic)",
+      "envelope": "Envelope",
+      "bilinear": "Bilinear idealisation"
+    },
+    "axes": "Axes",
+    "mode": {
+      "Vd": "V vs d",
+      "tau": "τ vs δ"
+    },
+    "xAxis": {
+      "Vd": "Displacement d [mm]",
+      "tau": "Drift δ [%]"
+    },
+    "yAxis": {
+      "Vd": "Horizontal force V [kN]",
+      "tau": "Shear stress τ [MPa]"
+    },
+    "points": {
+      "cracking": "Onset of cracking",
+      "yield": "Yield",
+      "max": "Max shear",
+      "ultimate": "Ultimate",
+      "title": "Points",
+      "axes": {
+        "Vd": "(d, V)",
+        "tau": "(δ, τ)"
+      }
+    },
+    "maxDrift": "Max drift",
+    "axialStress": "Axial stress",
+    "chartLabel": "Force–displacement response of {name}: cyclic curve, envelopes, bilinear idealisation and limit-state points",
+    "noCurve": "No force–displacement curve in the dataset for this specimen.",
+    "loadFailed": "Could not load the curves: {reason}",
+    "gallery": {
+      "setup": "Test setup",
+      "failmode": "Failure mechanism",
+      "materials": "Materials",
+      "cracks": "Cracks",
+      "missing": "no photo in the dataset",
+      "setupAlt": "Test setup of {name}",
+      "failmodeAlt": "{name} after testing",
+      "materialsAlt": "Units and mortar of {name}",
+      "cracksAlt": "Crack map of {name}"
+    },
+    "data": {
+      "intro": "All {n} fields for this specimen, grouped by category. Definitions in the glossary.",
+      "glossary": "Open glossary"
+    },
+    "files": {
+      "raw": "Raw files",
+      "all": "Download all (.zip)",
+      "download": "Download {name}",
+      "citation": "Citation",
+      "data": "Data source",
+      "copyBib": "Copy BibTeX",
+      "downloadBib": "Download .bib",
+      "handoff-Q7-citation": "[Citation pending, open question 7]",
+      "handoff-BIB-pending": "[BibTeX pending from EESD]",
+      "alsoCite": "When using the database, please also cite Morandi et al. (2018) and Morandi & Albanesi (2026).",
+      "desc": {
+        "02_fd_curve": "Full F-d curve · drift [%], force [kN]",
+        "03_envelope": "Backbone envelope",
+        "04_bilinear_curve": "Bilinear idealisation",
+        "05_fig_setup": "Test setup photo",
+        "06_fig_failmode": "Failure mechanism photo",
+        "07_fig_materials": "Materials photo",
+        "08_fig_cracks": "Crack map",
+        "row": "Database row · {n} columns"
+      }
+    }
+  },
+  "visuals": {
+    "export": "Export figures (.svg)",
+    "summary": "Summary",
+    "filtered": "Filtered walls",
+    "share": "{pct} % of the database",
+    "drift_peak": "Median drift at peak",
+    "drift_u": "Median ultimate drift",
+    "iqr": "IQR {q1} – {q3} % · n = {n}",
+    "average": "Values average the positive and negative loading directions.",
+    "plots": {
+      "strength": "Normalised shear strength vs axial stress",
+      "driftShearSpan": "Ultimate drift vs shear span ratio",
+      "driftHeight": "Ultimate drift vs wall height",
+      "stiffness": "Effective stiffness vs masonry modulus"
+    },
+    "missing": "not reported for {n}",
+    "jittered": "(jittered)",
+    "tip": "N° {n} · {name}",
+    "chartLabel": "{title}: scatter of {n} walls, coloured and shaped by failure mode"
+  },
+  "docs": {
+    "title": "Documentation",
+    "onThisPage": "On this page",
+    "toc": {
+      "about": "About the data",
+      "files": "File structure",
+      "glossary": "Glossary of fields"
+    },
+    "about": "The database collects {n} shear and compression tests on modern masonry walls reported in the literature. Data are primarily taken from Morandi et al. (2018) and Morandi & Albanesi (2026), and further complemented.",
+    "filesIntro": "Every file is identified by the specimen number N from the database table. Curves are stored as drift [%] and force [kN].",
+    "folders": {
+      "01_references": "References",
+      "02_fd_curve": "Force-displacement",
+      "03_envelope": "Backbone envelopes",
+      "04_bilinear_curve": "Bilinear idealisations",
+      "05_fig_setup": "Test setup",
+      "06_fig_failmode": "Failure mode",
+      "07_fig_materials": "Materials",
+      "08_fig_cracks": "Crack measurements"
+    },
+    "count": "{n} fields in {c} categories",
+    "matching": "{n} of {total} fields match",
+    "filter": "Filter fields, e.g. drift",
+    "downloadFields": "Download fields (.csv)",
+    "col": {
+      "field": "Field",
+      "unit": "Unit",
+      "definition": "Definition"
+    },
+    "bothDirections": ", positive / negative direction"
+  },
+  "others": {
+    "eyebrow": "EESD open data",
+    "title": "Other projects from the lab",
+    "lead": "The Modern Masonry Database is one of the open datasets published by the Earthquake Engineering and Structural Dynamics laboratory.",
+    "all": "All EESD datasets",
+    "sisters": "Sister databases",
+    "datasets": "Datasets"
+  },
+  "submit": {
+    "contribute": "Contribute",
+    "database": "Modern masonry walls",
+    "title": "New submission",
+    "lead": "Add in-plane shear-compression tests to the Modern Masonry Database: fill or import the specimen metadata, attach the measured responses and photos. Everything is checked automatically as you go.",
+    "specimens": "Specimens",
+    "starterKit": "Starter kit",
+    "template": "Template CSV",
+    "dictionary": "Data dictionary",
+    "guide": "Contribution guide",
+    "p1": "Start from the starter kit: it is the submission folder laid out the way it should be — the template CSV with the database's {n} column headers, and one example file per response type. Fill in one row per specimen (the data dictionary says what each column expects), then drop the whole folder here.",
+    "p2a": "Measured responses are separate files, one per specimen, named after the specimen they belong to",
+    "p2b": "for the specimen named SW0.1",
+    "p2c": "and placed in the folder of their type. Drop the folder, a zip of it, or the files themselves: they are matched to the specimens by name.",
+    "p3": "Curves are stored as drift [%] and horizontal force [kN]; envelopes and bilinear idealisations come as one file per loading direction.",
+    "dropTitle": "Drop your submission folder here — or a zip, or CSV files",
+    "dropText": "The specimens CSV, plus one file per specimen and response type, named after the specimen, in its folder: 02_fd_curve, 03_envelope, 04_bilinear_curve, and photos in 05_fig_setup to 08_fig_cracks. Files are matched by name; what cannot be placed is listed below for you to sort out.",
+    "chooseFolder": "Choose a folder",
+    "chooseFiles": "Choose files",
+    "addManual": "Add a specimen manually",
+    "warning": "Add at least one specimen with a name and a reference to enable the automatic check.",
+    "check": "Check now",
+    "submit": "Submit for review",
+    "note": "Submitting opens a review request on {repo} — a curator approves it before the data goes live.",
+    "guideTitle": "Contribution guide",
+    "github": "View on GitHub",
+    "tabs": {
+      "guide": "Guide",
+      "dictionary": "Data dictionary"
+    },
+    "layout": "Expected layout",
+    "layoutIntro": "What the submission folder looks like; drop it whole on the editor.",
+    "required": "Required",
+    "optional": "Optional",
+    "curator": "Assigned by the curator",
+    "tree": {
+      "table": "one row per specimen, {n} columns; leave N blank",
+      "fd": "Force–drift curve —",
+      "envelope": "Backbone envelope per direction —",
+      "bilinear": "Bilinear idealisation per direction —",
+      "photos": "Photos: test setup, failure mode, materials, crack measurements"
+    },
+    "downloadKit": "Download the starter kit",
+    "noGuide": "No guide has been written for this database yet.",
+    "readme": "Modern Masonry Database — submission starter kit\n\nModernMasonryDatabase_EIA_Database.csv: one row per specimen, {n} columns. Leave N blank: the curator assigns it. The row for SW0.1 is an example; replace it.\n\nResponse files are named after the specimen and placed in the folder of their type:\n  02_fd_curve/fd_curve_{s}.csv\n  03_envelope/envelope_{s}_pos.csv and _neg.csv\n  04_bilinear_curve/bilinear_{s}_pos.csv and _neg.csv\n  05_fig_setup/ … 08_fig_cracks/fig_{k}_{s}.jpg\n\nCurves have two columns: drift [%], horizontal_force [kN].\nThe column definitions are in the data dictionary on the Documentation page."
   }
 }

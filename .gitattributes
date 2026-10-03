@@ -1,0 +1,5 @@
+# Specimen photos (HANDOFF §5): served as-is from the frontend image.
+frontend/public/data/05_fig_setup/** filter=lfs diff=lfs merge=lfs -text
+frontend/public/data/06_fig_failmode/** filter=lfs diff=lfs merge=lfs -text
+frontend/public/data/07_fig_materials/** filter=lfs diff=lfs merge=lfs -text
+frontend/public/data/08_fig_cracks/** filter=lfs diff=lfs merge=lfs -text

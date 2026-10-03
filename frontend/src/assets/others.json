@@ -1,0 +1,136 @@
+{
+  "_source": "EESD data sets page, https://www.epfl.ch/labs/eesd/data_sets/, copied 2026-10-02 (HANDOFF §4.5). Edit here to update the Others page.",
+  "sisters": [
+    {
+      "kind": "Web platform",
+      "title": "Masonry shake table database",
+      "text": "Shake table test results on unreinforced masonry buildings.",
+      "host": "masonrydb.epfl.ch",
+      "url": "https://masonrydb.epfl.ch/",
+      "flag": true
+    },
+    {
+      "kind": "Web platform",
+      "title": "Masonry microstructure database",
+      "text": "3D masonry microstructures with geometric data and quality indices.",
+      "host": "mmsdb.epfl.ch",
+      "url": "https://mmsdb.epfl.ch/",
+      "flag": true
+    },
+    {
+      "kind": "Data descriptor",
+      "title": "Geometrical digital twins of irregular stone masonry walls",
+      "text": "Point clouds and surface meshes of rubble stone masonry walls.",
+      "host": "Scientific Data · Zenodo",
+      "url": "https://doi.org/10.1038/s41597-023-02417-3",
+      "flag": false
+    }
+  ],
+  "datasets": [
+    {
+      "title": "Masonry tests",
+      "links": [
+        {
+          "title": "SERA – Adjacent interacting masonry structures (AIMS)",
+          "host": "Zenodo",
+          "url": "https://doi.org/10.5281/zenodo.6546434"
+        },
+        {
+          "title": "Quasi-static cyclic tests on masonry spandrels",
+          "host": "Zenodo",
+          "url": "https://zenodo.org/records/4394879"
+        },
+        {
+          "title": "Shear-compression tests on small-scale stone masonry walls with plaster",
+          "host": "Zenodo",
+          "url": "https://doi.org/10.5281/zenodo.4318944"
+        },
+        {
+          "title": "Shear-compression tests on rubble stone masonry walls with plaster",
+          "host": "Zenodo",
+          "url": "https://doi.org/10.5281/zenodo.5052675"
+        },
+        {
+          "title": "Quasi-static cyclic tests of 5 half-scale URM walls",
+          "host": "Zenodo",
+          "url": "https://zenodo.org/record/12873"
+        },
+        {
+          "title": "Quasi-static cyclic tests of 6 URM walls",
+          "host": "Zenodo",
+          "url": "https://zenodo.org/record/8443"
+        },
+        {
+          "title": "Quasi-static cyclic tests of 2 systems with one RC and one URM wall each",
+          "host": "Zenodo",
+          "url": "https://zenodo.org/record/13824"
+        },
+        {
+          "title": "Shake table test of a 4-storey building with RC and URM walls",
+          "host": "Zenodo",
+          "url": "https://zenodo.org/record/11578"
+        }
+      ]
+    },
+    {
+      "title": "Images and digital twins",
+      "links": [
+        {
+          "title": "DADT – Damage-augmented digital twins for buildings",
+          "host": "Zenodo",
+          "url": "https://zenodo.org/record/7767478"
+        },
+        {
+          "title": "Crack detection in buildings",
+          "host": "Zenodo",
+          "url": "https://zenodo.org/record/6769028"
+        },
+        {
+          "title": "Crack detection in DIC images",
+          "host": "Zenodo",
+          "url": "https://doi.org/10.5281/zenodo.4307686"
+        },
+        {
+          "title": "LOD3 building models",
+          "host": "Zenodo",
+          "url": "https://zenodo.org/record/6651663"
+        },
+        {
+          "title": "Geometric digital twinning for stone masonry elements",
+          "host": "Zenodo",
+          "url": "https://zenodo.org/record/7266587"
+        }
+      ]
+    },
+    {
+      "title": "Reinforced concrete walls",
+      "links": [
+        {
+          "title": "Slender RC U-shaped walls with a single layer of reinforcement",
+          "host": "Zenodo",
+          "url": "https://zenodo.org/record/3614079"
+        },
+        {
+          "title": "U-shaped walls under diagonal loading",
+          "host": "figshare",
+          "url": "https://figshare.com/articles/Quasi-static_cyclic_tests_of_two_U-shaped_RC_walls_under_diagonal_loading/3507749"
+        },
+        {
+          "title": "Quasi-static cyclic tests of two U-shaped RC walls",
+          "host": "Zenodo",
+          "url": "http://zenodo.org/record/21846"
+        },
+        {
+          "title": "Uni-axial tension-compression tests on thin RC boundary elements",
+          "host": "Zenodo",
+          "url": "https://zenodo.org/record/569799"
+        },
+        {
+          "title": "Uni- and bi-directional tests on five thin T-shaped RC walls",
+          "host": "figshare",
+          "url": "https://figshare.com/articles/Tests_on_Thin_Reinforced_Concrete_Walls_Subjected_to_In-plane_and_Out-of-plane_Cyclic_Loading_-_Overview_General_folders_and_TW1_1_3_/3490754/2"
+        }
+      ]
+    }
+  ]
+}
