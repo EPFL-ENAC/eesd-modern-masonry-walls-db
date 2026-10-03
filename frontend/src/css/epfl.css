@@ -1,0 +1,6 @@
+/* Cascade order. Quasar sits under the EPFL design system, so DS base styles
+   (body, headings, links) win over Quasar's; app layout and Quasar fixes come
+   last. Component <style> blocks are unlayered and beat every layer. */
+@layer quasar-base, epfl, layout, quasar-overrides;
+@import 'epfl-design-system/css/epfl.css' layer(epfl);
+@import 'epfl-design-system/kits/quasar/epfl-quasar-brand.css' layer(epfl);

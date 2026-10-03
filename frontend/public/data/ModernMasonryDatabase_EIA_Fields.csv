@@ -1,0 +1,48 @@
+﻿Global number,Category,Category number,Name,Units,Definition
+#1,General Information [I],#1,N,[-],Number of test/specimen
+#2,,#2,Reference,[-],Literature reference of the campaign
+#3,,#3,Specimen name,[-],"Name of the test unit, in the original reference"
+#4,Wall Characteristics [II],#1,Unit type,[-],"HC (Hollow Clay), AAC (Autoclaved Aerated Concrete), CS (Calcium Silicate), LAC (Lightweight Aggregate Concrete), SB-C (Solid Brick Clay), SB-CS (Solid Brick Calcium Silicate), CB (Concrete Brick), HCB (Hollow Concrete Block)"
+#5,,#2,N° courses,[-],Number of unit courses
+#6,,#3,H,[m],Height of the specimen
+#7,,#4,L,[m],Length of the specimen
+#8,,#5,t,[m],Thickness of the specimen
+#9,,#6,Bed Joints,[-],"GP (General Purpose), TL (Thin Layer)"
+#10,,#7,Head Joints,[-],"F (Filled), TF (Thin Filled), MP (Mortar Pocket), UTG (Unfilled, Tongue and Groove), U (Unfilled)"
+#11,Material Properties [III],#1,Void Ratio,[%],Percentage of voids
+#12,,#2,lb,[mm],Average length of the unit
+#13,,#3,wb,[mm],Average width of the unit
+#14,,#4,hb,[mm],Average height of the unit
+#15,,#5,"fb,Ʇ",[MPa],Mean compressive strength of units in the direction perpendicular to bed joint
+#16,,#6,"fb,norm,Ʇ",[MPa],Normalised compressive strength of units in the direction perpendicular to bed joint
+#17,,#7,"fb,ǁ",[MPa],Mean compressive strength of units in the direction parallel to bed joint
+#18,,#8,"fb,norm,ǁ",[MPa],Normalised compressive strength of units in the direction parallel to bed joint
+#19,,#9,fmo,[MPa],Mean compressive strength of mortar
+#20,,#10,"fm,c",[MPa],Mean compressive strength of masonry
+#21,,#11,"fm,t",[MPa],Mean diagonal tensile strength of masonry
+#22,,#12,Emo,[MPa],Elastic modulus of mortar
+#23,,#13,Gm,[MPa],Shear modulus of masonry
+#24,,#14,Em,[MPa],Elastic modulus of masonry
+#25,,#15,fv0,[MPa],Initial shear strength of masonry
+#26,,#16,μ,[-],Friction coefficient of masonry
+#27,Test setup [IV],#1,H0/H,[-],Shear span ratio (ratio of height of zero moment to specimen height)
+#28,,#2,σ0,[MPa],Compressive axial stress (total axial load divided by gross cross section of the specimen)
+#29,Force-displacement response [V],#1,F-d data,[-],"Availability of displacement vs force curve: Yes (full curve, envelope, extracted from graph), No"
+#30,,#2,Failure mode,[-],"S (Shear), F (Flexure), H- (Hybrid followed by two main mechanisms), G (gaping), SL (Sliding), D (uncertain)"
+#31,,#3,δcr+,[%],Drift at onset of cracking in the positive direction
+#32,,#4,δcr-,[%],Drift at onset of cracking in the negative direction
+#33,,#5, δVmax+,[%],Drift at maximum shear force in the positive direction
+#34,,#6, δVmax-,[%],Drift at maximum shear force in the negative direction
+#35,,#7,Vmax+,[kN],Maximum shear force in the positive direction
+#36,,#8,Vmax-,[kN],Maximum shear force in the negative direction
+#37,,#9, δmax+,[%],Maximum drift recorded in the positive direction
+#38,,#10, δmax-,[%],Maximum drift recorded in the negative direction
+#39,,#11,Vδmax+,[kN],Shear force at maximum drift recorded in the positive direction
+#40,,#12,Vδmax-,[kN],Shear force at maximum drift recorded in the negative direction
+#41,Bilinear idealisation [VI],#1, Vbil+,[kN],Shear force of the bilinear curve's plateau in the positive direction
+#42,,#2, Vbil-,[kN],Shear force of the bilinear curve's plateau in the negative direction
+#43,,#3,δe+,[%],Yielding drift in the positive direction
+#44,,#4,δe-,[%],Yielding drift in the negative direction
+#45,,#5,δu+,[%],Ultimate drift in the positive direction
+#46,,#6,δu-,[%],Ultimate drift in the negative direction
+#47,Cracks [VII],#1,Crack measurements,[-],"Crack measurements reported, specifying the method used:  Yes (DIC, deep learning, fractal, etc), No"

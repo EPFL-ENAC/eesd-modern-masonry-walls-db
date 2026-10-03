@@ -11,10 +11,10 @@ install:                ## pnpm (git hooks) + backend + frontend deps
 dev-all:                ## backend + frontend in this terminal, Ctrl-C stops both
 	$(MAKE) -j2 --no-print-directory dev-backend dev-frontend
 
-dev-backend:            ## FastAPI on http://127.0.0.1:8000
+dev-backend:            ## FastAPI on http://127.0.0.1:8000 (unused by the frontend)
 	$(MAKE) -C backend dev
 
-dev-frontend:           ## Vite on http://127.0.0.1:5173, /api proxied to the backend
+dev-frontend:           ## Quasar on http://127.0.0.1:$FRONTEND_PORT (default 9000)
 	$(MAKE) -C frontend dev
 
 test:                   ## backend pytest + frontend vitest

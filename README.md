@@ -3,17 +3,30 @@
 0212 - EESD - Modern Masonry Walls DB - A comprehensive database and
 collaborative resource for advancing seismic assessment of modern masonry walls.
 
-FastAPI backend (`backend/`, managed with [uv](https://docs.astral.sh/uv/)) and
-Vue 3 + Vuetify frontend (`frontend/`, [pnpm](https://pnpm.io) 11).
+Static Quasar frontend (`frontend/`, [pnpm](https://pnpm.io) 11) styled with the
+[EPFL design system](https://github.com/EPFL-ENAC/epfl-design-skill). It reads
+the dataset from `frontend/public/data/` and calls no backend. The FastAPI
+backend (`backend/`, [uv](https://docs.astral.sh/uv/)) is kept but unused.
+
+Clone with [git-lfs](https://git-lfs.com) installed: the specimen photos are LFS
+objects.
 
 ## Develop
 
 ```bash
 make install    # pnpm (git hooks) + uv sync + frontend deps
-make dev-all    # backend on :8000 + Vite on :5173 (/api proxied to the backend)
+make dev-all    # backend on :8000 + Quasar on $FRONTEND_PORT (default 9000)
 make test       # pytest + vitest
-make lint       # ruff (pre-commit) + ESLint
+make lint       # ruff (pre-commit) + ESLint + stylelint
 ```
+
+### Updating the dataset
+
+1. Replace the files in `frontend/public/data/`. Export CSVs from Excel as
+   **CSV UTF-8**: a plain CSV export loses σ, δ and μ, and the converter rejects it.
+2. `make -C frontend convert` rewrites `frontend/src/assets/data/*.json` and
+   fails if the database and the files on disk disagree.
+3. `make test`, then commit the CSVs and the JSON together.
 
 Commits follow [Conventional Commits](https://www.conventionalcommits.org)
 (checked by commitlint through lefthook).
