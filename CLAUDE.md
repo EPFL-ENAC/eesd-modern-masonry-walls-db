@@ -8,6 +8,8 @@ conventions (`it4r-agent-kit`); this file only adds what is specific here.
   `pnpm convert` turns its CSVs into `frontend/src/assets/data/*.json`; commit both.
 - CSVs are UTF-8 with a BOM (Excel's "CSV UTF-8"; Windows Excel needs it), the
   dataset's and every one the browser generates. `pnpm convert` rejects a BOM-less export.
+- Photos show as WebP web versions (`pnpm optimize-images`, `src/lib/photos.ts`);
+  downloads and exports keep the originals.
 - `src/api/dataset.ts` is the only module that reads the dataset.
 - Derivations (drift, τ, bins, `fm_group`…) live in `src/lib/derive.ts`, ported
   from the handoff's `build_charts.py`. This overrides the IT4R "no formulas

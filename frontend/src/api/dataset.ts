@@ -5,6 +5,7 @@ import referencesJson from '../assets/data/references.json'
 import metaJson from '../assets/data/meta.json'
 import { derive } from '../lib/derive.ts'
 import { BOM, parseCsv, toCsv } from '../lib/csv.ts'
+import { variant, type PhotoWidth } from '../lib/photos.ts'
 import type { Field, Meta, Reference, Specimen } from './types.ts'
 
 export const rows = (specimensJson as Specimen[]).map(derive)
@@ -17,6 +18,9 @@ export const referenceById = new Map(references.map((r) => [r.id, r]))
 
 /** URL of a dataset file, e.g. fileUrl('02_fd_curve/fd_curve_0189.csv'). */
 export const fileUrl = (path: string) => `${import.meta.env.BASE_URL}data/${path}`
+
+/** URL of a photo's web version (pnpm optimize-images); downloads keep the original. */
+export const photoUrl = (path: string, width: PhotoWidth) => fileUrl(variant(path, width))
 
 export const DATABASE_CSV = 'ModernMasonryDatabase_EIA_Database.csv'
 export const FIELDS_CSV = 'ModernMasonryDatabase_EIA_Fields.csv'
