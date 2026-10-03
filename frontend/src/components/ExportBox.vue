@@ -11,7 +11,7 @@
     </fieldset>
     <fieldset class="box-set">
       <legend class="box-legend">{{ t('export.include') }}</legend>
-      <!-- handoff-BIB: the .bib joins "references" once EESD supplies it. -->
+      <!-- handoff-BIB (#18): the .bib joins "references" once EESD supplies it. -->
       <label v-for="k in INCLUDE" :key="k" class="box-option">
         <input v-model="include" type="checkbox" :value="k" />
         {{ t(`export.items.${k}`, { n: fields.length }) }}

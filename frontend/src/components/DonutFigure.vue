@@ -4,7 +4,7 @@
     <div class="donut-chart">
       <VChart :option="option" autoresize role="img" :aria-label="summary" @click="onClick" />
       <div class="donut-centre" aria-hidden="true">
-        <span class="donut-share">{{ share }}%</span>
+        <span class="donut-share">{{ t('units.percentOf', { n: share }) }}</span>
         <span class="donut-value">{{ centre?.value }}</span>
       </div>
     </div>
@@ -28,6 +28,7 @@
 
 <script setup lang="ts">
 import { computed } from 'vue'
+import { useI18n } from 'vue-i18n'
 import type { ECElementEvent, EChartsOption } from 'echarts'
 import { VChart } from '../charts/echarts.ts'
 import { cssColor } from '../lib/tokens.ts'
@@ -36,6 +37,7 @@ export type DonutItem = { value: string; label: string; count: number; color: st
 
 const props = defineProps<{ title: string; items: DonutItem[]; selected?: string }>()
 const emit = defineEmits<{ select: [value: string] }>()
+const { t } = useI18n()
 
 const total = computed(() => props.items.reduce((s, i) => s + i.count, 0))
 // Centre: the selected segment, else the largest one (HANDOFF §4.1).
@@ -76,7 +78,7 @@ const onClick = (e: ECElementEvent) => emit('select', e.name)
 .donut {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: var(--space-3);
   margin: 0;
 }
 
@@ -123,7 +125,7 @@ const onClick = (e: ECElementEvent) => emit('select', e.name)
 
 .donut-item {
   display: flex;
-  gap: 0.5rem;
+  gap: var(--space-2);
   align-items: center;
   width: 100%;
   padding: 0;

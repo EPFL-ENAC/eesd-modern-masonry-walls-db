@@ -65,7 +65,7 @@
           :disabled="page === 1"
           @click="goto(page - 1)"
         >
-          ‹
+          <q-icon :name="matChevronLeft" />
         </button>
         <button
           v-for="p in pageWindow"
@@ -83,7 +83,7 @@
           :disabled="page === pages"
           @click="goto(page + 1)"
         >
-          ›
+          <q-icon :name="matChevronRight" />
         </button>
       </div>
     </div>
@@ -94,6 +94,7 @@
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRoute } from 'vue-router'
+import { matChevronLeft, matChevronRight } from '@quasar/extras/material-icons'
 import { fields, rows as allRows } from '../api/dataset.ts'
 import type { Field } from '../api/types.ts'
 import { useFilters } from '../composables/useFilters.ts'
@@ -200,7 +201,7 @@ const open = (N: number) => setQuery({ specimen: String(N) })
 }
 
 .tg {
-  padding: 0.5rem 0.75rem;
+  padding: var(--space-2) 0.75rem;
   font-size: 0.75rem;
   font-weight: var(--w-normal);
   color: var(--fg-muted);
@@ -319,7 +320,7 @@ tbody tr {
 
 .pager {
   display: flex;
-  gap: 0.25rem;
+  gap: var(--space-1);
 
   button {
     min-width: 2rem;

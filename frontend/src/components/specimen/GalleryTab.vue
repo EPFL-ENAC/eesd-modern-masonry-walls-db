@@ -12,7 +12,7 @@
         </button>
         <!-- Missing photo: dashed placeholder with the expected file name (HANDOFF §5.2). -->
         <div v-else class="fig-img fig-missing">
-          [{{ fig.stem }}_{{ pad(row.N) }} — {{ t('specimen.gallery.missing') }}]
+          {{ t('specimen.gallery.missing', { file: `${fig.stem}_${pad(row.N)}` }) }}
         </div>
       </div>
       <FieldRows :row="row" :names="fig.fields" class="fig-kv" />
@@ -70,13 +70,13 @@ function enlarge(path: string, key: string) {
 .gallery {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 1.5rem;
+  gap: var(--space-4);
 }
 
 .fig {
   display: grid;
   grid-template-columns: minmax(0, 1fr) 9.375rem;
-  gap: 1rem;
+  gap: var(--space-3);
   margin: 0;
   padding-top: 0.75rem;
   border-top: var(--border-w) solid var(--fg);
@@ -121,7 +121,7 @@ function enlarge(path: string, key: string) {
 .fig-dialog {
   max-width: 90vw;
   max-height: 90vh;
-  padding: 1rem;
+  padding: var(--space-3);
   border: 0;
   border-radius: var(--radius);
 

@@ -30,11 +30,17 @@ export default defineConfig(() => ({
       viteConf.css.preprocessorOptions ??= {}
       viteConf.css.preprocessorOptions.scss ??= {}
       viteConf.css.preprocessorOptions.scss.silenceDeprecations = ['import']
+      // The DS Vue kit ships .vue files, which esbuild's dependency pre-bundling can't read.
+      viteConf.optimizeDeps ??= {}
+      viteConf.optimizeDeps.exclude = [
+        ...(viteConf.optimizeDeps.exclude ?? []),
+        'epfl-design-system'
+      ]
     }
   },
 
   devServer: {
-    // wtx exports a port per worktree; 9000 is Quasar's default.
+    // FRONTEND_PORT overrides Quasar's default 9000.
     port: Number(process.env.FRONTEND_PORT) || 9000,
     open: false
   },

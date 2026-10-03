@@ -30,7 +30,7 @@
           :aria-label="t('table.removeFilter', { filter: c.label })"
           @click="update(c.patch)"
         >
-          ×
+          <q-icon :name="matClose" />
         </button>
       </span>
     </template>
@@ -49,7 +49,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { matFileDownload } from '@quasar/extras/material-icons'
+import { matClose, matFileDownload } from '@quasar/extras/material-icons'
 import { rows } from '../../api/dataset.ts'
 import ColumnsBox from '../../components/ColumnsBox.vue'
 import ExportBox from '../../components/ExportBox.vue'
@@ -113,14 +113,14 @@ function toExport() {
 .table-layout {
   display: grid;
   grid-template-columns: minmax(0, 1fr) 14.5rem;
-  gap: 1.5rem;
+  gap: var(--space-4);
   align-items: start;
 }
 
 .table-side {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: var(--space-3);
 }
 
 @media (width <= 80rem) {

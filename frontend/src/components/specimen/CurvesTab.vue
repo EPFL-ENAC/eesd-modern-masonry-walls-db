@@ -69,20 +69,22 @@
           <dd>{{ failureMode }}</dd>
         </div>
         <div class="kv-row">
-          <dt><FieldLabel :field="{ name: 'Vbil', units: '' }" /> (+ / −)</dt>
-          <dd>{{ pair('Vbil', 1) }} kN</dd>
+          <dt><FieldLabel :field="{ name: 'Vbil', units: '' }" /> {{ t('units.plusMinus') }}</dt>
+          <dd>{{ t('units.kN', { v: pair('Vbil', 1) }) }}</dd>
         </div>
         <div class="kv-row">
-          <dt>{{ t('specimen.maxDrift') }} (+ / −)</dt>
-          <dd>{{ pair('δmax', 2) }} %</dd>
+          <dt>{{ t('specimen.maxDrift') }} {{ t('units.plusMinus') }}</dt>
+          <dd>{{ t('units.percent', { v: pair('δmax', 2) }) }}</dd>
         </div>
         <div class="kv-row">
           <dt>{{ t('specimen.axialStress') }} <FieldLabel :field="{ name: 'σ0', units: '' }" /></dt>
-          <dd>{{ fixed(row.sigma0, 2) }} MPa</dd>
+          <dd>{{ t('units.MPa', { v: fixed(row.sigma0, 2) }) }}</dd>
         </div>
         <div class="kv-row">
-          <dt>H × L × t</dt>
-          <dd>{{ row.values.H }} × {{ row.values.L }} × {{ row.values.t }} m</dd>
+          <dt>{{ t('specimen.dims') }}</dt>
+          <dd>
+            {{ t('specimen.dimsValue', { h: row.values.H, l: row.values.L, t: row.values.t }) }}
+          </dd>
         </div>
       </dl>
     </aside>
@@ -163,14 +165,13 @@ const failureMode = computed(() => {
 /** "+0.17 %, 107.5 kN · −0.14 %, 99.4 kN", in the units of the mode. */
 function pointText(p: Point) {
   const map = toAxes(mode.value, props.row)
-  const [xu, yu, xd, yd] = mode.value === 'Vd' ? ['mm', 'kN', 1, 1] : ['%', 'MPa', 2, 2]
-  const signed = (v: number, d: number) => `${v < 0 ? '−' : '+'}${Math.abs(v).toFixed(d)}`
+  const [xu, yu, digits] = mode.value === 'Vd' ? ['mm', 'kN', 1] : ['percent', 'MPa', 2]
+  const signed = (v: number) => `${v < 0 ? '−' : '+'}${Math.abs(v).toFixed(digits)}`
   return points.value[p]
     .map(([d, V]) => {
       const [x, y] = map(d, V ?? 0)
-      return V == null
-        ? `${signed(x, xd)} ${xu}`
-        : `${signed(x, xd)} ${xu}, ${Math.abs(y).toFixed(yd)} ${yu}`
+      const xs = t(`units.${xu}`, { v: signed(x) })
+      return V == null ? xs : `${xs}, ${t(`units.${yu}`, { v: Math.abs(y).toFixed(digits) })}`
     })
     .join(' · ')
 }
@@ -278,14 +279,14 @@ const option = computed<EChartsOption>(() => {
 .curves-main {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: var(--space-3);
   min-width: 0;
 }
 
 .curves-bar {
   display: flex;
   flex-wrap: wrap;
-  gap: 1rem;
+  gap: var(--space-3);
   align-items: center;
   justify-content: space-between;
 }
@@ -293,7 +294,7 @@ const option = computed<EChartsOption>(() => {
 .curves-layers {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.5rem;
+  gap: var(--space-2);
   align-items: center;
 }
 
@@ -305,7 +306,7 @@ const option = computed<EChartsOption>(() => {
 
 .layer {
   display: inline-flex;
-  gap: 0.5rem;
+  gap: var(--space-2);
   align-items: center;
   padding: 0.375rem 0.75rem;
   font: inherit;
@@ -353,7 +354,7 @@ const option = computed<EChartsOption>(() => {
 .fd-legend {
   display: flex;
   flex-wrap: wrap;
-  gap: 1.5rem;
+  gap: var(--space-4);
   margin: 0;
   padding: 0 0 0 1.75rem;
   font-size: 0.8125rem;
@@ -362,7 +363,7 @@ const option = computed<EChartsOption>(() => {
 
   li {
     display: inline-flex;
-    gap: 0.5rem;
+    gap: var(--space-2);
     align-items: center;
   }
 }
@@ -390,7 +391,7 @@ const option = computed<EChartsOption>(() => {
 .point {
   display: grid;
   grid-template-columns: 1.25rem 1rem minmax(0, 1fr);
-  gap: 0.5rem;
+  gap: var(--space-2);
   align-items: start;
   font-size: var(--fs-sm);
   cursor: pointer;
@@ -422,7 +423,7 @@ const option = computed<EChartsOption>(() => {
   justify-self: center;
   width: 0.625rem;
   height: 0.625rem;
-  margin-top: 0.25rem;
+  margin-top: var(--space-1);
 }
 
 .marker-cracking {

@@ -44,10 +44,9 @@
 
         <div class="submit-text">
           <p>{{ t('submit.p1', { n: fields.length }) }}</p>
-          <p>
-            {{ t('submit.p2a') }} (<code>fd_curve_SW0.1.csv</code> {{ t('submit.p2b') }})
-            {{ t('submit.p2c') }}
-          </p>
+          <i18n-t keypath="submit.p2" tag="p" scope="global">
+            <template #file><code>fd_curve_SW0.1.csv</code></template>
+          </i18n-t>
           <p>
             {{ t('submit.p3') }} <a href="#guide">{{ t('submit.guide') }}</a>
           </p>
@@ -229,9 +228,9 @@ const kit = () =>
 .submit-band-inner {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
-  padding-top: 3rem;
-  padding-bottom: 2rem;
+  gap: var(--space-3);
+  padding-top: var(--space-5);
+  padding-bottom: var(--gutter);
 }
 
 .submit-eyebrow {
@@ -261,9 +260,9 @@ const kit = () =>
 .submit {
   display: grid;
   grid-template-columns: minmax(0, 1fr) 25rem;
-  gap: 3rem;
+  gap: var(--space-5);
   align-items: start;
-  padding-top: 2rem;
+  padding-top: var(--gutter);
   padding-bottom: 4rem;
 }
 
@@ -277,7 +276,7 @@ const kit = () =>
 .submit-tools {
   display: flex;
   flex-wrap: wrap;
-  gap: 1rem;
+  gap: var(--space-3);
   align-items: center;
   justify-content: space-between;
   padding-bottom: 0.75rem;
@@ -295,7 +294,7 @@ const kit = () =>
 .submit-tool-row {
   display: flex;
   flex-wrap: wrap;
-  gap: 1.5rem;
+  gap: var(--space-4);
   align-items: center;
 }
 
@@ -337,9 +336,9 @@ const kit = () =>
 .drop {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: var(--space-2);
   align-items: center;
-  padding: 3rem 1.5rem;
+  padding: var(--space-5) var(--space-4);
   color: var(--fg-muted);
   text-align: center;
   border: calc(1.5 * var(--border-w)) dashed var(--border-strong);
@@ -361,13 +360,13 @@ const kit = () =>
 
 .drop-actions {
   display: flex;
-  gap: 0.5rem;
-  margin-top: 0.5rem;
+  gap: var(--space-2);
+  margin-top: var(--space-2);
 }
 
 .add-manual {
   display: inline-flex;
-  gap: 0.5rem;
+  gap: var(--space-2);
   align-items: center;
   justify-content: center;
   padding: 0.875rem;
@@ -389,7 +388,7 @@ const kit = () =>
 
 .submit-warning {
   display: flex;
-  gap: 0.5rem;
+  gap: var(--space-2);
   align-items: center;
   margin: 0;
   font-weight: var(--w-bold);
@@ -397,7 +396,7 @@ const kit = () =>
 
 .submit-actions {
   display: flex;
-  gap: 0.5rem;
+  gap: var(--space-2);
 }
 
 .submit-note {
@@ -408,7 +407,7 @@ const kit = () =>
 
 .guide {
   position: sticky;
-  top: 2rem;
+  top: var(--gutter);
   border: var(--border-w) solid var(--border);
 }
 
@@ -437,7 +436,7 @@ const kit = () =>
 
 .guide-tab {
   margin-bottom: calc(-1 * var(--border-w));
-  padding: 0 0 0.5rem;
+  padding: 0 0 var(--space-2);
   font: inherit;
   font-size: 0.9375rem;
   font-weight: var(--w-bold);
@@ -467,14 +466,14 @@ const kit = () =>
 }
 
 .guide-h3 {
-  margin: 0 0 0.5rem;
+  margin: 0 0 var(--space-2);
   font-size: 0.9375rem;
   font-weight: var(--w-bold);
   text-transform: uppercase;
 }
 
 .guide-muted {
-  margin: 0 0 1rem;
+  margin: 0 0 var(--space-3);
   color: var(--fg-muted);
 }
 
@@ -491,11 +490,11 @@ const kit = () =>
 }
 
 .tree-entry {
-  padding-left: 1rem;
+  padding-left: var(--space-3);
 }
 
 .tree-desc {
-  padding: 0.25rem 0 0 0.75rem;
+  padding: var(--space-1) 0 0 0.75rem;
   color: var(--fg-muted);
 
   code {
@@ -505,7 +504,7 @@ const kit = () =>
 
 .pill {
   display: inline-block;
-  padding: 0 0.5rem;
+  padding: 0 var(--space-2);
   font-size: 0.6875rem;
   font-weight: var(--w-bold);
   color: var(--fg-muted);
@@ -535,8 +534,8 @@ const kit = () =>
 }
 
 .guide-empty {
-  margin: 1rem 0 0;
-  padding-top: 1rem;
+  margin: var(--space-3) 0 0;
+  padding-top: var(--space-3);
   color: var(--fg-muted);
   border-top: var(--border-w) solid var(--border-subtle);
 }
@@ -552,9 +551,9 @@ const kit = () =>
 .dict-row {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.25rem 0.5rem;
+  gap: var(--space-1) var(--space-2);
   align-items: baseline;
-  padding: 0.5rem 0;
+  padding: var(--space-2) 0;
   border-bottom: var(--border-w) solid var(--border-subtle);
 }
 

@@ -33,10 +33,10 @@ const categories = [...new Set(fields.map((f) => f.category))].map((cat) => {
 <style scoped lang="scss">
 .data-head {
   display: flex;
-  gap: 1rem;
+  gap: var(--space-3);
   align-items: baseline;
   justify-content: space-between;
-  margin-bottom: 1rem;
+  margin-bottom: var(--space-3);
   font-size: var(--fs-sm);
 }
 
@@ -52,7 +52,7 @@ const categories = [...new Set(fields.map((f) => f.category))].map((cat) => {
 }
 
 .data-cat {
-  margin-bottom: 1.5rem;
+  margin-bottom: var(--space-4);
   break-inside: avoid;
 }
 

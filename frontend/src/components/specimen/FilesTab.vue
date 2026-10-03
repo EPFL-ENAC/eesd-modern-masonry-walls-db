@@ -42,7 +42,7 @@
 
     <section class="cite">
       <h3 class="section-label">{{ t('specimen.files.citation') }}</h3>
-      <!-- handoff-Q7: no citation text for some references (ref 25). -->
+      <!-- handoff-Q7 (#16): no citation text for some references (ref 25). -->
       <p class="cite-text">
         {{ reference?.citation ?? t('specimen.files.handoff-Q7-citation') }}
         <a v-if="reference?.linkDocument" :href="reference.linkDocument">{{
@@ -52,7 +52,7 @@
       <p v-if="reference?.linkData" class="cite-text">
         <a :href="reference.linkData">{{ t('specimen.files.data') }}</a>
       </p>
-      <!-- handoff-BIB: BibTeX comes from the EESD .bib, not supplied yet. -->
+      <!-- handoff-BIB (#18): BibTeX comes from the EESD .bib, not supplied yet. -->
       <pre class="cite-bib">{{ t('specimen.files.handoff-BIB-pending') }}</pre>
       <div class="cite-actions">
         <button type="button" class="epfl-btn epfl-btn-secondary epfl-btn-sm" disabled>
@@ -102,12 +102,12 @@ const all = () => run(() => saveSpecimenZip(props.row))
 .files {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 3rem;
+  gap: var(--space-5);
 }
 
 .files-head {
   display: flex;
-  gap: 1rem;
+  gap: var(--space-3);
   align-items: center;
   justify-content: space-between;
   margin-bottom: 0.75rem;
@@ -127,9 +127,9 @@ const all = () => run(() => saveSpecimenZip(props.row))
 .files-row {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto auto;
-  gap: 1rem;
+  gap: var(--space-3);
   align-items: center;
-  padding: 0.625rem 0.25rem;
+  padding: 0.625rem var(--space-1);
   font-size: var(--fs-sm);
   border-bottom: var(--border-w) solid var(--border-subtle);
 
@@ -160,7 +160,7 @@ const all = () => run(() => saveSpecimenZip(props.row))
 .cite {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: var(--space-3);
 
   .section-label {
     margin: 0;
@@ -175,7 +175,7 @@ const all = () => run(() => saveSpecimenZip(props.row))
 
 .cite-bib {
   margin: 0;
-  padding: 1rem;
+  padding: var(--space-3);
   font-size: 0.75rem;
   line-height: 1.55;
   white-space: pre-wrap;
@@ -187,7 +187,7 @@ const all = () => run(() => saveSpecimenZip(props.row))
 .cite-actions {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.5rem;
+  gap: var(--space-2);
 }
 
 .cite-note {

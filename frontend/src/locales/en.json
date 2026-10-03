@@ -2,7 +2,8 @@
   "header": {
     "home": "EPFL — Modern Masonry Database home",
     "nav": "Main",
-    "lab": "Earthquake Engineering and Structural Dynamics"
+    "lab": "Earthquake Engineering and Structural Dynamics",
+    "labTag": "EESD"
   },
   "nav": {
     "overview": "Overview",
@@ -70,7 +71,8 @@
     "counts": "{specimens} specimens · {fields} fields",
     "maintained": "Maintained by",
     "lab": "EESD laboratory, EPFL ENAC",
-    "handoff-Q8-address": "[EESD postal address, open question 8]"
+    "handoff-Q8-address": "[EESD postal address, open question 8]",
+    "copyright": "© {year} EPFL"
   },
   "database": {
     "views": "Database views",
@@ -244,7 +246,7 @@
       "failmode": "Failure mechanism",
       "materials": "Materials",
       "cracks": "Cracks",
-      "missing": "no photo in the dataset",
+      "missing": "[{file} — no photo in the dataset]",
       "setupAlt": "Test setup of {name}",
       "failmodeAlt": "{name} after testing",
       "materialsAlt": "Units and mortar of {name}",
@@ -275,15 +277,17 @@
         "08_fig_cracks": "Crack map",
         "row": "Database row · {n} columns"
       }
-    }
+    },
+    "dims": "H × L × t",
+    "dimsValue": "{h} × {l} × {t} m"
   },
   "visuals": {
     "export": "Export figures (.svg)",
     "summary": "Summary",
     "filtered": "Filtered walls",
     "share": "{pct} % of the database",
-    "drift_peak": "Median drift at peak",
-    "drift_u": "Median ultimate drift",
+    "drift_peak": "Median drift at peak, {symbol}",
+    "drift_u": "Median ultimate drift, {symbol}",
     "iqr": "IQR {q1} – {q3} % · n = {n}",
     "average": "Values average the positive and negative loading directions.",
     "plots": {
@@ -295,7 +299,9 @@
     "missing": "not reported for {n}",
     "jittered": "(jittered)",
     "tip": "N° {n} · {name}",
-    "chartLabel": "{title}: scatter of {n} walls, coloured and shaped by failure mode"
+    "chartLabel": "{title}: scatter of {n} walls, coloured and shaped by failure mode",
+    "of": "/ {n}",
+    "n": "n = {n}"
   },
   "docs": {
     "title": "Documentation",
@@ -324,9 +330,11 @@
     "col": {
       "field": "Field",
       "unit": "Unit",
-      "definition": "Definition"
+      "definition": "Definition",
+      "n": "#"
     },
-    "bothDirections": ", positive / negative direction"
+    "bothDirections": ", positive / negative direction",
+    "pair": "+ / −"
   },
   "others": {
     "eyebrow": "EESD open data",
@@ -334,7 +342,137 @@
     "lead": "The Modern Masonry Database is one of the open datasets published by the Earthquake Engineering and Structural Dynamics laboratory.",
     "all": "All EESD datasets",
     "sisters": "Sister databases",
-    "datasets": "Datasets"
+    "datasets": "Datasets",
+    "cards": [
+      {
+        "kind": "Web platform",
+        "title": "Masonry shake table database",
+        "text": "Shake table test results on unreinforced masonry buildings.",
+        "host": "masonrydb.epfl.ch",
+        "url": "https://masonrydb.epfl.ch/"
+      },
+      {
+        "kind": "Web platform",
+        "title": "Masonry microstructure database",
+        "text": "3D masonry microstructures with geometric data and quality indices.",
+        "host": "mmsdb.epfl.ch",
+        "url": "https://mmsdb.epfl.ch/"
+      },
+      {
+        "kind": "Data descriptor",
+        "title": "Geometrical digital twins of irregular stone masonry walls",
+        "text": "Point clouds and surface meshes of rubble stone masonry walls.",
+        "host": "Scientific Data · Zenodo",
+        "url": "https://doi.org/10.1038/s41597-023-02417-3"
+      }
+    ],
+    "groups": [
+      {
+        "title": "Masonry tests",
+        "links": [
+          {
+            "title": "SERA – Adjacent interacting masonry structures (AIMS)",
+            "host": "Zenodo",
+            "url": "https://doi.org/10.5281/zenodo.6546434"
+          },
+          {
+            "title": "Quasi-static cyclic tests on masonry spandrels",
+            "host": "Zenodo",
+            "url": "https://zenodo.org/records/4394879"
+          },
+          {
+            "title": "Shear-compression tests on small-scale stone masonry walls with plaster",
+            "host": "Zenodo",
+            "url": "https://doi.org/10.5281/zenodo.4318944"
+          },
+          {
+            "title": "Shear-compression tests on rubble stone masonry walls with plaster",
+            "host": "Zenodo",
+            "url": "https://doi.org/10.5281/zenodo.5052675"
+          },
+          {
+            "title": "Quasi-static cyclic tests of 5 half-scale URM walls",
+            "host": "Zenodo",
+            "url": "https://zenodo.org/record/12873"
+          },
+          {
+            "title": "Quasi-static cyclic tests of 6 URM walls",
+            "host": "Zenodo",
+            "url": "https://zenodo.org/record/8443"
+          },
+          {
+            "title": "Quasi-static cyclic tests of 2 systems with one RC and one URM wall each",
+            "host": "Zenodo",
+            "url": "https://zenodo.org/record/13824"
+          },
+          {
+            "title": "Shake table test of a 4-storey building with RC and URM walls",
+            "host": "Zenodo",
+            "url": "https://zenodo.org/record/11578"
+          }
+        ]
+      },
+      {
+        "title": "Images and digital twins",
+        "links": [
+          {
+            "title": "DADT – Damage-augmented digital twins for buildings",
+            "host": "Zenodo",
+            "url": "https://zenodo.org/record/7767478"
+          },
+          {
+            "title": "Crack detection in buildings",
+            "host": "Zenodo",
+            "url": "https://zenodo.org/record/6769028"
+          },
+          {
+            "title": "Crack detection in DIC images",
+            "host": "Zenodo",
+            "url": "https://doi.org/10.5281/zenodo.4307686"
+          },
+          {
+            "title": "LOD3 building models",
+            "host": "Zenodo",
+            "url": "https://zenodo.org/record/6651663"
+          },
+          {
+            "title": "Geometric digital twinning for stone masonry elements",
+            "host": "Zenodo",
+            "url": "https://zenodo.org/record/7266587"
+          }
+        ]
+      },
+      {
+        "title": "Reinforced concrete walls",
+        "links": [
+          {
+            "title": "Slender RC U-shaped walls with a single layer of reinforcement",
+            "host": "Zenodo",
+            "url": "https://zenodo.org/record/3614079"
+          },
+          {
+            "title": "U-shaped walls under diagonal loading",
+            "host": "figshare",
+            "url": "https://figshare.com/articles/Quasi-static_cyclic_tests_of_two_U-shaped_RC_walls_under_diagonal_loading/3507749"
+          },
+          {
+            "title": "Quasi-static cyclic tests of two U-shaped RC walls",
+            "host": "Zenodo",
+            "url": "http://zenodo.org/record/21846"
+          },
+          {
+            "title": "Uni-axial tension-compression tests on thin RC boundary elements",
+            "host": "Zenodo",
+            "url": "https://zenodo.org/record/569799"
+          },
+          {
+            "title": "Uni- and bi-directional tests on five thin T-shaped RC walls",
+            "host": "figshare",
+            "url": "https://figshare.com/articles/Tests_on_Thin_Reinforced_Concrete_Walls_Subjected_to_In-plane_and_Out-of-plane_Cyclic_Loading_-_Overview_General_folders_and_TW1_1_3_/3490754/2"
+          }
+        ]
+      }
+    ]
   },
   "submit": {
     "contribute": "Contribute",
@@ -347,9 +485,6 @@
     "dictionary": "Data dictionary",
     "guide": "Contribution guide",
     "p1": "Start from the starter kit: it is the submission folder laid out the way it should be — the template CSV with the database's {n} column headers, and one example file per response type. Fill in one row per specimen (the data dictionary says what each column expects), then drop the whole folder here.",
-    "p2a": "Measured responses are separate files, one per specimen, named after the specimen they belong to",
-    "p2b": "for the specimen named SW0.1",
-    "p2c": "and placed in the folder of their type. Drop the folder, a zip of it, or the files themselves: they are matched to the specimens by name.",
     "p3": "Curves are stored as drift [%] and horizontal force [kN]; envelopes and bilinear idealisations come as one file per loading direction.",
     "dropTitle": "Drop your submission folder here — or a zip, or CSV files",
     "dropText": "The specimens CSV, plus one file per specimen and response type, named after the specimen, in its folder: 02_fd_curve, 03_envelope, 04_bilinear_curve, and photos in 05_fig_setup to 08_fig_cracks. Files are matched by name; what cannot be placed is listed below for you to sort out.",
@@ -380,6 +515,16 @@
     },
     "downloadKit": "Download the starter kit",
     "noGuide": "No guide has been written for this database yet.",
-    "readme": "Modern Masonry Database — submission starter kit\n\nModernMasonryDatabase_EIA_Database.csv: one row per specimen, {n} columns. Leave N blank: the curator assigns it. The row for SW0.1 is an example; replace it.\n\nResponse files are named after the specimen and placed in the folder of their type:\n  02_fd_curve/fd_curve_{s}.csv\n  03_envelope/envelope_{s}_pos.csv and _neg.csv\n  04_bilinear_curve/bilinear_{s}_pos.csv and _neg.csv\n  05_fig_setup/ … 08_fig_cracks/fig_{k}_{s}.jpg\n\nCurves have two columns: drift [%], horizontal_force [kN].\nThe column definitions are in the data dictionary on the Documentation page."
+    "readme": "Modern Masonry Database — submission starter kit\n\nModernMasonryDatabase_EIA_Database.csv: one row per specimen, {n} columns. Leave N blank: the curator assigns it. The row for SW0.1 is an example; replace it.\n\nResponse files are named after the specimen and placed in the folder of their type:\n  02_fd_curve/fd_curve_{s}.csv\n  03_envelope/envelope_{s}_pos.csv and _neg.csv\n  04_bilinear_curve/bilinear_{s}_pos.csv and _neg.csv\n  05_fig_setup/ … 08_fig_cracks/fig_{k}_{s}.jpg\n\nCurves have two columns: drift [%], horizontal_force [kN].\nThe column definitions are in the data dictionary on the Documentation page.",
+    "p2": "Measured responses are separate files, one per specimen, named after the specimen they belong to ({file} for the specimen named SW0.1) and placed in the folder of their type. Drop the folder, a zip of it, or the files themselves: they are matched to the specimens by name."
+  },
+  "units": {
+    "plusMinus": "(+ / −)",
+    "kN": "{v} kN",
+    "MPa": "{v} MPa",
+    "mm": "{v} mm",
+    "percent": "{v} %",
+    "percentOf": "{n}%",
+    "percentSign": "%"
   }
 }

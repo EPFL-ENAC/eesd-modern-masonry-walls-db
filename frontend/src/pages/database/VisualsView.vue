@@ -7,7 +7,7 @@
         :aria-label="t('table.removeFilter', { filter: c.label })"
         @click="update(c.patch)"
       >
-        ×
+        <q-icon :name="matClose" />
       </button>
     </span>
     <button
@@ -28,7 +28,8 @@
         <div class="vis-key-title">{{ t('visuals.filtered') }}</div>
         <div class="epfl-keynumber">
           <div class="epfl-keynumber-num">
-            {{ filtered.length }}<span class="vis-unit"> / {{ rows.length }}</span>
+            {{ filtered.length
+            }}<span class="vis-unit"> {{ t('visuals.of', { n: rows.length }) }}</span>
           </div>
           <div class="epfl-keynumber-bar"></div>
           <div class="epfl-keynumber-label">
@@ -38,11 +39,14 @@
       </div>
       <div v-for="s in stats" :key="s.key">
         <div class="vis-key-title">
-          {{ t(`visuals.${s.key}`) }}, <FieldLabel :field="{ name: s.symbol, units: '' }" />
+          <i18n-t :keypath="`visuals.${s.key}`" tag="span" scope="global">
+            <template #symbol><FieldLabel :field="{ name: s.symbol, units: '' }" /></template>
+          </i18n-t>
         </div>
         <div class="epfl-keynumber">
           <div class="epfl-keynumber-num">
-            {{ s.n ? s.median.toFixed(2) : t('specimen.missing') }}<span class="vis-unit"> %</span>
+            {{ s.n ? s.median.toFixed(2) : t('specimen.missing')
+            }}<span class="vis-unit"> {{ t('units.percentSign') }}</span>
           </div>
           <div class="epfl-keynumber-bar"></div>
           <div class="epfl-keynumber-label">
@@ -71,7 +75,7 @@
       <figcaption class="vis-cap">
         <span class="vis-title">{{ t(`visuals.plots.${p.id}`) }}</span>
         <span class="vis-muted">
-          n = {{ data[i]!.points.length }}
+          {{ t('visuals.n', { n: data[i]!.points.length }) }}
           <template v-if="data[i]!.missingX">
             · <FieldLabel :field="p.x" /> {{ t('visuals.missing', { n: data[i]!.missingX }) }}
           </template>
@@ -107,6 +111,7 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
+import { matClose } from '@quasar/extras/material-icons'
 import { format, init } from 'echarts/core'
 import type { ECElementEvent, EChartsOption } from 'echarts'
 import { rows } from '../../api/dataset.ts'
@@ -221,7 +226,7 @@ async function exportSvg() {
 
 .vis-summary {
   gap: 1.25rem;
-  padding: 1.5rem 1.75rem;
+  padding: var(--space-4) 1.75rem;
 
   .section-label {
     margin: 0;
@@ -235,7 +240,7 @@ async function exportSvg() {
 }
 
 .vis-key-title {
-  margin-bottom: 0.5rem;
+  margin-bottom: var(--space-2);
   font-size: var(--fs-sm);
   color: var(--fg-muted);
 }
@@ -265,7 +270,7 @@ async function exportSvg() {
 
 .vis-group {
   display: inline-flex;
-  gap: 0.5rem;
+  gap: var(--space-2);
   align-items: center;
 }
 
@@ -289,7 +294,7 @@ async function exportSvg() {
 .vis-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 2rem 2.5rem;
+  gap: var(--gutter) 2.5rem;
 }
 
 .vis-fig {
@@ -302,10 +307,10 @@ async function exportSvg() {
 .vis-cap {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.5rem;
+  gap: var(--space-2);
   align-items: baseline;
   justify-content: space-between;
-  margin-bottom: 0.5rem;
+  margin-bottom: var(--space-2);
 }
 
 .vis-title {
@@ -316,7 +321,7 @@ async function exportSvg() {
 .vis-plot {
   display: grid;
   grid-template-columns: 1.25rem minmax(0, 1fr);
-  gap: 0.25rem;
+  gap: var(--space-1);
 }
 
 .vis-ytitle {
@@ -332,7 +337,7 @@ async function exportSvg() {
 }
 
 .vis-jitter {
-  margin-left: 0.25rem;
+  margin-left: var(--space-1);
 }
 
 .vis-xtitle {

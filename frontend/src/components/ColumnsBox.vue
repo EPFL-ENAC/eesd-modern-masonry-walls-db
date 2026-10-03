@@ -86,7 +86,7 @@ function toggle(of: Field[], show: boolean) {
   display: flex;
   flex-direction: column;
   gap: 0.375rem;
-  padding: 0.5rem 0 0.25rem 1.5rem;
+  padding: var(--space-2) 0 var(--space-1) var(--space-4);
   font-size: 0.8125rem;
 }
 </style>

@@ -17,11 +17,12 @@
         </div>
       </div>
       <div class="intro-keys">
-        <div v-for="k in keyNumbers" :key="k.label" class="epfl-keynumber">
-          <div class="epfl-keynumber-num">{{ k.value }}</div>
-          <div class="epfl-keynumber-bar"></div>
-          <div class="epfl-keynumber-label">{{ t(k.label) }}</div>
-        </div>
+        <EpflKeyNumber
+          v-for="k in keyNumbers"
+          :key="k.label"
+          :value="k.value"
+          :label="t(k.label)"
+        />
       </div>
     </section>
 
@@ -97,6 +98,7 @@ import type { EChartsOption } from 'echarts'
 import { fields, references, rows } from '../api/dataset.ts'
 import { VChart, darkTooltip } from '../charts/echarts.ts'
 import { FLOW_AXES, flows, nodeLabel, type Link } from '../charts/sankey.ts'
+import { EpflKeyNumber } from 'epfl-design-system/kits/vue'
 import DonutFigure from '../components/DonutFigure.vue'
 import { NA, counts, type Category } from '../lib/derive.ts'
 import { categoryToken, cssColor, cssVar } from '../lib/tokens.ts'
@@ -199,16 +201,16 @@ const flowOption = computed<EChartsOption>(() => {
 .intro {
   display: grid;
   grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
-  gap: 3rem;
+  gap: var(--space-5);
   align-items: end;
   padding-top: 4rem;
-  padding-bottom: 3rem;
+  padding-bottom: var(--space-5);
 }
 
 .intro-text {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: var(--space-3);
 }
 
 .intro-title {
@@ -226,8 +228,8 @@ const flowOption = computed<EChartsOption>(() => {
 .intro-ctas {
   display: flex;
   flex-wrap: wrap;
-  gap: 1rem;
-  margin-top: 0.5rem;
+  gap: var(--space-3);
+  margin-top: var(--space-2);
 }
 
 .intro-keys {
@@ -237,18 +239,18 @@ const flowOption = computed<EChartsOption>(() => {
 }
 
 .band {
-  padding-top: 2rem;
-  padding-bottom: 3rem;
+  padding-top: var(--gutter);
+  padding-bottom: var(--space-5);
   border-top: var(--border-w) solid var(--border-subtle);
 }
 
 .band-head {
   display: flex;
   flex-wrap: wrap;
-  gap: 1.5rem;
+  gap: var(--space-4);
   align-items: baseline;
   justify-content: space-between;
-  margin-bottom: 2rem;
+  margin-bottom: var(--gutter);
 }
 
 .band-title {
@@ -277,13 +279,13 @@ const flowOption = computed<EChartsOption>(() => {
 .donuts {
   display: grid;
   grid-template-columns: repeat(5, minmax(0, 1fr));
-  gap: 1.5rem;
+  gap: var(--space-4);
 }
 
 .flow-legend {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.5rem;
+  gap: var(--space-2);
   align-items: center;
 }
 
@@ -291,7 +293,7 @@ const flowOption = computed<EChartsOption>(() => {
   display: inline-flex;
   gap: 0.375rem;
   align-items: center;
-  padding: 0.25rem 0.625rem;
+  padding: var(--space-1) 0.625rem;
   font-size: 0.8125rem;
   border: var(--border-w) solid var(--epfl-gray-300);
   border-radius: var(--radius);
@@ -304,7 +306,7 @@ const flowOption = computed<EChartsOption>(() => {
 
 .flow-help {
   max-width: 47.5rem;
-  margin: -1.5rem 0 1.5rem;
+  margin: calc(-1 * var(--space-4)) 0 var(--space-4);
   color: var(--fg-muted);
 }
 

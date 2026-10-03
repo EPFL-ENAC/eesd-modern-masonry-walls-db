@@ -71,7 +71,7 @@
           <table class="glossary">
             <thead>
               <tr>
-                <th scope="col">#</th>
+                <th scope="col">{{ t('docs.col.n') }}</th>
                 <th scope="col">{{ t('docs.col.field') }}</th>
                 <th scope="col">{{ t('docs.col.unit') }}</th>
                 <th scope="col">{{ t('docs.col.definition') }}</th>
@@ -81,7 +81,9 @@
               <tr v-for="e in c.entries" :key="e.n">
                 <td class="glossary-n">{{ e.n }}</td>
                 <th scope="row" class="glossary-field">
-                  <FieldLabel :field="e.field" /><template v-if="e.pair"> + / −</template>
+                  <FieldLabel :field="e.field" /><template v-if="e.pair">
+                    {{ t('docs.pair') }}</template
+                  >
                 </th>
                 <td class="docs-muted">{{ e.field.units }}</td>
                 <td>
@@ -211,21 +213,21 @@ onBeforeUnmount(() => observer?.disconnect())
   display: grid;
   grid-template-columns: 13rem minmax(0, 1fr);
   gap: 4rem;
-  padding-top: 3rem;
+  padding-top: var(--space-5);
   padding-bottom: 4rem;
 }
 
 .toc {
   position: sticky;
-  top: 2rem;
+  top: var(--gutter);
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: var(--space-2);
   align-self: start;
   font-size: var(--fs-sm);
 
   .epfl-btn {
-    margin-top: 1rem;
+    margin-top: var(--space-3);
   }
 
   ul {
@@ -236,7 +238,7 @@ onBeforeUnmount(() => observer?.disconnect())
 
   a:not(.epfl-btn) {
     display: block;
-    padding: 0.25rem 0 0.25rem 0.75rem;
+    padding: var(--space-1) 0 var(--space-1) 0.75rem;
     color: var(--fg);
     text-decoration: none;
     border-left: 0.125rem solid transparent;
@@ -248,7 +250,7 @@ onBeforeUnmount(() => observer?.disconnect())
   }
 
   .toc-sub {
-    padding-left: 1.5rem;
+    padding-left: var(--space-4);
     font-size: 0.75rem;
     color: var(--fg-muted);
   }
@@ -263,21 +265,21 @@ onBeforeUnmount(() => observer?.disconnect())
 .docs-main {
   display: flex;
   flex-direction: column;
-  gap: 3rem;
+  gap: var(--space-5);
   max-width: 62rem;
 }
 
 .docs-section {
-  scroll-margin-top: 1rem;
+  scroll-margin-top: var(--space-3);
 }
 
 .docs-title {
-  margin: 0 0 1rem;
+  margin: 0 0 var(--space-3);
 }
 
 .docs-lead {
   max-width: 47.5rem;
-  margin: 0 0 1rem;
+  margin: 0 0 var(--space-3);
   font-size: var(--fs-lead);
   font-weight: var(--w-light);
   line-height: 1.5;
@@ -290,7 +292,7 @@ onBeforeUnmount(() => observer?.disconnect())
 }
 
 .docs-h2 {
-  margin: 0 0 0.5rem;
+  margin: 0 0 var(--space-2);
   font-size: var(--fs-h3);
   font-weight: var(--w-bold);
 }
@@ -304,8 +306,8 @@ onBeforeUnmount(() => observer?.disconnect())
 .folder {
   display: flex;
   flex-direction: column;
-  gap: 0.25rem;
-  padding: 0.75rem 1rem;
+  gap: var(--space-1);
+  padding: 0.75rem var(--space-3);
   border-right: var(--border-w) solid var(--border-subtle);
   border-bottom: var(--border-w) solid var(--border-subtle);
 
@@ -322,10 +324,10 @@ onBeforeUnmount(() => observer?.disconnect())
 .glossary-head {
   display: flex;
   flex-wrap: wrap;
-  gap: 1rem;
+  gap: var(--space-3);
   align-items: flex-end;
   justify-content: space-between;
-  margin-bottom: 1.5rem;
+  margin-bottom: var(--space-4);
 }
 
 .glossary-filter {
@@ -338,12 +340,12 @@ onBeforeUnmount(() => observer?.disconnect())
 }
 
 .glossary-cat {
-  margin-bottom: 2rem;
-  scroll-margin-top: 1rem;
+  margin-bottom: var(--gutter);
+  scroll-margin-top: var(--space-3);
 }
 
 .glossary-cat-title {
-  margin: 0 0 0.5rem;
+  margin: 0 0 var(--space-2);
   font-size: 1rem;
   font-weight: var(--w-normal);
   text-transform: uppercase;
@@ -356,7 +358,7 @@ onBeforeUnmount(() => observer?.disconnect())
   border-collapse: collapse;
 
   thead th {
-    padding: 0.5rem;
+    padding: var(--space-2);
     font-size: 0.75rem;
     font-weight: var(--w-normal);
     color: var(--fg-muted);
@@ -366,7 +368,7 @@ onBeforeUnmount(() => observer?.disconnect())
 
   td,
   tbody th {
-    padding: 0.625rem 0.5rem;
+    padding: 0.625rem var(--space-2);
     text-align: left;
     vertical-align: top;
     border-bottom: var(--border-w) solid var(--border-subtle);
@@ -385,7 +387,7 @@ onBeforeUnmount(() => observer?.disconnect())
 }
 
 .code {
-  padding: 0 0.25rem;
+  padding: 0 var(--space-1);
   font-size: 0.75rem;
   font-weight: var(--w-bold);
   border: var(--border-w) solid var(--epfl-gray-300);

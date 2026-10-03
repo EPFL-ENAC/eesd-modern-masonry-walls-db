@@ -50,13 +50,13 @@ const specimen = computed(() => byN.get(Number(route.query.specimen)))
   flex-direction: column;
   gap: 1.25rem;
   min-width: 0;
-  padding: 1.5rem var(--gutter) 3rem;
+  padding: var(--space-4) var(--gutter) var(--space-5);
 }
 
 .db-head {
   display: flex;
   flex-wrap: wrap;
-  gap: 1.5rem;
+  gap: var(--space-4);
   align-items: flex-end;
   justify-content: space-between;
   border-bottom: var(--border-w) solid var(--border-subtle);
@@ -84,7 +84,7 @@ const specimen = computed(() => byN.get(Number(route.query.specimen)))
 
 .db-toolbar {
   display: flex;
-  gap: 0.5rem;
+  gap: var(--space-2);
   padding-bottom: 0.625rem;
 }
 

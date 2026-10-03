@@ -1,4 +1,6 @@
-import { readFileSync } from 'node:fs'
+import { cpSync, mkdtempSync, readFileSync, writeFileSync } from 'node:fs'
+import { tmpdir } from 'node:os'
+import { join } from 'node:path'
 import { describe, expect, it } from 'vitest'
 import { parseCsv } from '../src/lib/csv.ts'
 import { counts, derive, medianIqr, type Row } from '../src/lib/derive.ts'
@@ -80,6 +82,18 @@ describe('committed JSON', () => {
   it('is what `pnpm convert` writes today', () => {
     const fresh = convert(new URL('../public/data', import.meta.url).pathname)
     expect(JSON.parse(JSON.stringify(fresh))).toEqual({ specimens, fields, references, meta })
+  })
+
+  it('rejects a CSV exported without its UTF-8 BOM (Windows Excel needs it)', () => {
+    const dir = mkdtempSync(join(tmpdir(), 'mmdb-'))
+    // CSVs and folders only: the BOM check comes before any file lookup.
+    cpSync(new URL('../public/data', import.meta.url).pathname, dir, {
+      recursive: true,
+      filter: (src) => !/\.jpe?g$/i.test(src)
+    })
+    const path = join(dir, 'ModernMasonryDatabase_EIA_Fields.csv')
+    writeFileSync(path, readFileSync(path, 'utf8').replace(/^\uFEFF/, ''))
+    expect(() => convert(dir)).toThrow(/no UTF-8 BOM/)
   })
 
   it('has 47 fields and 25 references', () => {

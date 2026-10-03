@@ -117,8 +117,8 @@ function setBound(key: RangeKey, end: 'min' | 'max', e: Event) {
 .filters {
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
-  padding: 2rem 1.5rem;
+  gap: var(--space-4);
+  padding: var(--gutter) var(--space-4);
   border-right: var(--border-w) solid var(--border-subtle);
 }
 
@@ -147,7 +147,7 @@ function setBound(key: RangeKey, end: 'min' | 'max', e: Event) {
 .filters-group {
   display: flex;
   flex-direction: column;
-  gap: 0.25rem;
+  gap: var(--space-1);
   min-width: 0;
   margin: 0;
   padding: 0;
@@ -155,7 +155,7 @@ function setBound(key: RangeKey, end: 'min' | 'max', e: Event) {
 }
 
 .filters-group-title {
-  margin: 0 0 0.25rem;
+  margin: 0 0 var(--space-1);
   padding: 0;
   font-size: 0.8125rem;
   font-weight: var(--w-bold);
@@ -168,7 +168,7 @@ function setBound(key: RangeKey, end: 'min' | 'max', e: Event) {
 
   summary {
     display: flex;
-    gap: 0.5rem;
+    gap: var(--space-2);
     align-items: center;
     padding: 0.375rem 0;
     font-size: 0.9375rem;
@@ -201,13 +201,13 @@ function setBound(key: RangeKey, end: 'min' | 'max', e: Event) {
 .filters-options {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: var(--space-2);
   padding: 0.375rem 0 0 1.25rem;
 }
 
 .filters-option {
   display: flex;
-  gap: 0.5rem;
+  gap: var(--space-2);
   align-items: center;
   font-size: var(--fs-sm);
 
@@ -230,7 +230,7 @@ function setBound(key: RangeKey, end: 'min' | 'max', e: Event) {
 .filters-range {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 0.5rem;
+  gap: var(--space-2);
   padding: 0.375rem 0 0 1.25rem;
   font-size: 0.75rem;
   color: var(--fg-muted);
@@ -240,8 +240,8 @@ function setBound(key: RangeKey, end: 'min' | 'max', e: Event) {
   box-sizing: border-box;
   display: block;
   width: 100%;
-  margin-top: 0.25rem;
-  padding: 0.375rem 0.5rem;
+  margin-top: var(--space-1);
+  padding: 0.375rem var(--space-2);
   font: inherit;
   font-size: var(--fs-sm);
   color: var(--fg);

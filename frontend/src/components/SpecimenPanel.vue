@@ -141,7 +141,7 @@ async function downloadAll() {
   display: flex;
   flex-direction: column;
   gap: 0.375rem;
-  padding: 1rem 1.25rem;
+  padding: var(--space-3) 1.25rem;
   border-right: var(--border-w) solid var(--border-subtle);
 }
 
@@ -173,7 +173,7 @@ async function downloadAll() {
   display: inline-flex;
   gap: 0.375rem;
   align-items: center;
-  padding: 0.25rem 0.625rem;
+  padding: var(--space-1) 0.625rem;
   font: inherit;
   font-size: 0.8125rem;
   color: var(--fg);
@@ -185,7 +185,7 @@ async function downloadAll() {
 
 .panel-actions {
   flex-direction: row;
-  gap: 0.5rem;
+  gap: var(--space-2);
   align-items: center;
   border-right: 0;
 }
@@ -205,7 +205,7 @@ async function downloadAll() {
 
 .panel-error {
   margin: 0;
-  padding: 0.5rem 1.25rem;
+  padding: var(--space-2) 1.25rem;
   font-size: 0.75rem;
   color: var(--danger);
 }
@@ -213,14 +213,14 @@ async function downloadAll() {
 .panel-tabs {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.5rem;
+  gap: var(--space-2);
   padding: 0 1.25rem;
   border-bottom: var(--border-w) solid var(--border-subtle);
 }
 
 .panel-tab {
   margin: 0 1.25rem calc(-1 * var(--border-w)) 0;
-  padding: 1rem 0.25rem 0.8125rem;
+  padding: var(--space-3) var(--space-1) 0.8125rem;
   font: inherit;
   font-size: 0.9375rem;
   font-weight: var(--w-bold);
@@ -237,7 +237,7 @@ async function downloadAll() {
 }
 
 .panel-body {
-  padding: 1.5rem 1.25rem;
+  padding: var(--space-4) 1.25rem;
 }
 
 @media (width <= 64rem) {

@@ -16,28 +16,22 @@
 
     <section aria-labelledby="sis-h" class="others-section">
       <h2 id="sis-h" class="others-h2">{{ t('others.sisters') }}</h2>
-      <div class="sisters">
-        <!-- The DS distinction-card pattern in own markup (red flag, red top rule on the first two, HANDOFF §4.5): the DS card markup could not be checked here. -->
-        <a
-          v-for="s in others.sisters"
-          :key="s.url"
-          :href="s.url"
-          class="sister"
-          :class="{ flagged: s.flag }"
-        >
-          <span v-if="s.flag" class="sister-flag" aria-hidden="true" />
-          <span class="sister-kind">{{ s.kind }}</span>
-          <span class="sister-title">{{ s.title }}</span>
-          <span class="sister-text">{{ s.text }}</span>
-          <span class="sister-host">{{ s.host }}</span>
+      <!-- DS card kit; distinction (red flag and rule) on the first two (HANDOFF §4.5).
+           EpflCard is an <article> without a link, so each one sits in an <a>. -->
+      <EpflCardDeck>
+        <a v-for="(c, i) in cards" :key="c.url" :href="c.url" class="card-link">
+          <EpflCard :category="c.kind" :title="c.title" :distinction="i < 2">
+            {{ c.text }}
+            <strong class="card-host">{{ c.host }}</strong>
+          </EpflCard>
         </a>
-      </div>
+      </EpflCardDeck>
     </section>
 
     <section aria-labelledby="ds-h" class="others-section">
       <h2 id="ds-h" class="others-h2">{{ t('others.datasets') }}</h2>
       <div class="datasets">
-        <div v-for="g in others.datasets" :key="g.title">
+        <div v-for="g in groups" :key="g.title">
           <h3 class="section-label datasets-title">{{ g.title }}</h3>
           <a v-for="l in g.links" :key="l.url" :href="l.url" class="dataset">
             <span class="dataset-title">{{ l.title }}</span>
@@ -52,10 +46,23 @@
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n'
 import { matOpenInNew } from '@quasar/extras/material-icons'
-import others from '../assets/others.json'
+import { EpflCard, EpflCardDeck } from 'epfl-design-system/kits/vue'
 
-const { t } = useI18n()
+const { t, tm, rt } = useI18n()
 const EESD_DATA = 'https://www.epfl.ch/labs/eesd/data_sets/'
+
+// Copied from the EESD data sets page on 2026-10-02 (HANDOFF §4.5); edit in en.json.
+type Message = Parameters<typeof rt>[0]
+type Link = { title: string; host: string; url: string }
+const read = <T extends object>(o: object) =>
+  Object.fromEntries(Object.entries(o).map(([k, v]) => [k, rt(v as Message)])) as T
+const cards = (tm('others.cards') as object[]).map((c) =>
+  read<Link & { kind: string; text: string }>(c)
+)
+const groups = (tm('others.groups') as { title: Message; links: object[] }[]).map((g) => ({
+  title: rt(g.title),
+  links: g.links.map((l) => read<Link>(l))
+}))
 </script>
 
 <style scoped lang="scss">
@@ -64,20 +71,20 @@ const EESD_DATA = 'https://www.epfl.ch/labs/eesd/data_sets/'
   flex-direction: column;
   gap: 4rem;
   padding-top: 4rem;
-  padding-bottom: 6rem;
+  padding-bottom: var(--space-6);
 }
 
 .others-intro {
   display: grid;
   grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
-  gap: 3rem;
+  gap: var(--space-5);
   align-items: end;
 }
 
 .others-text {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: var(--space-3);
 }
 
 .others-title {
@@ -99,7 +106,7 @@ const EESD_DATA = 'https://www.epfl.ch/labs/eesd/data_sets/'
 .others-section {
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  gap: var(--space-4);
 }
 
 .others-h2 {
@@ -109,78 +116,30 @@ const EESD_DATA = 'https://www.epfl.ch/labs/eesd/data_sets/'
   line-height: 1.35;
 }
 
-.sisters {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: var(--gutter);
-}
-
-.sister {
-  position: relative;
+.card-link {
   display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-  padding: 1.8rem 1.35rem 1.35rem;
-  color: var(--fg);
+  color: inherit;
   text-decoration: none;
-  border: var(--border-w) solid var(--border-subtle);
 
-  &.flagged {
-    border-top-color: var(--primary);
-  }
-
-  &:hover {
-    border-color: var(--border-strong);
-
-    .sister-title {
-      color: var(--primary);
-    }
+  > .epfl-card {
+    flex: 1;
   }
 }
 
-.sister-flag {
-  position: absolute;
-  top: 0;
-  left: 1.35rem;
-  width: 1.25rem;
-  height: 1.875rem;
-  background: var(--primary);
-  clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 65%, 0 100%);
-}
-
-.sister-kind {
+.card-host {
+  display: block;
+  margin-top: var(--space-3);
   font-size: var(--fs-sm);
-  color: var(--fg-muted);
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-}
-
-.sister-title {
-  font-size: 1.25rem;
-  font-weight: var(--w-bold);
-  line-height: 1.3;
-}
-
-.sister-text {
-  font-size: 0.9375rem;
-  line-height: 1.5;
-}
-
-.sister-host {
-  margin-top: auto;
-  padding-top: 0.75rem;
-  font-size: var(--fs-sm);
-  font-weight: var(--w-bold);
 }
 
 .datasets {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 3rem;
+  gap: var(--space-5);
 }
 
 .datasets-title {
-  margin: 0 0 0.25rem;
+  margin: 0 0 var(--space-1);
   padding-bottom: 0.625rem;
   border-bottom: var(--border-w) solid var(--fg);
 }
@@ -188,7 +147,7 @@ const EESD_DATA = 'https://www.epfl.ch/labs/eesd/data_sets/'
 .dataset {
   display: grid;
   grid-template-columns: minmax(0, 1fr) 10rem;
-  gap: 1.5rem;
+  gap: var(--space-4);
   align-items: baseline;
   padding: 0.875rem 0;
   color: var(--fg);
@@ -211,8 +170,8 @@ const EESD_DATA = 'https://www.epfl.ch/labs/eesd/data_sets/'
 
 @media (width <= 64rem) {
   .others-intro,
-  .sisters,
-  .datasets {
+  .datasets,
+  .epfl-card-deck {
     grid-template-columns: minmax(0, 1fr);
   }
 

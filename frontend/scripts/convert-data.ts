@@ -2,13 +2,13 @@
  * public/data/*.csv → src/assets/data/*.json (`pnpm convert`).
  *
  * Fails loudly on anything that would otherwise show up as a silent gap in the
- * app: a lossy (non-UTF-8) export, a column with no Fields row, a reference ID
+ * app: a lossy (non-UTF-8) or BOM-less export, a column with no Fields row, a reference ID
  * with no entry, a file for an unknown specimen, a flag without its file.
  */
 import { readdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { parseCsv } from '../src/lib/csv.ts'
+import { BOM, parseCsv } from '../src/lib/csv.ts'
 import type { Dataset, Field, Meta, Reference, Specimen } from '../src/api/types.ts'
 
 const FOLDERS = [
@@ -26,7 +26,12 @@ const FLAGS: Record<string, string> = {
   'Crack measurements': '08_fig_cracks'
 }
 
-const read = (dir: string, path: string) => parseCsv(readFileSync(join(dir, path), 'utf8'))
+/** Excel's "CSV UTF-8" starts with a BOM; Windows Excel needs it to show σ, δ, μ from /data. */
+function read(dir: string, path: string) {
+  const text = readFileSync(join(dir, path), 'utf8')
+  if (!text.startsWith(BOM)) fail(`${path} has no UTF-8 BOM: export it from Excel as "CSV UTF-8"`)
+  return parseCsv(text)
+}
 const nullable = (s: string | undefined) => (s === undefined || s === '' || s === 'NaN' ? null : s)
 
 function fail(message: string): never {
