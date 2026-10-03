@@ -10,6 +10,7 @@ import { join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { BOM, parseCsv } from '../src/lib/csv.ts'
 import type { Dataset, Field, Meta, Reference, Specimen } from '../src/api/types.ts'
+import { isVariant, missingVariants } from '../src/lib/photos.ts'
 
 const FOLDERS = [
   '02_fd_curve',
@@ -98,9 +99,13 @@ function readMeta(dir: string): Meta {
 /** N → dataset paths present, from the file names (fd_curve_0189.csv, envelope_0189_pos.csv…). */
 function scanFiles(dir: string, known: Set<number>): Map<number, string[]> {
   const files = new Map<number, string[]>()
+  const all: string[] = []
   for (const folder of FOLDERS) {
     for (const name of readdirSync(join(dir, folder)).sort()) {
       if (name.startsWith('.')) continue
+      all.push(`${folder}/${name}`)
+      // Photo web versions are served, not dataset files: no specimen entry, no download.
+      if (isVariant(name)) continue
       const m =
         /_(\d{4})(?:_(?:pos|neg))?\.\w+$/.exec(name) ??
         fail(`${folder}/${name}: no specimen number`)
@@ -109,6 +114,11 @@ function scanFiles(dir: string, known: Set<number>): Map<number, string[]> {
       files.set(N, [...(files.get(N) ?? []), `${folder}/${name}`])
     }
   }
+  const missing = missingVariants(all)
+  if (missing.length)
+    fail(
+      `${missing.length} photo web versions missing, e.g. ${missing[0]}: run \`pnpm optimize-images\``
+    )
   return files
 }
 

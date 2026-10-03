@@ -5,9 +5,12 @@
         <figcaption class="fig-title">{{ t(`specimen.gallery.${fig.key}`) }}</figcaption>
         <button v-if="fig.path" type="button" class="fig-open" @click="enlarge(fig.path, fig.key)">
           <img
-            :src="fileUrl(fig.path)"
+            :src="photoUrl(fig.path, 512)"
+            :srcset="`${photoUrl(fig.path, 512)} 512w, ${photoUrl(fig.path, 1920)} 1920w`"
+            sizes="(width <= 64rem) 100vw, 25vw"
             :alt="t(`specimen.gallery.${fig.key}Alt`, { name: row.specimen })"
             class="fig-img"
+            loading="lazy"
           />
         </button>
         <!-- Missing photo: dashed placeholder with the expected file name (HANDOFF §5.2). -->
@@ -19,7 +22,7 @@
     </figure>
 
     <dialog ref="dialog" class="fig-dialog" @click.self="dialog?.close()">
-      <img v-if="big" :src="fileUrl(big.path)" :alt="big.alt" />
+      <img v-if="big" :src="photoUrl(big.path, 1920)" :alt="big.alt" />
       <button
         type="button"
         class="epfl-btn epfl-btn-secondary epfl-btn-sm"
@@ -34,7 +37,7 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { fileUrl } from '../../api/dataset.ts'
+import { photoUrl } from '../../api/dataset.ts'
 import type { Row } from '../../lib/derive.ts'
 import { pad } from '../../lib/download.ts'
 import FieldRows from './FieldRows.vue'
