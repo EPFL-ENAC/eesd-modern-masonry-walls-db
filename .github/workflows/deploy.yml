@@ -23,9 +23,8 @@ jobs:
     permissions:
       contents: read
       packages: write
-    # EPFL-ENAC/epfl-enac-build-push-deploy-action#33 (merged, not yet released): pulls
-    # LFS from the .lfsconfig server. Replace the commit with its release tag.
-    uses: EPFL-ENAC/epfl-enac-build-push-deploy-action/.github/workflows/deploy.yml@6ca7d164bcbe41fc81a72c4fabf411a5857c7dcd
+    # v3.11.0+: pulls LFS from the server named in .lfsconfig (ENAC-IT's).
+    uses: EPFL-ENAC/epfl-enac-build-push-deploy-action/.github/workflows/deploy.yml@v3.11.0
     secrets:
       token: ${{ secrets.CD_TOKEN }}
       # ENAC-IT Git LFS server, full-access token (Infisical epfl-enac/git-lfs):
