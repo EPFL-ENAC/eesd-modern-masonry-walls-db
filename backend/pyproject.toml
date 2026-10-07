@@ -1,6 +1,6 @@
 [project]
 name = "modernmasonrydatabase"
-version = "0.0.0"
+version = "0.1.0"
 description = "EESD Modern Masonry Walls DB backend"
 license = { text = "GPL-3.0-or-later" }
 readme = "README.md"
