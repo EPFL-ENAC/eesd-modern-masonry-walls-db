@@ -1,5 +1,7 @@
 # Not a workspace: pnpm 10+ reads its settings from this file.
 allowBuilds:
+  # sass's optional file watcher: prebuilt binaries ship as optional deps.
+  '@parcel/watcher': false
   esbuild: true # checks the platform binary shipped as an optional dep
 
 verifyDepsBeforeRun: warn

@@ -1,0 +1,378 @@
+[
+ {
+  "n": 1,
+  "category": "I",
+  "categoryName": "General Information",
+  "name": "N",
+  "units": "[-]",
+  "definition": "Number of test/specimen"
+ },
+ {
+  "n": 2,
+  "category": "I",
+  "categoryName": "General Information",
+  "name": "Reference",
+  "units": "[-]",
+  "definition": "Literature reference of the campaign"
+ },
+ {
+  "n": 3,
+  "category": "I",
+  "categoryName": "General Information",
+  "name": "Specimen name",
+  "units": "[-]",
+  "definition": "Name of the test unit, in the original reference"
+ },
+ {
+  "n": 4,
+  "category": "II",
+  "categoryName": "Wall Characteristics",
+  "name": "Unit type",
+  "units": "[-]",
+  "definition": "HC (Hollow Clay), AAC (Autoclaved Aerated Concrete), CS (Calcium Silicate), LAC (Lightweight Aggregate Concrete), SB-C (Solid Brick Clay), SB-CS (Solid Brick Calcium Silicate), CB (Concrete Brick), HCB (Hollow Concrete Block)"
+ },
+ {
+  "n": 5,
+  "category": "II",
+  "categoryName": "Wall Characteristics",
+  "name": "N° courses",
+  "units": "[-]",
+  "definition": "Number of unit courses"
+ },
+ {
+  "n": 6,
+  "category": "II",
+  "categoryName": "Wall Characteristics",
+  "name": "H",
+  "units": "[m]",
+  "definition": "Height of the specimen"
+ },
+ {
+  "n": 7,
+  "category": "II",
+  "categoryName": "Wall Characteristics",
+  "name": "L",
+  "units": "[m]",
+  "definition": "Length of the specimen"
+ },
+ {
+  "n": 8,
+  "category": "II",
+  "categoryName": "Wall Characteristics",
+  "name": "t",
+  "units": "[m]",
+  "definition": "Thickness of the specimen"
+ },
+ {
+  "n": 9,
+  "category": "II",
+  "categoryName": "Wall Characteristics",
+  "name": "Bed Joints",
+  "units": "[-]",
+  "definition": "GP (General Purpose), TL (Thin Layer)"
+ },
+ {
+  "n": 10,
+  "category": "II",
+  "categoryName": "Wall Characteristics",
+  "name": "Head Joints",
+  "units": "[-]",
+  "definition": "F (Filled), TF (Thin Filled), MP (Mortar Pocket), UTG (Unfilled, Tongue and Groove), U (Unfilled)"
+ },
+ {
+  "n": 11,
+  "category": "III",
+  "categoryName": "Material Properties",
+  "name": "Void Ratio",
+  "units": "[%]",
+  "definition": "Percentage of voids"
+ },
+ {
+  "n": 12,
+  "category": "III",
+  "categoryName": "Material Properties",
+  "name": "lb",
+  "units": "[mm]",
+  "definition": "Average length of the unit"
+ },
+ {
+  "n": 13,
+  "category": "III",
+  "categoryName": "Material Properties",
+  "name": "wb",
+  "units": "[mm]",
+  "definition": "Average width of the unit"
+ },
+ {
+  "n": 14,
+  "category": "III",
+  "categoryName": "Material Properties",
+  "name": "hb",
+  "units": "[mm]",
+  "definition": "Average height of the unit"
+ },
+ {
+  "n": 15,
+  "category": "III",
+  "categoryName": "Material Properties",
+  "name": "fb,Ʇ",
+  "units": "[MPa]",
+  "definition": "Mean compressive strength of units in the direction perpendicular to bed joint"
+ },
+ {
+  "n": 16,
+  "category": "III",
+  "categoryName": "Material Properties",
+  "name": "fb,norm,Ʇ",
+  "units": "[MPa]",
+  "definition": "Normalised compressive strength of units in the direction perpendicular to bed joint"
+ },
+ {
+  "n": 17,
+  "category": "III",
+  "categoryName": "Material Properties",
+  "name": "fb,ǁ",
+  "units": "[MPa]",
+  "definition": "Mean compressive strength of units in the direction parallel to bed joint"
+ },
+ {
+  "n": 18,
+  "category": "III",
+  "categoryName": "Material Properties",
+  "name": "fb,norm,ǁ",
+  "units": "[MPa]",
+  "definition": "Normalised compressive strength of units in the direction parallel to bed joint"
+ },
+ {
+  "n": 19,
+  "category": "III",
+  "categoryName": "Material Properties",
+  "name": "fmo",
+  "units": "[MPa]",
+  "definition": "Mean compressive strength of mortar"
+ },
+ {
+  "n": 20,
+  "category": "III",
+  "categoryName": "Material Properties",
+  "name": "fm,c",
+  "units": "[MPa]",
+  "definition": "Mean compressive strength of masonry"
+ },
+ {
+  "n": 21,
+  "category": "III",
+  "categoryName": "Material Properties",
+  "name": "fm,t",
+  "units": "[MPa]",
+  "definition": "Mean diagonal tensile strength of masonry"
+ },
+ {
+  "n": 22,
+  "category": "III",
+  "categoryName": "Material Properties",
+  "name": "Emo",
+  "units": "[MPa]",
+  "definition": "Elastic modulus of mortar"
+ },
+ {
+  "n": 23,
+  "category": "III",
+  "categoryName": "Material Properties",
+  "name": "Em",
+  "units": "[MPa]",
+  "definition": "Elastic modulus of masonry"
+ },
+ {
+  "n": 24,
+  "category": "III",
+  "categoryName": "Material Properties",
+  "name": "Gm",
+  "units": "[MPa]",
+  "definition": "Shear modulus of masonry"
+ },
+ {
+  "n": 25,
+  "category": "III",
+  "categoryName": "Material Properties",
+  "name": "fv0",
+  "units": "[MPa]",
+  "definition": "Initial shear strength of masonry"
+ },
+ {
+  "n": 26,
+  "category": "III",
+  "categoryName": "Material Properties",
+  "name": "μ",
+  "units": "[-]",
+  "definition": "Friction coefficient of masonry"
+ },
+ {
+  "n": 27,
+  "category": "IV",
+  "categoryName": "Test setup",
+  "name": "H0/H",
+  "units": "[-]",
+  "definition": "Shear span ratio (ratio of height of zero moment to specimen height)"
+ },
+ {
+  "n": 28,
+  "category": "IV",
+  "categoryName": "Test setup",
+  "name": "σ0",
+  "units": "[MPa]",
+  "definition": "Compressive axial stress (total axial load divided by gross cross section of the specimen)"
+ },
+ {
+  "n": 29,
+  "category": "V",
+  "categoryName": "Force-displacement response",
+  "name": "F-d data",
+  "units": "[-]",
+  "definition": "Availability of displacement vs force curve: Yes (full curve, envelope, extracted from graph), No"
+ },
+ {
+  "n": 30,
+  "category": "V",
+  "categoryName": "Force-displacement response",
+  "name": "Failure mode",
+  "units": "[-]",
+  "definition": "S (Shear), F (Flexure), H- (Hybrid followed by two main mechanisms), G (gaping), SL (Sliding), D (uncertain)"
+ },
+ {
+  "n": 31,
+  "category": "V",
+  "categoryName": "Force-displacement response",
+  "name": "δcr+",
+  "units": "[%]",
+  "definition": "Drift at onset of cracking in the positive direction"
+ },
+ {
+  "n": 32,
+  "category": "V",
+  "categoryName": "Force-displacement response",
+  "name": "δcr-",
+  "units": "[%]",
+  "definition": "Drift at onset of cracking in the negative direction"
+ },
+ {
+  "n": 33,
+  "category": "V",
+  "categoryName": "Force-displacement response",
+  "name": "δVmax+",
+  "units": "[%]",
+  "definition": "Drift at maximum shear force in the positive direction"
+ },
+ {
+  "n": 34,
+  "category": "V",
+  "categoryName": "Force-displacement response",
+  "name": "δVmax-",
+  "units": "[%]",
+  "definition": "Drift at maximum shear force in the negative direction"
+ },
+ {
+  "n": 35,
+  "category": "V",
+  "categoryName": "Force-displacement response",
+  "name": "Vmax+",
+  "units": "[kN]",
+  "definition": "Maximum shear force in the positive direction"
+ },
+ {
+  "n": 36,
+  "category": "V",
+  "categoryName": "Force-displacement response",
+  "name": "Vmax-",
+  "units": "[kN]",
+  "definition": "Maximum shear force in the negative direction"
+ },
+ {
+  "n": 37,
+  "category": "V",
+  "categoryName": "Force-displacement response",
+  "name": "δmax+",
+  "units": "[%]",
+  "definition": "Maximum drift recorded in the positive direction"
+ },
+ {
+  "n": 38,
+  "category": "V",
+  "categoryName": "Force-displacement response",
+  "name": "δmax-",
+  "units": "[%]",
+  "definition": "Maximum drift recorded in the negative direction"
+ },
+ {
+  "n": 39,
+  "category": "V",
+  "categoryName": "Force-displacement response",
+  "name": "Vδmax+",
+  "units": "[kN]",
+  "definition": "Shear force at maximum drift recorded in the positive direction"
+ },
+ {
+  "n": 40,
+  "category": "V",
+  "categoryName": "Force-displacement response",
+  "name": "Vδmax-",
+  "units": "[kN]",
+  "definition": "Shear force at maximum drift recorded in the negative direction"
+ },
+ {
+  "n": 41,
+  "category": "VI",
+  "categoryName": "Bilinear idealisation",
+  "name": "Vbil+",
+  "units": "[kN]",
+  "definition": "Shear force of the bilinear curve's plateau in the positive direction"
+ },
+ {
+  "n": 42,
+  "category": "VI",
+  "categoryName": "Bilinear idealisation",
+  "name": "Vbil-",
+  "units": "[kN]",
+  "definition": "Shear force of the bilinear curve's plateau in the negative direction"
+ },
+ {
+  "n": 43,
+  "category": "VI",
+  "categoryName": "Bilinear idealisation",
+  "name": "δe+",
+  "units": "[%]",
+  "definition": "Yielding drift in the positive direction"
+ },
+ {
+  "n": 44,
+  "category": "VI",
+  "categoryName": "Bilinear idealisation",
+  "name": "δe-",
+  "units": "[%]",
+  "definition": "Yielding drift in the negative direction"
+ },
+ {
+  "n": 45,
+  "category": "VI",
+  "categoryName": "Bilinear idealisation",
+  "name": "δu+",
+  "units": "[%]",
+  "definition": "Ultimate drift in the positive direction"
+ },
+ {
+  "n": 46,
+  "category": "VI",
+  "categoryName": "Bilinear idealisation",
+  "name": "δu-",
+  "units": "[%]",
+  "definition": "Ultimate drift in the negative direction"
+ },
+ {
+  "n": 47,
+  "category": "VII",
+  "categoryName": "Cracks",
+  "name": "Crack measurements",
+  "units": "[-]",
+  "definition": "Crack measurements reported, specifying the method used:  Yes (DIC, deep learning, fractal, etc), No"
+ }
+]
