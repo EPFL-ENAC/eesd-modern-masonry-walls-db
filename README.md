@@ -23,10 +23,14 @@ make lint       # ruff (pre-commit) + ESLint + stylelint
 ### Updating the dataset
 
 1. Replace the files in `frontend/public/data/`. Export CSVs from Excel as
-   **CSV UTF-8**: a plain CSV export loses σ, δ and μ, and the converter rejects it.
-2. `make -C frontend convert` rewrites `frontend/src/assets/data/*.json` and
-   fails if the database and the files on disk disagree.
-3. `make test`, then commit the CSVs and the JSON together.
+   **CSV UTF-8** (with its BOM): a plain CSV export loses σ, δ and μ, and the
+   converter rejects it.
+2. New or changed photos: `make -C frontend optimize-images` writes their web
+   versions (`<name>-512.webp`, `<name>-1920.webp`, git-lfs) beside them. The
+   site shows these; downloads keep the originals.
+3. `make -C frontend convert` rewrites `frontend/src/assets/data/*.json` and
+   fails if the database and the files on disk disagree, or a web version is missing.
+4. `make test`, then commit the CSVs, photos, web versions and JSON together.
 
 Commits follow [Conventional Commits](https://www.conventionalcommits.org)
 (checked by commitlint through lefthook).
