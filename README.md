@@ -9,7 +9,13 @@ the dataset from `frontend/public/data/` and calls no backend. The FastAPI
 backend (`backend/`, [uv](https://docs.astral.sh/uv/)) is kept but unused.
 
 Clone with [git-lfs](https://git-lfs.com) installed: the specimen photos are LFS
-objects.
+objects on ENAC-IT's server. Before the first clone, make git-lfs talk HTTP/1.1
+to that server; over HTTP/2 its downloads break with "LFS: unexpected EOF"
+([enack8s-core-config#23](https://github.com/EPFL-ENAC/enack8s-core-config/issues/23)):
+
+```bash
+git config --global http.https://enac-it-git-lfs.epfl.ch/.version HTTP/1.1
+```
 
 ## Develop
 
