@@ -1,6 +1,6 @@
 {
   "name": "modernmasonrydatabase",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "Open database of in-plane shear-compression tests on modern unreinforced masonry walls",
   "productName": "Modern Masonry Database",
   "private": true,
