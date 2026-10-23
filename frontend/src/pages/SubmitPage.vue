@@ -142,14 +142,20 @@
             </p>
           </template>
           <ul v-else class="dict">
-            <li v-for="f in fields" :key="f.n" class="dict-row">
-              <span class="dict-name"><FieldLabel :field="f" units /></span>
-              <span v-if="REQUIRED.includes(f.name)" class="pill required">{{
-                t('submit.required')
-              }}</span>
-              <span v-else-if="f.name === 'N'" class="guide-muted">{{ t('submit.curator') }}</span>
-              <span class="dict-def">{{ f.definition }}</span>
-            </li>
+            <template v-for="(f, i) in fields" :key="f.n">
+              <!-- Pavia [VI] and EPFL [VII] share their field names: the category tells them apart. -->
+              <li v-if="f.category !== fields[i - 1]?.category" class="dict-cat">
+                {{ f.category }} · {{ f.categoryName }}
+              </li>
+              <li class="dict-row">
+                <span class="dict-name"><FieldLabel :field="f" units /></span>
+                <span v-if="REQUIRED.has(f.key)" class="pill required">{{
+                  t('submit.required')
+                }}</span>
+                <span v-else-if="f.key === 'N'" class="guide-muted">{{ t('submit.curator') }}</span>
+                <span class="dict-def">{{ f.definition }}</span>
+              </li>
+            </template>
           </ul>
         </div>
       </aside>
@@ -172,7 +178,7 @@ import {
   matUpload,
   matWarningAmber
 } from '@quasar/extras/material-icons'
-import { fields } from '../api/dataset.ts'
+import { fields, rows } from '../api/dataset.ts'
 import FieldLabel from '../components/FieldLabel.vue'
 import { saveStarterKit, saveTemplateCsv } from '../lib/download.ts'
 
@@ -181,11 +187,12 @@ const { t } = useI18n()
 // Open question 2: submissions become review requests on this repository.
 const REPO_NAME = 'EPFL-ENAC/eesd-modern-masonry-walls-db'
 const REPO = `https://github.com/${REPO_NAME}`
-// The 17 columns every one of the 198 specimens fills (open question 2); N is the curator's.
-const REQUIRED = [
-  ...['Reference', 'Specimen name', 'Unit type', 'N° courses', 'H', 'L', 't', 'Bed Joints'],
-  ...['lb', 'wb', 'hb', 'fv0', 'H0/H', 'σ0', 'Failure mode', 'Vmax+', 'Vmax-']
-]
+// Required: the columns every specimen in the database fills (open question 2); N is the curator's.
+const REQUIRED = new Set(
+  fields
+    .filter((f) => f.key !== 'N' && rows.every((r) => r.values[f.key] != null))
+    .map((f) => f.key)
+)
 const CURVE = 'drift [%], horizontal_force [kN]'
 // The submission folder mirrors the dataset, keyed by specimen name.
 const TREE = [
@@ -193,12 +200,12 @@ const TREE = [
   { key: 'fd', path: '02_fd_curve/fd_curve_<specimen>.csv', columns: CURVE },
   {
     key: 'envelope',
-    path: '03_envelope_Pavia/ · 04_envelope_EPFL/envelope_<specimen>_pos.csv · _neg.csv',
+    path: '03_envelope_Pavia/ · 04_envelope_EPFL/envelope_<specimen>_pos.csv · _neg.csv (· _pos_cycle<M>.csv…)',
     columns: CURVE
   },
   {
     key: 'bilinear',
-    path: '05_bilinear_curve_Pavia/ · 06_bilinear_curve_EPFL/bilinear_<specimen>_pos.csv · _neg.csv',
+    path: '05_bilinear_curve_Pavia/ · 06_bilinear_curve_EPFL/bilinear_<specimen>_pos.csv · _neg.csv (· _pos_cycle<M>.csv…)',
     columns: CURVE
   },
   { key: 'photos', path: '07_fig_setup/ … 10_fig_cracks/fig_<kind>_<specimen>.jpg' }
@@ -550,6 +557,15 @@ const kit = () =>
   padding: 0;
   overflow-y: auto;
   list-style: none;
+}
+
+.dict-cat {
+  padding: var(--space-3) 0 var(--space-1);
+  font-size: 0.8125rem;
+  font-weight: var(--w-bold);
+  color: var(--fg-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
 }
 
 .dict-row {

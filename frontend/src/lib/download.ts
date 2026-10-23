@@ -36,10 +36,13 @@ export async function saveSpecimenZip(r: Row) {
   saveBlob(await zip(entries), `specimen_${pad(r.N)}.zip`)
 }
 
-/** Submission template (open question 2): one header row with the database column names, N left to the curator. */
+/**
+ * Submission template (open question 2): the database's 4 header rows, no specimen.
+ * The category row tells apart the columns Pavia [VI] and EPFL [VII] share (Vbil+, δu+…).
+ */
 export async function saveTemplateCsv() {
-  const [, , , names] = await databaseTable()
-  saveBlob(new Blob([BOM + toCsv([names!])]), 'ModernMasonryDatabase_EIA_template.csv')
+  const header = (await databaseTable()).slice(0, 4)
+  saveBlob(new Blob([BOM + toCsv(header)]), 'ModernMasonryDatabase_EIA_template.csv')
 }
 
 const EXAMPLE = 227 // SW0.1: it has every response file
@@ -64,7 +67,7 @@ export async function saveStarterKit(readme: string) {
   const root = 'masonry_walls/'
   saveBlob(
     await zip([
-      [root + DATABASE_CSV, BOM + toCsv([all[3]!, example])],
+      [root + DATABASE_CSV, BOM + toCsv([...all.slice(0, 4), example])],
       ...curves.map(([p, b]): [string, Blob] => [root + p, b]),
       [root + 'README.txt', readme]
     ]),

@@ -497,7 +497,7 @@
     "dictionary": "Data dictionary",
     "guide": "Contribution guide",
     "p1": "Start from the starter kit: it is the submission folder laid out the way it should be — the template CSV with the database's {n} column headers, and one example file per response type. Fill in one row per specimen (the data dictionary says what each column expects), then drop the whole folder here.",
-    "p3": "Curves are stored as drift [%] and horizontal force [kN]; envelopes and bilinear idealisations come as one file per loading direction.",
+    "p3": "Curves are stored as drift [%] and horizontal force [kN]. Envelopes and bilinear idealisations come as one file per loading direction for each method, Pavia and EPFL; Pavia adds one per loading cycle.",
     "dropTitle": "Drop your submission folder here — or a zip, or CSV files",
     "dropText": "The specimens CSV, plus one file per specimen and response type, named after the specimen, in its folder: 02_fd_curve, 03_envelope_Pavia to 06_bilinear_curve_EPFL, and photos in 07_fig_setup to 10_fig_cracks. Files are matched by name; what cannot be placed is listed below for you to sort out.",
     "chooseFolder": "Choose a folder",
@@ -519,15 +519,15 @@
     "optional": "Optional",
     "curator": "Assigned by the curator",
     "tree": {
-      "table": "one row per specimen, {n} columns; leave N blank",
+      "table": "the database's 4 header rows, then one row per specimen, {n} columns; leave N blank",
       "fd": "Force–drift curve —",
-      "envelope": "Backbone envelope per direction —",
-      "bilinear": "Bilinear idealisation per direction —",
+      "envelope": "Backbone envelope per direction, Pavia and EPFL; Pavia also per loading cycle M —",
+      "bilinear": "Bilinear idealisation per direction, Pavia and EPFL; Pavia also per loading cycle M —",
       "photos": "Photos: test setup, failure mode, materials, crack measurements"
     },
     "downloadKit": "Download the starter kit",
     "noGuide": "No guide has been written for this database yet.",
-    "readme": "Modern Masonry Database — submission starter kit\n\nModernMasonryDatabase_EIA_Database.csv: one row per specimen, {n} columns. Leave N blank: the curator assigns it. The row for SW0.1 is an example; replace it.\n\nResponse files are named after the specimen and placed in the folder of their type:\n  02_fd_curve/fd_curve_{s}.csv\n  03_envelope_Pavia/ and 04_envelope_EPFL/envelope_{s}_pos.csv and _neg.csv\n  05_bilinear_curve_Pavia/ and 06_bilinear_curve_EPFL/bilinear_{s}_pos.csv and _neg.csv\n  07_fig_setup/ … 10_fig_cracks/fig_{k}_{s}.jpg\n\nCurves have two columns: drift [%], horizontal_force [kN].\nThe column definitions are in the data dictionary on the Documentation page.",
+    "readme": "Modern Masonry Database — submission starter kit\n\nModernMasonryDatabase_EIA_Database.csv: the database's 4 header rows (column number, category, number in the category, name), then one row per specimen, {n} columns. Leave N blank: the curator assigns it. The row for SW0.1 is an example; replace it. Categories VI (Pavia) and VII (EPFL) hold the same variables for the two bilinear idealisations: the category row tells them apart.\n\nResponse files are named after the specimen and placed in the folder of their type:\n  02_fd_curve/fd_curve_{s}.csv\n  03_envelope_Pavia/ and 04_envelope_EPFL/envelope_{s}_pos.csv and _neg.csv\n  05_bilinear_curve_Pavia/ and 06_bilinear_curve_EPFL/bilinear_{s}_pos.csv and _neg.csv\n  Pavia also has one file per loading cycle M: envelope_{s}_pos_cycleM.csv, bilinear_{s}_neg_cycleM.csv…\n  07_fig_setup/ … 10_fig_cracks/fig_{k}_{s}.jpg\n\nCurves have two columns: drift [%], horizontal_force [kN].\nThe column definitions are in the data dictionary on the Documentation page.",
     "p2": "Measured responses are separate files, one per specimen, named after the specimen they belong to ({file} for the specimen named SW0.1) and placed in the folder of their type. Drop the folder, a zip of it, or the files themselves: they are matched to the specimens by name."
   },
   "units": {
