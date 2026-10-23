@@ -6,8 +6,11 @@ conventions (`it4r-agent-kit`); this file only adds what is specific here.
 - The frontend is static and calls no backend. `backend/` is kept but unused.
 - The dataset lives in `frontend/public/data/` (photos in git-lfs).
   `pnpm convert` turns its CSVs into `frontend/src/assets/data/*.json`; commit both.
-- CSVs are UTF-8 with a BOM (Excel's "CSV UTF-8"; Windows Excel needs it), the
-  dataset's and every one the browser generates. `pnpm convert` rejects a BOM-less export.
+- CSVs are UTF-8 with a BOM (Windows Excel needs it), the dataset's and every one
+  the browser generates. `scripts/export-csv.py` writes the dataset's from the
+  xlsx; `pnpm convert` rejects a BOM-less export.
+- The Pavia [VI] and EPFL [VII] bilinear columns share their names (`Vbil+`, `δu+`…):
+  read values by `Field.key` (EPFL keys end in ` [VII]`, see `METHOD_SUFFIX`), never by name.
 - Photos show as WebP web versions (`pnpm optimize-images`, `src/lib/photos.ts`);
   downloads and exports keep the originals.
 - `src/api/dataset.ts` is the only module that reads the dataset.
