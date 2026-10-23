@@ -16,7 +16,9 @@
         </div>
       </div>
       <div class="panel-cell">
-        <div class="panel-eyebrow">{{ t('filters.items.unit_type') }}</div>
+        <div class="panel-eyebrow">
+          <span :data-tip="glossary('unit_type')">{{ t('filters.items.unit_type') }}</span>
+        </div>
         <div class="panel-value">{{ t(`categories.${row.unit_type}`) }}</div>
       </div>
       <div class="panel-cell panel-actions">
@@ -72,6 +74,7 @@ import { useI18n } from 'vue-i18n'
 import { useRoute } from 'vue-router'
 import { matClose, matFileDownload, matLink } from '@quasar/extras/material-icons'
 import { useFilters } from '../composables/useFilters.ts'
+import { useGlossary } from '../composables/useGlossary.ts'
 import type { Row } from '../lib/derive.ts'
 import { saveSpecimenZip } from '../lib/download.ts'
 import CurvesTab from './specimen/CurvesTab.vue'
@@ -81,6 +84,7 @@ import GalleryTab from './specimen/GalleryTab.vue'
 
 const props = defineProps<{ row: Row }>()
 const { t } = useI18n()
+const glossary = useGlossary()
 const route = useRoute()
 const { setQuery } = useFilters()
 

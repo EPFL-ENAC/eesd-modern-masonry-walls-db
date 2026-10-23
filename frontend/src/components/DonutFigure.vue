@@ -1,6 +1,8 @@
 <template>
   <figure class="donut">
-    <figcaption class="donut-title">{{ title }}</figcaption>
+    <figcaption class="donut-title">
+      <span :data-tip="tip">{{ title }}</span>
+    </figcaption>
     <div class="donut-chart">
       <VChart :option="option" autoresize role="img" :aria-label="summary" @click="onClick" />
       <div class="donut-centre" aria-hidden="true">
@@ -35,7 +37,7 @@ import { cssColor } from '../lib/tokens.ts'
 
 export type DonutItem = { value: string; label: string; count: number; color: string }
 
-const props = defineProps<{ title: string; items: DonutItem[]; selected?: string }>()
+const props = defineProps<{ title: string; tip?: string; items: DonutItem[]; selected?: string }>()
 const emit = defineEmits<{ select: [value: string] }>()
 const { t } = useI18n()
 
@@ -78,7 +80,7 @@ const onClick = (e: ECElementEvent) => emit('select', e.name)
 .donut {
   display: flex;
   flex-direction: column;
-  gap: var(--space-3);
+  gap: var(--space-2);
   margin: 0;
 }
 
@@ -89,7 +91,7 @@ const onClick = (e: ECElementEvent) => emit('select', e.name)
 
 .donut-chart {
   position: relative;
-  max-width: 12.5rem;
+  max-width: 8rem;
   aspect-ratio: 1;
 }
 
@@ -104,7 +106,7 @@ const onClick = (e: ECElementEvent) => emit('select', e.name)
 }
 
 .donut-share {
-  font-size: 1.875rem;
+  font-size: 1.5rem;
   font-weight: var(--w-light);
   line-height: 1.2;
 }
@@ -117,7 +119,7 @@ const onClick = (e: ECElementEvent) => emit('select', e.name)
 .donut-legend {
   display: flex;
   flex-direction: column;
-  gap: 0.375rem;
+  gap: var(--space-1);
   margin: 0;
   padding: 0;
   list-style: none;
@@ -130,7 +132,7 @@ const onClick = (e: ECElementEvent) => emit('select', e.name)
   width: 100%;
   padding: 0;
   font: inherit;
-  font-size: var(--fs-sm);
+  font-size: 0.8125rem;
   color: var(--fg);
   text-align: left;
   cursor: pointer;

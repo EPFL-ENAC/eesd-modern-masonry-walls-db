@@ -100,9 +100,10 @@ const ORDER: Partial<Record<ListKey, readonly string[]>> = {
   has: HAS
 }
 
-/** Options of a group, in chart order, else by count; each counted against the *other* groups. */
+/** Options of a group, in chart order (every bin, even empty), else by count; each counted against the *other* groups. */
 export function facet(rows: readonly Row[], f: Filters, key: ListKey): [string, number][] {
-  const total = new Map<string, number>()
+  const order: readonly string[] = ORDER[key] ?? []
+  const total = new Map<string, number>(order.map((v) => [v, 0]))
   const live = new Map<string, number>()
   for (const r of rows) {
     const ok = matches(r, f, key)
@@ -111,7 +112,6 @@ export function facet(rows: readonly Row[], f: Filters, key: ListKey): [string, 
       if (ok) live.set(v, (live.get(v) ?? 0) + 1)
     }
   }
-  const order: readonly string[] = ORDER[key] ?? []
   const keys = [...total.keys()].sort(
     (a, b) =>
       (order.includes(a) ? order.indexOf(a) : 99) - (order.includes(b) ? order.indexOf(b) : 99) ||

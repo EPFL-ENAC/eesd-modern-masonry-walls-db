@@ -18,6 +18,7 @@
     "lead": "Open database of {specimens} in-plane shear-compression tests on modern unreinforced masonry walls, collected from {references} experimental campaigns.",
     "explore": "Explore the database",
     "glossary": "Read the glossary",
+    "toFlows": "See how parameters connect ↓",
     "keySpecimens": "wall specimens tested in-plane",
     "keyReferences": "referenced experimental campaigns",
     "keyFields": "documented fields per specimen",
@@ -25,6 +26,7 @@
     "selectHint": "Select a segment to filter the flows below. All {n} specimens shown.",
     "selectedHint": "{n} of {total} specimens shown.",
     "clear": "Clear selection",
+    "seeFlows": "See the flows ↓",
     "notReported": "Not reported",
     "donuts": {
       "unit_type": "Unit type",
@@ -294,12 +296,7 @@
   },
   "visuals": {
     "export": "Export figures (.svg)",
-    "summary": "Summary",
-    "filtered": "Filtered walls",
-    "share": "{pct} % of the database",
-    "drift_peak": "Median drift at peak, {symbol}",
-    "drift_u": "Median ultimate drift, {symbol}",
-    "iqr": "IQR {q1} – {q3} % · n = {n}",
+    "iqr": "IQR {q1}–{q3}, n = {n}",
     "average": "Values average the positive and negative loading directions.",
     "plots": {
       "strength": "Normalised shear strength vs axial stress",
@@ -311,8 +308,9 @@
     "jittered": "(jittered)",
     "tip": "N° {n} · {name}",
     "chartLabel": "{title}: scatter of {n} walls, coloured and shaped by failure mode",
-    "of": "/ {n}",
-    "n": "n = {n}"
+    "n": "n = {n}",
+    "walls": "{n} / {total} walls ({pct} %)",
+    "median": "Median {symbol} {value} %"
   },
   "docs": {
     "title": "Documentation",
@@ -539,5 +537,10 @@
     "percent": "{v} %",
     "percentOf": "{n}%",
     "percentSign": "%"
+  },
+  "glossary": {
+    "tauMax": "Normalised shear strength: maximum shear force over the gross cross-section, Vmax / (L · t), averaging the positive and negative directions.",
+    "keff": "Effective stiffness: the bilinear plateau force Vbil over the yielding displacement δe · H, averaging the positive and negative directions.",
+    "aspect": "Aspect ratio: height H over length L of the specimen."
   }
 }

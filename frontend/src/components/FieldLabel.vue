@@ -1,5 +1,5 @@
 <template>
-  <span>
+  <span :data-tip="tip">
     <template v-if="parts"
       >{{ parts[0] }}<sub>{{ parts[1] }}</sub
       >{{ parts[2] }}</template
@@ -12,17 +12,28 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import type { Field } from '../api/types.ts'
+import { useGlossary } from '../composables/useGlossary.ts'
 
 const props = defineProps<{
-  field: Pick<Field, 'name' | 'units'>
+  /** A real Field brings its own definition (Pavia and EPFL repeats differ); a name is looked up. */
+  field: Pick<Field, 'name' | 'units'> & Partial<Pick<Field, 'definition'>>
   short?: string
   units?: boolean
+  /** No tooltip: the definition is already beside the label (the glossary). */
+  noTip?: boolean
 }>()
 
+const glossary = useGlossary()
+const tip = computed(() =>
+  props.noTip ? undefined : (props.field.definition ?? glossary(props.field.name))
+)
+
 // Symbols set their index as a subscript: fm,c → f + "m,c"; H0/H → H + "0" + "/H".
+// Words and the ALR acronym are not symbols.
+const PLAIN = new Set(['Reference', 'Institution', 'Year', 'ALR'])
 const parts = computed(() => {
   const { name } = props.field
-  if (props.short || name.length < 2 || /\s/.test(name) || name === 'Reference') return null
+  if (props.short || name.length < 2 || /\s/.test(name) || PLAIN.has(name)) return null
   return /^(.)([^/]*)(.*)$/.exec(name)!.slice(1)
 })
 </script>

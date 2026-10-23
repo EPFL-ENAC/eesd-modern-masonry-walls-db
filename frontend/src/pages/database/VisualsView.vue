@@ -21,53 +21,41 @@
   </Teleport>
   <p v-if="error" class="vis-error" role="alert">{{ error }}</p>
 
-  <section class="box vis-summary" aria-labelledby="sum-h">
-    <h2 id="sum-h" class="section-label">{{ t('visuals.summary') }}</h2>
-    <div class="vis-keys">
-      <div>
-        <div class="vis-key-title">{{ t('visuals.filtered') }}</div>
-        <div class="epfl-keynumber">
-          <div class="epfl-keynumber-num">
-            {{ filtered.length
-            }}<span class="vis-unit"> {{ t('visuals.of', { n: rows.length }) }}</span>
-          </div>
-          <div class="epfl-keynumber-bar"></div>
-          <div class="epfl-keynumber-label">
-            {{ t('visuals.share', { pct: Math.round((filtered.length / rows.length) * 100) }) }}
-          </div>
-        </div>
-      </div>
-      <div v-for="s in stats" :key="s.key">
-        <div class="vis-key-title">
-          <i18n-t :keypath="`visuals.${s.key}`" tag="span" scope="global">
-            <template #symbol><FieldLabel :field="{ name: s.symbol, units: '' }" /></template>
-          </i18n-t>
-        </div>
-        <div class="epfl-keynumber">
-          <div class="epfl-keynumber-num">
-            {{ s.n ? s.median.toFixed(2) : t('specimen.missing')
-            }}<span class="vis-unit"> {{ t('units.percentSign') }}</span>
-          </div>
-          <div class="epfl-keynumber-bar"></div>
-          <div class="epfl-keynumber-label">
-            {{ t('visuals.iqr', { q1: s.q1.toFixed(2), q3: s.q3.toFixed(2), n: s.n }) }}
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
+  <!-- The summary and the legend share one line: the four plots fit on a laptop screen. -->
   <div class="vis-legend">
-    <span class="vis-muted">{{ t('filters.items.fm_group') }}</span>
-    <span v-for="[g, n] in groups" :key="g" class="vis-group">
-      <span
-        class="vis-marker"
-        :class="`vis-marker-${g}`"
-        :style="{ background: `var(${categoryToken('fm_group', g)})` }"
-      />
-      {{ g }} · {{ n }}
+    <p class="vis-stats">
+      <i18n-t keypath="visuals.walls" tag="span" scope="global">
+        <template #n
+          ><b class="vis-num">{{ filtered.length }}</b></template
+        >
+        <template #total>{{ rows.length }}</template>
+        <template #pct>{{ Math.round((filtered.length / rows.length) * 100) }}</template>
+      </i18n-t>
+      <span v-for="s in stats" :key="s.key" class="vis-stat">
+        <i18n-t keypath="visuals.median" tag="span" scope="global">
+          <template #symbol><FieldLabel :field="{ name: s.symbol, units: '' }" /></template>
+          <template #value
+            ><b class="vis-num">{{
+              s.n ? s.median.toFixed(2) : t('specimen.missing')
+            }}</b></template
+          >
+        </i18n-t>
+        <span v-if="s.n" class="vis-muted">
+          {{ t('visuals.iqr', { q1: s.q1.toFixed(2), q3: s.q3.toFixed(2), n: s.n }) }}
+        </span>
+      </span>
+    </p>
+    <span class="vis-groups">
+      <span class="vis-muted">{{ t('filters.items.fm_group') }}</span>
+      <span v-for="[g, n] in groups" :key="g" class="vis-group">
+        <span
+          class="vis-marker"
+          :class="`vis-marker-${g}`"
+          :style="{ background: `var(${categoryToken('fm_group', g)})` }"
+        />
+        {{ g }} · {{ n }}
+      </span>
     </span>
-    <span class="vis-muted vis-note">{{ t('visuals.average') }}</span>
   </div>
 
   <div class="vis-grid">
@@ -106,6 +94,7 @@
       </div>
     </figure>
   </div>
+  <p class="vis-muted">{{ t('visuals.average') }}</p>
 </template>
 
 <script setup lang="ts">
@@ -155,9 +144,16 @@ function option(p: Plot, d: ReturnType<typeof scatterData>, svg = false): EChart
     nameLocation: 'middle' as const,
     nameTextStyle: { color: cssColor('--fg-muted'), fontSize: 12 }
   }
+  const family = getComputedStyle(document.body).fontFamily
   return {
     animation: !svg,
-    textStyle: { fontFamily: getComputedStyle(document.body).fontFamily },
+    // The SVG writes the family unescaped into a "-quoted style attribute: its "Suisse Int'l"
+    // must become 'Suisse Int\'l' there, or the file is not valid XML.
+    textStyle: {
+      fontFamily: svg
+        ? family.replace(/"([^"]*)"/g, (_, n: string) => `'${n.replaceAll("'", "\\'")}'`)
+        : family
+    },
     grid: svg
       ? { left: 64, right: 16, top: 12, bottom: 48 }
       : { left: 44, right: 12, top: 12, bottom: 28 },
@@ -224,48 +220,44 @@ async function exportSvg() {
   color: var(--danger);
 }
 
-.vis-summary {
-  gap: 1.25rem;
-  padding: var(--space-4) 1.75rem;
-
-  .section-label {
-    margin: 0;
-  }
-}
-
-.vis-keys {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: var(--gutter);
-}
-
-.vis-key-title {
-  margin-bottom: var(--space-2);
-  font-size: var(--fs-sm);
-  color: var(--fg-muted);
-}
-
-.vis-unit {
-  font-size: 1.5rem;
-  color: var(--fg-muted);
-}
-
 .vis-legend {
   display: flex;
   flex-wrap: wrap;
-  gap: 1.25rem;
-  align-items: center;
+  gap: var(--space-2) var(--gutter);
+  align-items: baseline;
+  justify-content: space-between;
   font-size: var(--fs-sm);
+}
+
+.vis-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2) var(--gutter);
+  align-items: baseline;
+  margin: 0;
+}
+
+.vis-stat {
+  display: inline-flex;
+  gap: var(--space-2);
+  align-items: baseline;
+}
+
+.vis-num {
+  font-size: var(--fs-h5);
+}
+
+.vis-groups {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.25rem;
+  align-items: baseline;
 }
 
 .vis-muted {
+  margin: 0;
   font-size: 0.8125rem;
   color: var(--fg-muted);
-}
-
-.vis-note {
-  margin-left: auto;
-  font-size: var(--fs-sm);
 }
 
 .vis-group {
@@ -294,7 +286,7 @@ async function exportSvg() {
 .vis-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: var(--gutter) 2.5rem;
+  gap: var(--space-4) 2.5rem;
 }
 
 .vis-fig {
@@ -332,8 +324,9 @@ async function exportSvg() {
   transform: rotate(180deg);
 }
 
+// Two rows of plots share what the viewport has left under the header and the toolbar.
 .vis-chart {
-  height: 20rem;
+  height: clamp(12rem, calc(50dvh - 12.5rem), 22rem);
 }
 
 .vis-jitter {
@@ -346,9 +339,8 @@ async function exportSvg() {
   text-align: center;
 }
 
-@media (width <= 80rem) {
-  .vis-grid,
-  .vis-keys {
+@media (width <= 48rem) {
+  .vis-grid {
     grid-template-columns: minmax(0, 1fr);
   }
 }
