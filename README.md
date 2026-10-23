@@ -15,9 +15,12 @@ Pavia and EPFL bilinear idealisations, and photos, for 236 tests.
 - **Code licence:** [GPL-3.0](LICENSE).
 
 The site is a static Quasar app (`frontend/`) styled with the
-[EPFL design system](https://github.com/EPFL-ENAC/epfl-design-skill). It reads
-the dataset from `frontend/public/data/` and calls no backend. `backend/`
-(FastAPI) is kept but unused.
+[EPFL design system](https://github.com/EPFL-ENAC/epfl-design-skill), vendored
+in [`frontend/vendor/epfl-design-system/`](frontend/vendor/epfl-design-system/README.md).
+Its fonts come from `enac-it-fonts.epfl.ch`, which serves `*.epfl.ch` sites, and
+`localhost` from the EPFL network or VPN. It reads the dataset from
+`frontend/public/data/` and calls no backend. `backend/` (FastAPI) is kept but
+unused.
 
 ## Getting started
 

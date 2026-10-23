@@ -19,7 +19,9 @@ conventions (`it4r-agent-kit`); this file only adds what is specific here.
   client-side" rule: there is no backend to hold them. Keep them there.
 - Filters live in the URL query (`useFilters()`), not in a store.
 - Styling uses the EPFL design system only: its tokens, classes and Vue kit
-  (`epfl-design-system/kits/vue`), no hex, no px (stylelint enforces it). Quasar sits
+  (`epfl-design-system/kits/vue`), no hex, no px (stylelint enforces it). It is
+  vendored in `frontend/vendor/epfl-design-system/` (aliased, never edited; its
+  README says how to update it), because its repository is private. Quasar sits
   in a lower cascade layer than the DS. Never mix in Vuetify.
 - Open design questions carry a `handoff-Q<n>` marker: `grep -rn handoff- frontend/src`.
 - Every user-facing string goes through `src/locales/en.json`.

@@ -20,7 +20,8 @@ export default defineConfigWithVueTs([
       '**/.quasar/',
       '**/coverage/',
       '**/quasar.config.*.temporary.compiled*',
-      'public/**'
+      'public/**',
+      'vendor/**'
     ]
   }
 ])
