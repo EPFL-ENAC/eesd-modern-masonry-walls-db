@@ -62,7 +62,6 @@
           {{ t('specimen.files.downloadBib') }}
         </button>
       </div>
-      <p class="cite-note">{{ t('specimen.files.alsoCite') }}</p>
     </section>
   </div>
 </template>
@@ -188,12 +187,6 @@ const all = () => run(() => saveSpecimenZip(props.row))
   display: flex;
   flex-wrap: wrap;
   gap: var(--space-2);
-}
-
-.cite-note {
-  margin: 0;
-  font-size: 0.8125rem;
-  color: var(--fg-muted);
 }
 
 @media (width <= 64rem) {
