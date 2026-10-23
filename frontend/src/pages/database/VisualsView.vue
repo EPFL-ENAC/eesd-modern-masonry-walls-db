@@ -144,9 +144,16 @@ function option(p: Plot, d: ReturnType<typeof scatterData>, svg = false): EChart
     nameLocation: 'middle' as const,
     nameTextStyle: { color: cssColor('--fg-muted'), fontSize: 12 }
   }
+  const family = getComputedStyle(document.body).fontFamily
   return {
     animation: !svg,
-    textStyle: { fontFamily: getComputedStyle(document.body).fontFamily },
+    // The SVG writes the family unescaped into a "-quoted style attribute: its "Suisse Int'l"
+    // must become 'Suisse Int\'l' there, or the file is not valid XML.
+    textStyle: {
+      fontFamily: svg
+        ? family.replace(/"([^"]*)"/g, (_, n: string) => `'${n.replaceAll("'", "\\'")}'`)
+        : family
+    },
     grid: svg
       ? { left: 64, right: 16, top: 12, bottom: 48 }
       : { left: 44, right: 12, top: 12, bottom: 28 },
