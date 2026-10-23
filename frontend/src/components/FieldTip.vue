@@ -78,14 +78,14 @@ onBeforeUnmount(() => {
   border-radius: var(--radius);
 }
 
-// A label with a definition: dotted underline; in a button it keeps the button's cursor.
+// A label with a definition: dotted underline; in a control it keeps the control's cursor.
 :global([data-tip]) {
   text-decoration: underline dotted var(--epfl-gray-300);
   text-underline-offset: 0.2em;
   cursor: help;
 }
 
-:global(button [data-tip]) {
+:global(:is(button, summary, label) [data-tip]) {
   cursor: inherit;
 }
 </style>
