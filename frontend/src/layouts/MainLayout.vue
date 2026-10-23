@@ -18,10 +18,11 @@
           {{ t(item.label) }}
         </router-link>
       </nav>
-      <div class="header-lab">
+      <a class="header-lab" href="https://www.epfl.ch/labs/eesd/">
         <span class="header-lab-name">{{ t('header.lab') }}</span>
         <span class="header-lab-tag">{{ t('header.labTag') }}</span>
-      </div>
+        <q-icon :name="matNorthEast" size="0.875rem" aria-hidden="true" />
+      </a>
     </header>
 
     <main class="app-main">
@@ -66,6 +67,7 @@
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n'
 import { useRoute } from 'vue-router'
+import { matNorthEast } from '@quasar/extras/material-icons'
 import { fields, meta, rows } from '../api/dataset.ts'
 import logoUrl from 'epfl-design-system/assets/svg/epfl-logo.svg'
 
@@ -143,10 +145,17 @@ const nav = [
   color: var(--epfl-gray-300);
 }
 
+// The lab's site, as a plain link: the name, a thin rule, then the acronym.
 .header-lab {
   display: flex;
   gap: 0.75rem;
   align-items: center;
+  color: var(--fg);
+  text-decoration: none;
+
+  &:hover .header-lab-tag {
+    text-decoration: underline;
+  }
 }
 
 .header-lab-name {
@@ -167,11 +176,17 @@ const nav = [
 }
 
 .header-lab-tag {
-  padding: var(--space-1) var(--space-2);
+  padding-left: 0.75rem;
   font-size: 0.9375rem;
   font-weight: var(--w-bold);
   letter-spacing: 0.04em;
-  border: var(--border-w) solid var(--epfl-gray-300);
-  border-radius: var(--radius);
+  border-left: var(--border-w) solid var(--epfl-gray-300);
+}
+
+@media (width <= 64rem) {
+  .header-lab-tag {
+    padding-left: 0;
+    border-left: 0;
+  }
 }
 </style>
