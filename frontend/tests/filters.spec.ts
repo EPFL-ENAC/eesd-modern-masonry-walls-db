@@ -59,4 +59,15 @@ describe('filters', () => {
       ['photos', 16]
     ])
   })
+
+  it('lists every ordered bin, even one no wall falls in', () => {
+    expect(facet(rows, parseFilters({}), 'h0h').map(([v]) => v)).toEqual([
+      '< 0.5',
+      '= 0.5',
+      '0.5–1.0',
+      '= 1.0',
+      '> 1.0',
+      'n/a'
+    ])
+  })
 })
