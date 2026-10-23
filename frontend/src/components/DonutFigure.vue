@@ -80,7 +80,7 @@ const onClick = (e: ECElementEvent) => emit('select', e.name)
 .donut {
   display: flex;
   flex-direction: column;
-  gap: var(--space-3);
+  gap: var(--space-2);
   margin: 0;
 }
 
@@ -91,7 +91,7 @@ const onClick = (e: ECElementEvent) => emit('select', e.name)
 
 .donut-chart {
   position: relative;
-  max-width: 12.5rem;
+  max-width: 8rem;
   aspect-ratio: 1;
 }
 
@@ -106,7 +106,7 @@ const onClick = (e: ECElementEvent) => emit('select', e.name)
 }
 
 .donut-share {
-  font-size: 1.875rem;
+  font-size: 1.5rem;
   font-weight: var(--w-light);
   line-height: 1.2;
 }
@@ -119,7 +119,7 @@ const onClick = (e: ECElementEvent) => emit('select', e.name)
 .donut-legend {
   display: flex;
   flex-direction: column;
-  gap: 0.375rem;
+  gap: var(--space-1);
   margin: 0;
   padding: 0;
   list-style: none;
@@ -132,7 +132,7 @@ const onClick = (e: ECElementEvent) => emit('select', e.name)
   width: 100%;
   padding: 0;
   font: inherit;
-  font-size: var(--fs-sm);
+  font-size: 0.8125rem;
   color: var(--fg);
   text-align: left;
   cursor: pointer;

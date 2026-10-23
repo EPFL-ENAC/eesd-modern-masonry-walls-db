@@ -14,6 +14,8 @@
           <router-link class="epfl-btn epfl-btn-secondary" to="/documentation">
             {{ t('overview.glossary') }}
           </router-link>
+          <!-- The flows sit below the fold on a laptop: say they are there. -->
+          <a href="#flow-h" class="intro-more">{{ t('overview.toFlows') }}</a>
         </div>
       </div>
       <div class="intro-keys">
@@ -32,6 +34,7 @@
         <p class="band-hint" role="status">
           <template v-if="filtered">
             {{ t('overview.selectedHint', { n: shown.length, total: rows.length }) }}
+            <a href="#flow-h" class="band-clear">{{ t('overview.seeFlows') }}</a>
             <button type="button" class="band-clear" @click="selected = {}">
               {{ t('overview.clear') }}
             </button>
@@ -207,8 +210,8 @@ const flowOption = computed<EChartsOption>(() => {
   grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
   gap: var(--space-5);
   align-items: end;
-  padding-top: 4rem;
-  padding-bottom: var(--space-5);
+  padding-top: var(--space-4);
+  padding-bottom: var(--space-4);
 }
 
 .intro-text {
@@ -233,7 +236,12 @@ const flowOption = computed<EChartsOption>(() => {
   display: flex;
   flex-wrap: wrap;
   gap: var(--space-3);
+  align-items: center;
   margin-top: var(--space-2);
+}
+
+.intro-more {
+  color: var(--fg);
 }
 
 .intro-keys {
@@ -243,8 +251,8 @@ const flowOption = computed<EChartsOption>(() => {
 }
 
 .band {
-  padding-top: var(--gutter);
-  padding-bottom: var(--space-5);
+  padding-top: var(--space-4);
+  padding-bottom: var(--space-4);
   border-top: var(--border-w) solid var(--border-subtle);
 }
 
@@ -254,11 +262,12 @@ const flowOption = computed<EChartsOption>(() => {
   gap: var(--space-4);
   align-items: baseline;
   justify-content: space-between;
-  margin-bottom: var(--gutter);
+  margin-bottom: var(--space-4);
 }
 
 .band-title {
   margin: 0;
+  scroll-margin-top: var(--space-3);
   font-size: var(--fs-h3);
   font-weight: var(--w-bold);
   line-height: 1.35;
@@ -271,6 +280,7 @@ const flowOption = computed<EChartsOption>(() => {
 }
 
 .band-clear {
+  margin-left: var(--space-2);
   padding: 0;
   font: inherit;
   color: var(--fg);

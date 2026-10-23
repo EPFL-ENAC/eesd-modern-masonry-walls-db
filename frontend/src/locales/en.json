@@ -18,6 +18,7 @@
     "lead": "Open database of {specimens} in-plane shear-compression tests on modern unreinforced masonry walls, collected from {references} experimental campaigns.",
     "explore": "Explore the database",
     "glossary": "Read the glossary",
+    "toFlows": "See how parameters connect ↓",
     "keySpecimens": "wall specimens tested in-plane",
     "keyReferences": "referenced experimental campaigns",
     "keyFields": "documented fields per specimen",
@@ -25,6 +26,7 @@
     "selectHint": "Select a segment to filter the flows below. All {n} specimens shown.",
     "selectedHint": "{n} of {total} specimens shown.",
     "clear": "Clear selection",
+    "seeFlows": "See the flows ↓",
     "notReported": "Not reported",
     "donuts": {
       "unit_type": "Unit type",
