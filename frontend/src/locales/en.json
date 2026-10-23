@@ -294,12 +294,7 @@
   },
   "visuals": {
     "export": "Export figures (.svg)",
-    "summary": "Summary",
-    "filtered": "Filtered walls",
-    "share": "{pct} % of the database",
-    "drift_peak": "Median drift at peak, {symbol}",
-    "drift_u": "Median ultimate drift, {symbol}",
-    "iqr": "IQR {q1} – {q3} % · n = {n}",
+    "iqr": "IQR {q1}–{q3}, n = {n}",
     "average": "Values average the positive and negative loading directions.",
     "plots": {
       "strength": "Normalised shear strength vs axial stress",
@@ -311,8 +306,9 @@
     "jittered": "(jittered)",
     "tip": "N° {n} · {name}",
     "chartLabel": "{title}: scatter of {n} walls, coloured and shaped by failure mode",
-    "of": "/ {n}",
-    "n": "n = {n}"
+    "n": "n = {n}",
+    "walls": "{n} / {total} walls ({pct} %)",
+    "median": "Median {symbol} {value} %"
   },
   "docs": {
     "title": "Documentation",
