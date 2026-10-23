@@ -3,6 +3,7 @@ import specimens from '../src/assets/data/specimens.json'
 import { derive } from '../src/lib/derive.ts'
 import { applyFilters, facet, filtersToQuery, parseFilters } from '../src/lib/filters.ts'
 import type { Specimen } from '../src/api/types.ts'
+import { rows20260924 } from './fixtures/rows-2026-09-24.ts'
 
 const rows = (specimens as Specimen[]).map(derive)
 
@@ -19,6 +20,7 @@ describe('filters', () => {
   })
 
   it('ORs within a group and ANDs across groups', () => {
+    const rows = rows20260924
     const hc = applyFilters(rows, parseFilters({ unit_type: 'HC' })).length
     const aac = applyFilters(rows, parseFilters({ unit_type: 'AAC' })).length
     expect(applyFilters(rows, parseFilters({ unit_type: 'HC,AAC' }))).toHaveLength(hc + aac)
@@ -33,6 +35,7 @@ describe('filters', () => {
   })
 
   it('counts each group against the other groups only', () => {
+    const rows = rows20260924
     const f = parseFilters({ unit_type: 'HC' })
     // Unit type ignores its own selection: every type keeps its full count.
     expect(Object.fromEntries(facet(rows, f, 'unit_type'))).toMatchObject({ HC: 111, AAC: 26 })
@@ -47,13 +50,13 @@ describe('filters', () => {
     expect(bed.reduce((s, [, n]) => s + n, 0)).toBe(111)
   })
 
-  it('finds the 10 specimens with curves', () => {
+  it('finds the 16 specimens with curves', () => {
     expect(facet(rows, parseFilters({}), 'has')).toEqual([
-      ['fd', 10],
-      ['envelope', 10],
-      ['bilinear', 10],
-      ['cracks', 10],
-      ['photos', 10]
+      ['fd', 16],
+      ['envelope', 16],
+      ['bilinear', 16],
+      ['cracks', 16],
+      ['photos', 16]
     ])
   })
 })

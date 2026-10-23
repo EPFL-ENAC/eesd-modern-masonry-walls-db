@@ -1,48 +1,71 @@
-﻿Global number,Category,Category number,Name,Units,Definition
-#1,General Information [I],#1,N,[-],Number of test/specimen
-#2,,#2,Reference,[-],Literature reference of the campaign
-#3,,#3,Specimen name,[-],"Name of the test unit, in the original reference"
-#4,Wall Characteristics [II],#1,Unit type,[-],"HC (Hollow Clay), AAC (Autoclaved Aerated Concrete), CS (Calcium Silicate), LAC (Lightweight Aggregate Concrete), SB-C (Solid Brick Clay), SB-CS (Solid Brick Calcium Silicate), CB (Concrete Brick), HCB (Hollow Concrete Block)"
-#5,,#2,N° courses,[-],Number of unit courses
-#6,,#3,H,[m],Height of the specimen
-#7,,#4,L,[m],Length of the specimen
-#8,,#5,t,[m],Thickness of the specimen
-#9,,#6,Bed Joints,[-],"GP (General Purpose), TL (Thin Layer)"
-#10,,#7,Head Joints,[-],"F (Filled), TF (Thin Filled), MP (Mortar Pocket), UTG (Unfilled, Tongue and Groove), U (Unfilled)"
-#11,Material Properties [III],#1,Void Ratio,[%],Percentage of voids
-#12,,#2,lb,[mm],Average length of the unit
-#13,,#3,wb,[mm],Average width of the unit
-#14,,#4,hb,[mm],Average height of the unit
-#15,,#5,"fb,Ʇ",[MPa],Mean compressive strength of units in the direction perpendicular to bed joint
-#16,,#6,"fb,norm,Ʇ",[MPa],Normalised compressive strength of units in the direction perpendicular to bed joint
-#17,,#7,"fb,ǁ",[MPa],Mean compressive strength of units in the direction parallel to bed joint
-#18,,#8,"fb,norm,ǁ",[MPa],Normalised compressive strength of units in the direction parallel to bed joint
-#19,,#9,fmo,[MPa],Mean compressive strength of mortar
-#20,,#10,"fm,c",[MPa],Mean compressive strength of masonry
-#21,,#11,"fm,t",[MPa],Mean diagonal tensile strength of masonry
-#22,,#12,Emo,[MPa],Elastic modulus of mortar
-#23,,#13,Gm,[MPa],Shear modulus of masonry
-#24,,#14,Em,[MPa],Elastic modulus of masonry
-#25,,#15,fv0,[MPa],Initial shear strength of masonry
-#26,,#16,μ,[-],Friction coefficient of masonry
-#27,Test setup [IV],#1,H0/H,[-],Shear span ratio (ratio of height of zero moment to specimen height)
-#28,,#2,σ0,[MPa],Compressive axial stress (total axial load divided by gross cross section of the specimen)
-#29,Force-displacement response [V],#1,F-d data,[-],"Availability of displacement vs force curve: Yes (full curve, envelope, extracted from graph), No"
-#30,,#2,Failure mode,[-],"S (Shear), F (Flexure), H- (Hybrid followed by two main mechanisms), G (gaping), SL (Sliding), D (uncertain)"
-#31,,#3,δcr+,[%],Drift at onset of cracking in the positive direction
-#32,,#4,δcr-,[%],Drift at onset of cracking in the negative direction
-#33,,#5, δVmax+,[%],Drift at maximum shear force in the positive direction
-#34,,#6, δVmax-,[%],Drift at maximum shear force in the negative direction
-#35,,#7,Vmax+,[kN],Maximum shear force in the positive direction
-#36,,#8,Vmax-,[kN],Maximum shear force in the negative direction
-#37,,#9, δmax+,[%],Maximum drift recorded in the positive direction
-#38,,#10, δmax-,[%],Maximum drift recorded in the negative direction
-#39,,#11,Vδmax+,[kN],Shear force at maximum drift recorded in the positive direction
-#40,,#12,Vδmax-,[kN],Shear force at maximum drift recorded in the negative direction
-#41,Bilinear idealisation [VI],#1, Vbil+,[kN],Shear force of the bilinear curve's plateau in the positive direction
-#42,,#2, Vbil-,[kN],Shear force of the bilinear curve's plateau in the negative direction
-#43,,#3,δe+,[%],Yielding drift in the positive direction
-#44,,#4,δe-,[%],Yielding drift in the negative direction
-#45,,#5,δu+,[%],Ultimate drift in the positive direction
-#46,,#6,δu-,[%],Ultimate drift in the negative direction
-#47,Cracks [VII],#1,Crack measurements,[-],"Crack measurements reported, specifying the method used:  Yes (DIC, deep learning, fractal, etc), No"
+﻿Global number,Category,Category description,Category number,Name,Units,Definition
+#1,General Information [I],It contains general information about the test campaign to which the specimen belongs.,#1,N,[-],Number of test/specimen.
+#2,,,#2,Reference,[-],Literature reference of the campaign.
+#3,,,#3,Institution,[-],Institution that conducted the test.
+#4,,,#4,Year,[-],Year of the document containing the test.
+#5,,,#5,Specimen name,[-],Name of the test unit in the original reference.
+#6,Wall Characteristics [II],It contains variables of the typology and geometry of the specimen.,#1,Unit type,[-],"HC (Hollow Clay), AAC (Autoclaved Aerated Concrete), CS (Calcium Silicate), LAC (Lightweight Aggregate Concrete), SB-C (Solid Brick Clay), SB-CS (Solid Brick Calcium Silicate), CB (Concrete Brick), HCB (Hollow Concrete Block)."
+#7,,,#2,N° courses,[-],Number of unit courses.
+#8,,,#3,H,[m],Height of the specimen.
+#9,,,#4,L,[m],Length of the specimen.
+#10,,,#5,t,[m],Thickness of the specimen.
+#11,,,#6,Bed Joints,[-],"GP (General Purpose), TL (Thin Layer)."
+#12,,,#7,Head Joints,[-],"F (Filled), TF (Thin Filled), MP (Mortar Pocket), UTG (Unfilled, Tongue and Groove), U (Unfilled)."
+#13,,,#8,H/L,[-],Aspect ratio.
+#14,Material Properties [III],It contains parameters to characterise the mechanical behaviour of each constituent material of the specimen.,#1,Void Ratio,[%],Percentage of voids.
+#15,,,#2,Unit density,[kg/m3],Gross density of units (weight over the gross volume of the units).
+#16,,,#3,lb,[mm],Average length of the unit.
+#17,,,#4,wb,[mm],Average width of the unit.
+#18,,,#5,hb,[mm],Average height of the unit.
+#19,,,#6,"fb,Ʇ",[MPa],Mean compressive strength of units in the direction perpendicular to bed joint.
+#20,,,#7,"fb,norm,Ʇ",[MPa],Normalised compressive strength of units in the direction perpendicular to bed joint.
+#21,,,#8,"fb,ǁ",[MPa],Mean compressive strength of units in the direction parallel to bed joint.
+#22,,,#9,"fb,norm,ǁ",[MPa],Normalised compressive strength of units in the direction parallel to bed joint.
+#23,,,#10,Strength class,[-],Mortar strength class reported in the test campaign.
+#24,,,#11,fmo,[MPa],"Mean compressive strength of mortar. When this parameter was not reported, the minimum value according to the strength class was considered."
+#25,,,#12,"fm,c",[MPa],Mean compressive strength of masonry.
+#26,,,#13,"fm,t",[MPa],Mean diagonal tensile strength of masonry.
+#27,,,#14,Emo,[MPa],Elastic modulus of mortar.
+#28,,,#15,Gm,[MPa],Shear modulus of masonry.
+#29,,,#16,Em,[MPa],Elastic modulus of masonry.
+#30,,,#17,fv0,[MPa],Initial shear strength of masonry.
+#31,,,#18,μ,[-],Friction coefficient of masonry.
+#32,Test setup [IV],It contains the global conditions of the shear-compression test.,#1,Boundary conditions,[-],"Test boundary conditions reported in the test campaign: DF (Double fixed), C (Cantilever), O (Other)."
+#33,,,#2,H0/H,[-],"Shear span ratio (ratio of height of zero moment to specimen height). When this value has not been provided, we have considered that ""Cantilever"" correspond to 1.0 and ""Double fixed"" to 0.5."
+#34,,,#3,σ0,[MPa],Compressive axial stress (total axial load divided by gross cross section of the specimen).
+#35,,,#4,ALR,[-],Axial load ratio (compressive axial stress divided by the mean compressive strength of the masonry).
+#36,Force-displacement response [V],It contains information about the global force-displacement response with characteristic values extracted directly from the full hysteresis,#1,F-d data,[-],Availability of displacement vs force curve as data files.
+#37,,,#2,F-d figure,[-],Availability of displacement vs force curve only as a figure from where it can be manually traced envelopes and bilinear curves.
+#38,,,#3,Env curve,[-],"Availability of envelope curve as data files. If either F-d data or F-d figure is ""Yes"", then the envelope can be obtained."
+#39,,,#4,Bil curve,[-],"Availability of bilinear idealisation curve as data files. If either F-d data or F-d figure is ""Yes"", then the bilinear idealisation can be obtained."
+#40,,,#5,Failure mode,[-],"S (Shear), F (Flexure), H- (Hybrid followed by two main mechanisms), G (gaping), SL (Sliding), D (uncertain)."
+#41,,,#6,δcr,[%],Drift at onset of cracking (drift at first crack reported in the test).
+#42,,,#7, δVmax+,[%],Drift at maximum shear force in the positive direction.
+#43,,,#8, δVmax-,[%],Drift at maximum shear force in the negative direction.
+#44,,,#9,Vmax+,[kN],Maximum shear force in the positive direction.
+#45,,,#10,Vmax-,[kN],Maximum shear force in the negative direction.
+#46,,,#11, δmax+,[%],Maximum drift recorded under controlled conditions (before collapse) in the positive direction.
+#47,,,#12, δmax-,[%],Maximum drift recorded under controlled conditions (before collapse) in the negative direction.
+#48,,,#13,Vδmax+,[kN],Shear force at maximum drift recorded under controlled conditions (before collapse) in the positive direction.
+#49,,,#14,Vδmax-,[kN],Shear force at maximum drift recorded under controlled conditions (before collapse) in the negative direction.
+#50,Bilinear idealisation Pavia [VI],"It contains the variables to characterise the bilinear idealisation following Pavia approach. Depending on the number of cycles of the loading protocol, envelopes for each cycle are determined in the positive and negative direction.",#1, Vbil+,[kN],"Equivalent shear force of the bilinear curve's plateau in the positive direction. This corresponds to the mean value of each shear force of the cyclic bilinear curve's plateau in the positive direction. The shear force of the cyclic bilinear curve's plateau in the positive direction (horizontal branch), determined by ensuring that the areas below the positive cyclic envelope curve and below the equivalent bilinear curve are equal."
+#51,,,#2, Vbil-,[kN],"Equivalent shear force of the bilinear curve's plateau in the negative direction. This corresponds to the mean value of each shear force of the cyclic bilinear curve's plateau in the negative direction. The shear force of the cyclic bilinear curve's plateau in the negative direction (horizontal branch), determined by ensuring that the areas below the negative cyclic envelope curve and below the equivalent bilinear curve are equal."
+#52,,,#3,δe+,[%],Equivalent yielding drift in th positive direction. This corresponds to the mean value of each cyclic yielding drift in the positive direction. The  cyclic yielding drift in the positive direction is determined by intersecting the two branches of the positive cyclic envelope.
+#53,,,#4,δe-,[%],Equivalent yielding drift in th negative direction. This corresponds to the mean value of each cyclic yielding drift in the negative direction. The  cyclic yielding drift in the negative direction is determined by intersecting the two branches of the negative cyclic envelope.
+#54,,,#5,δu+,[%],Equivalent ultimate drift in the positive direction. This corresponds to the minimum value of each cyclic ultimate drift in the positive direction. The cyclic ultimate drift in the positive direction is the drift obtained  at 20% drop of positive maximum shear force in the positive cyclic envelope.
+#55,,,#6,δu-,[%],Equivalent ultimate drift in the negative direction. This corresponds to the minimum value of each cyclic ultimate drift in the negative direction. The cyclic ultimate drift in the negative direction is the drift obtained  at 20% drop of negative maximum shear force in the negative cyclic envelope.
+#56,,,#7,keff+,[kN/mm],Equivalent effective stiffness in the positive direction. This corresponds to the ratio between the equivalent shear force of the bilinear curve's plateau and the equivalent yield drift in the positive direction.
+#57,,,#8,keff-,[kN/mm],Equivalent effective stiffness in the negative direction. This corresponds to the ratio between the equivalent shear force of the bilinear curve's plateau and the equivalent yield drift in the negative direction.
+#58,,,#9,μu+,[-],Ductility (equivalent ultimate drift-to-equivalent yielding drift ratio) in the positive direction.
+#59,,,#10,μu-,[-],Ductility (equivalent ultimate drift-to-equivalent yielding drift ratio) in the negative direction.
+#60,Bilinear idealisation EPFL [VII],It contains the variables to characterise the bilinear idealisation following Pavia approach. A single envelope is determined in the positive and negative direction considering the full F-d curve.,#1, Vbil+,[kN],"Shear force of the bilinear curve's plateau in the positive direction (horizontal branch), determined by ensuring that the areas below the positive envelope curve and below the equivalent bilinear curve are equal."
+#61,,,#2, Vbil-,[kN],"Shear force of the bilinear curve's plateau in the negative direction (horizontal branch), determined by ensuring that the areas below the negative envelope curve and below the equivalent bilinear curve are equal."
+#62,,,#3,δe+,[%],"Yielding drift in the positive direction, determined by intersecting the two branches of the positive envelope."
+#63,,,#4,δe-,[%],"Yielding drift in the negative direction, determined by intersecting the two branches of the negative envelope."
+#64,,,#5,δu+,[%],"Ultimate drift in the positive direction, equivalent to the drift where the positive envelope undergoes 20% drop of positive maximum shear force."
+#65,,,#6,δu-,[%],"Ultimate drift in the nagetive direction, equivalent to the drift where the negative envelope undergoes 20% drop of negative maximum shear force."
+#66,,,#7,keff+,[kN/mm],Effective stiffness in the positive direction (secant to positive envelope at 70% of the positive maximum shear force). This slope determine the inclined branch of the positive envelope.
+#67,,,#8,keff-,[kN/mm],Effective stiffness in the negative direction (secant to negative envelope at 70% of the negative maximum shear force). This slope determine the inclined branch of the negative envelope.
+#68,,,#9,μu+,[-],Ductility (ultimate drift-to-yielding drift ratio) in the positive direction.
+#69,,,#10,μu-,[-],Ductility (ultimate drift-to-yielding drift ratio) in the negative direction.
+#70,Cracks [VIII],"It says if any crack analysis was performed for this specimen and if yes, it specifies the method implemented.",#1,Crack measurements,[-],"Crack measurements reported, specifying the method used: No (if no crack measurements were conducted), method implemented/short description (DIC, deep learning, fractal, etc)."

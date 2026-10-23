@@ -10,21 +10,26 @@ import { join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { BOM, parseCsv } from '../src/lib/csv.ts'
 import type { Dataset, Field, Meta, Reference, Specimen } from '../src/api/types.ts'
+import { flagged } from '../src/lib/derive.ts'
 import { isVariant, missingVariants } from '../src/lib/photos.ts'
 
 const FOLDERS = [
   '02_fd_curve',
-  '03_envelope',
-  '04_bilinear_curve',
-  '05_fig_setup',
-  '06_fig_failmode',
-  '07_fig_materials',
-  '08_fig_cracks'
+  '03_envelope_Pavia',
+  '04_envelope_EPFL',
+  '05_bilinear_curve_Pavia',
+  '06_bilinear_curve_EPFL',
+  '07_fig_setup',
+  '08_fig_failmode',
+  '09_fig_materials',
+  '10_fig_cracks'
 ]
-/** Database flag column → the folder that must hold a file for every flagged row. */
-const FLAGS: Record<string, string> = {
-  'F-d data': '02_fd_curve',
-  'Crack measurements': '08_fig_cracks'
+/** Database flag column → the folders, one of which holds a file for every flagged row. */
+const FLAGS: Record<string, string[]> = {
+  'F-d data': ['02_fd_curve'],
+  'Env curve': ['03_envelope_Pavia', '04_envelope_EPFL'],
+  'Bil curve': ['05_bilinear_curve_Pavia', '06_bilinear_curve_EPFL'],
+  'Crack measurements': ['10_fig_cracks']
 }
 
 /** Excel's "CSV UTF-8" starts with a BOM; Windows Excel needs it to show σ, δ, μ from /data. */
@@ -46,40 +51,92 @@ function assertUtf8(where: string, cells: string[]) {
     fail(`${where} has ${JSON.stringify(bad)}: re-export the CSV from Excel as "CSV UTF-8"`)
 }
 
-function readFields(dir: string, header: string[]): Field[] {
-  const [, ...rows] = read(dir, 'ModernMasonryDatabase_EIA_Fields.csv')
-  let category = ''
-  const byName = new Map<string, string[]>()
-  for (const r of rows) {
-    category = r[1] || category // the category is written on its first row only
-    byName.set(r[3]!.trim(), [category, ...r])
-  }
-  assertUtf8('Fields.csv', [...byName.keys()])
+/** A CSV with a header row, as one object per row keyed by column name. */
+function readTable(dir: string, path: string, columns: string[]) {
+  const [head, ...rows] = read(dir, path)
+  const at = columns.map((c) => {
+    const i = head!.findIndex((h) => h.trim() === c)
+    return i >= 0 ? i : fail(`${path} has no "${c}" column`)
+  })
+  return rows.map((r) => Object.fromEntries(columns.map((c, j) => [c, r[at[j]!]?.trim() ?? ''])))
+}
+
+/** A category label on its first column only, filled forward: 'General Information [I]', '', '' … */
+const fillForward = (cells: string[]) =>
+  cells.map((c, i) => c || cells.slice(0, i).findLast(Boolean)!)
+
+function readFields(dir: string, header: string[], categories: string[]): Field[] {
+  const rows = readTable(dir, 'ModernMasonryDatabase_EIA_Fields.csv', [
+    'Category',
+    'Category description',
+    'Name',
+    'Units',
+    'Definition'
+  ])
+  const cats = fillForward(rows.map((r) => r.Category!))
+  const descriptions = fillForward(rows.map((r) => r['Category description']!))
+  // Pavia [VI] and EPFL [VII] share their names (Vbil+, δe+…): a name is only unique per category.
+  const byName = new Map(
+    rows.map((r, i) => [
+      `${cats[i]}|${r.Name}`,
+      { units: r.Units!, definition: r.Definition!, description: descriptions[i]! }
+    ])
+  )
+  assertUtf8(
+    'Fields.csv',
+    rows.map((r) => r.Name!)
+  )
+  const keys = new Set<string>()
   return header.map((h, i) => {
     // 'Void Ratio        [%]' → 'Void Ratio'
     const name = h.replace(/\[[^\]]*\]\s*$/, '').trim()
-    const row = byName.get(name) ?? fail(`Database column ${i + 1} "${h}" has no Fields row`)
-    const [cat, , , , , units, definition] = row
-    const m = /^(.*?)\s*\[([IVX]+)\]$/.exec(cat!) ?? fail(`bad category "${cat}"`)
+    const cat = categories[i]!
+    const row =
+      byName.get(`${cat}|${name}`) ??
+      fail(`Database column ${i + 1} "${h}" (${cat}) has no Fields row`)
+    const m = /^(.*?)\s*\[([IVX]+)\]$/.exec(cat) ?? fail(`bad category "${cat}"`)
+    // A name an earlier category already uses gets its numeral: 'Vbil+' (Pavia), 'Vbil+ [VII]' (EPFL).
+    const key = keys.has(name) ? `${name} [${m[2]}]` : name
+    if (keys.has(key)) fail(`Database column ${i + 1} "${h}" repeats in category ${m[2]}`)
+    keys.add(key)
     return {
       n: i + 1,
+      key,
       category: m[2]!,
       categoryName: m[1]!,
+      categoryDescription: row.description,
       name,
-      units: units!.trim(),
-      definition: definition!.trim()
+      units: row.units,
+      definition: row.definition
     }
   })
 }
 
 function readReferences(dir: string): Reference[] {
-  const [, ...rows] = read(dir, '01_references/ModernMasonryDatabase_EIA_References.csv')
-  return rows.map(([nref, id, citation, linkDocument, linkData]) => ({
-    nref: Number(nref),
-    id: id!,
-    citation: nullable(citation?.trim()),
-    linkDocument: nullable(linkDocument?.trim()),
-    linkData: nullable(linkData?.trim())
+  const figs = new Map(
+    readTable(dir, '01_references/ModernMasonryDatabase_EIA_Fig_references.csv', [
+      'Reference ID',
+      'Reference',
+      'Link document'
+    ]).map((r) => [r['Reference ID'], r])
+  )
+  const rows = readTable(dir, '01_references/ModernMasonryDatabase_EIA_References.csv', [
+    'Nref',
+    'Reference ID',
+    'Reference',
+    'Link document',
+    'Link data'
+  ]).filter((r) => r['Reference ID']) // numbered placeholder rows
+  const ids = new Set(rows.map((r) => r['Reference ID']))
+  for (const id of figs.keys()) if (id && !ids.has(id)) fail(`Fig_references.csv: unknown "${id}"`)
+  return rows.map((r) => ({
+    nref: Number(r.Nref),
+    id: r['Reference ID']!,
+    citation: nullable(r.Reference),
+    linkDocument: nullable(r['Link document']),
+    linkData: nullable(r['Link data']),
+    figCitation: nullable(figs.get(r['Reference ID'])?.Reference),
+    figLink: nullable(figs.get(r['Reference ID'])?.['Link document'])
   }))
 }
 
@@ -87,7 +144,10 @@ function readMeta(dir: string): Meta {
   const text = readFileSync(join(dir, 'readme.txt'), 'utf8')
   const [, d, m, y] =
     /Last update:\s*(\d{2})\/(\d{2})\/(\d{4})/.exec(text) ?? fail('no "Last update" in readme.txt')
-  const block = /primarily taken from:\s*([\s\S]*?)\s*and further complemented/.exec(text)
+  // "primarily taken from:" or, since 22/10/2026, "primarily (188 tests) taken from:"
+  const block = /primarily (?:\([^)]*\) )?taken from:\s*([\s\S]*?)\s*and further complemented/.exec(
+    text
+  )
   if (!block) fail('no source list in readme.txt')
   const sources = block[1]!
     .split(/\r?\n/)
@@ -107,7 +167,7 @@ function scanFiles(dir: string, known: Set<number>): Map<number, string[]> {
       // Photo web versions are served, not dataset files: no specimen entry, no download.
       if (isVariant(name)) continue
       const m =
-        /_(\d{4})(?:_(?:pos|neg))?\.\w+$/.exec(name) ??
+        /_(\d{4})(?:_(?:pos|neg)(?:_cycle\d+)?)?\.\w+$/.exec(name) ??
         fail(`${folder}/${name}: no specimen number`)
       const N = Number(m[1])
       if (!known.has(N)) fail(`${folder}/${name}: no specimen ${N} in the database`)
@@ -124,15 +184,18 @@ function scanFiles(dir: string, known: Set<number>): Map<number, string[]> {
 
 export function convert(dir: string): Dataset {
   const db = read(dir, 'ModernMasonryDatabase_EIA_Database.csv')
+  if (db[0]?.[0] !== '#1')
+    fail('Database.csv must start with its "#1, #2…" row: export it with scripts/export-csv.py')
   const header = db[3] ?? fail('Database.csv has fewer than 4 header rows')
   assertUtf8('Database.csv header', db.slice(0, 4).flat())
-  const fields = readFields(dir, header)
+  const fields = readFields(dir, header, fillForward(db[1]!))
   const references = readReferences(dir)
   const refIds = new Set(references.map((r) => r.id))
 
-  const rows = db.slice(4).filter((r) => r.some((c) => c !== ''))
+  // A row with nothing but its N is a placeholder (N 237 in the 22/10/2026 delivery).
+  const rows = db.slice(4).filter((r) => r.slice(1).some((c) => c !== ''))
   const specimens: Specimen[] = rows.map((r) => {
-    const values = Object.fromEntries(fields.map((f, i) => [f.name, nullable(r[i])]))
+    const values = Object.fromEntries(fields.map((f, i) => [f.key, nullable(r[i])]))
     const N = Number(values.N)
     if (!Number.isInteger(N)) fail(`row with N = ${values.N}`)
     if (!refIds.has(values.Reference!))
@@ -142,11 +205,11 @@ export function convert(dir: string): Dataset {
   const files = scanFiles(dir, new Set(specimens.map((s) => s.N)))
   for (const s of specimens) {
     s.files = files.get(s.N) ?? []
-    for (const [flag, folder] of Object.entries(FLAGS)) {
-      const has = s.files.some((f) => f.startsWith(folder))
-      if (Boolean(s.values[flag]) !== has)
+    for (const [flag, folders] of Object.entries(FLAGS)) {
+      const has = s.files.some((f) => folders.some((d) => f.startsWith(`${d}/`)))
+      if (flagged(s.values[flag]) !== has)
         fail(
-          `specimen ${s.N}: "${flag}" is ${s.values[flag] ?? 'empty'} but ${folder} ${has ? 'has' : 'lacks'} its file`
+          `specimen ${s.N}: "${flag}" is ${s.values[flag] ?? 'empty'} but ${folders.join(', ')} ${has ? 'has' : 'lacks'} its file`
         )
     }
   }

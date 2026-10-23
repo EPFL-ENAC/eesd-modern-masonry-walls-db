@@ -36,13 +36,13 @@ export async function saveSpecimenZip(r: Row) {
   saveBlob(await zip(entries), `specimen_${pad(r.N)}.zip`)
 }
 
-/** Submission template (open question 2): one header row with the 47 column names, N left to the curator. */
+/** Submission template (open question 2): one header row with the database column names, N left to the curator. */
 export async function saveTemplateCsv() {
   const [, , , names] = await databaseTable()
   saveBlob(new Blob([BOM + toCsv([names!])]), 'ModernMasonryDatabase_EIA_template.csv')
 }
 
-const EXAMPLE = 189 // SW0.1: it has every response file
+const EXAMPLE = 227 // SW0.1: it has every response file
 
 /**
  * The starter kit: the submission folder as it should be, keyed by specimen name
@@ -55,7 +55,7 @@ export async function saveStarterKit(readme: string) {
   const r = byN.get(EXAMPLE)!
   const curves = await Promise.all(
     r.files
-      .filter((p) => /^0[2-4]_/.test(p))
+      .filter((p) => /^0[2-6]_/.test(p))
       .map(async (p): Promise<[string, Blob]> => [
         p.replace(pad(EXAMPLE), r.specimen),
         await fetchFile(p)

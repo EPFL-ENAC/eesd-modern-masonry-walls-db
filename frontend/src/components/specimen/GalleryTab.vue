@@ -18,8 +18,15 @@
           {{ t('specimen.gallery.missing', { file: `${fig.stem}_${pad(row.N)}` }) }}
         </div>
       </div>
-      <FieldRows :row="row" :names="fig.fields" class="fig-kv" />
+      <FieldRows :row="row" :keys="fig.fields" class="fig-kv" />
     </figure>
+    <p v-if="reference?.figCitation" class="fig-source">
+      {{ t('specimen.gallery.source') }}
+      <a v-if="reference.figLink" :href="reference.figLink" target="_blank" rel="noopener">{{
+        reference.figCitation
+      }}</a>
+      <template v-else>{{ reference.figCitation }}</template>
+    </p>
 
     <dialog ref="dialog" class="fig-dialog" @click.self="dialog?.close()">
       <img v-if="big" :src="photoUrl(big.path, 1920)" :alt="big.alt" />
@@ -37,7 +44,7 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { photoUrl } from '../../api/dataset.ts'
+import { photoUrl, referenceById } from '../../api/dataset.ts'
 import type { Row } from '../../lib/derive.ts'
 import { pad } from '../../lib/download.ts'
 import FieldRows from './FieldRows.vue'
@@ -47,19 +54,21 @@ const { t } = useI18n()
 
 // σ₀/fm left out of the setup list: no derived ratio (open question 1).
 const FIGURES = [
-  { key: 'setup', folder: '05_fig_setup/', stem: 'fig_setup', fields: ['H0/H', 'σ0'] },
-  { key: 'failmode', folder: '06_fig_failmode/', stem: 'fig_failmode', fields: ['Failure mode'] },
+  { key: 'setup', folder: '07_fig_setup/', stem: 'fig_setup', fields: ['H0/H', 'σ0'] },
+  { key: 'failmode', folder: '08_fig_failmode/', stem: 'fig_failmode', fields: ['Failure mode'] },
   {
     key: 'materials',
-    folder: '07_fig_materials/',
+    folder: '09_fig_materials/',
     stem: 'fig_mat',
     fields: ['Unit type', 'fb,Ʇ', 'fmo']
   },
-  { key: 'cracks', folder: '08_fig_cracks/', stem: 'fig_cracks', fields: ['Crack measurements'] }
+  { key: 'cracks', folder: '10_fig_cracks/', stem: 'fig_cracks', fields: ['Crack measurements'] }
 ]
 const figures = computed(() =>
   FIGURES.map((f) => ({ ...f, path: props.row.files.find((p) => p.startsWith(f.folder)) }))
 )
+// Fig_references.csv: the figures' publication, when it differs from the data's.
+const reference = computed(() => referenceById.get(props.row.reference))
 
 const dialog = ref<HTMLDialogElement>()
 const big = ref<{ path: string; alt: string }>()
@@ -115,6 +124,13 @@ function enlarge(path: string, key: string) {
   font-size: 0.8125rem;
   color: var(--fg-muted);
   border: var(--border-w) dashed var(--epfl-gray-300);
+}
+
+.fig-source {
+  grid-column: 1 / -1;
+  margin: 0;
+  font-size: 0.8125rem;
+  color: var(--fg-muted);
 }
 
 .fig-kv {

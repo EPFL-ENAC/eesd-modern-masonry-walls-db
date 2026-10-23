@@ -191,13 +191,17 @@ const CURVE = 'drift [%], horizontal_force [kN]'
 const TREE = [
   { key: 'table', path: 'ModernMasonryDatabase_EIA_Database.csv', required: true },
   { key: 'fd', path: '02_fd_curve/fd_curve_<specimen>.csv', columns: CURVE },
-  { key: 'envelope', path: '03_envelope/envelope_<specimen>_pos.csv · _neg.csv', columns: CURVE },
   {
-    key: 'bilinear',
-    path: '04_bilinear_curve/bilinear_<specimen>_pos.csv · _neg.csv',
+    key: 'envelope',
+    path: '03_envelope_Pavia/ · 04_envelope_EPFL/envelope_<specimen>_pos.csv · _neg.csv',
     columns: CURVE
   },
-  { key: 'photos', path: '05_fig_setup/ … 08_fig_cracks/fig_<kind>_<specimen>.jpg' }
+  {
+    key: 'bilinear',
+    path: '05_bilinear_curve_Pavia/ · 06_bilinear_curve_EPFL/bilinear_<specimen>_pos.csv · _neg.csv',
+    columns: CURVE
+  },
+  { key: 'photos', path: '07_fig_setup/ … 10_fig_cracks/fig_<kind>_<specimen>.jpg' }
 ].map((e) => ({ required: false, columns: '', ...e }))
 
 const tab = ref<'guide' | 'dictionary'>('guide')

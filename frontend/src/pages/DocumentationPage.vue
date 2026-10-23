@@ -68,6 +68,7 @@
 
         <section v-for="c in shown" :id="`cat-${c.cat}`" :key="c.cat" class="glossary-cat">
           <h3 class="glossary-cat-title">{{ c.cat }} · {{ c.name }}</h3>
+          <p class="docs-muted">{{ c.description }}</p>
           <table class="glossary">
             <thead>
               <tr>
@@ -116,14 +117,16 @@ const { t } = useI18n()
 const TOP = ['about', 'files', 'glossary'] as const
 // File-name patterns from readme.txt.
 const FOLDERS = [
-  { folder: '01_references', pattern: '…_References.csv' },
+  { folder: '01_references', pattern: '…_References.csv · …_Fig_references.csv' },
   { folder: '02_fd_curve', pattern: 'fd_curve_N' },
-  { folder: '03_envelope', pattern: 'envelope_N_pos / _neg' },
-  { folder: '04_bilinear_curve', pattern: 'bilinear_N_pos / _neg' },
-  { folder: '05_fig_setup', pattern: 'fig_setup_N' },
-  { folder: '06_fig_failmode', pattern: 'fig_failmode_N' },
-  { folder: '07_fig_materials', pattern: 'fig_mat_N' },
-  { folder: '08_fig_cracks', pattern: 'fig_cracks_N' }
+  { folder: '03_envelope_Pavia', pattern: 'envelope_N_pos / _neg (_cycleM)' },
+  { folder: '04_envelope_EPFL', pattern: 'envelope_N_pos / _neg' },
+  { folder: '05_bilinear_curve_Pavia', pattern: 'bilinear_N_pos / _neg (_cycleM)' },
+  { folder: '06_bilinear_curve_EPFL', pattern: 'bilinear_N_pos / _neg' },
+  { folder: '07_fig_setup', pattern: 'fig_setup_N' },
+  { folder: '08_fig_failmode', pattern: 'fig_failmode_N' },
+  { folder: '09_fig_materials', pattern: 'fig_mat_N' },
+  { folder: '10_fig_cracks', pattern: 'fig_cracks_N' }
 ]
 
 const lastUpdate = new Date(meta.lastUpdate).toLocaleDateString('en-GB', {
@@ -163,8 +166,9 @@ function entries(of: Field[]): Entry[] {
       n: twin ? `${f.n}–${twin.n}` : String(f.n),
       field: twin ? { name: f.name.slice(0, -1), units: f.units } : f,
       pair: !!twin,
+      // The + definition, read for both: "…in the positive (negative) direction."
       definition: twin
-        ? f.definition.replace(/ in the positive direction$/, '') + t('docs.bothDirections')
+        ? f.definition.replaceAll('positive', t('docs.bothDirections'))
         : f.definition,
       codes: codes(f.definition)
     })
@@ -174,7 +178,13 @@ function entries(of: Field[]): Entry[] {
 
 const categories = [...new Set(fields.map((f) => f.category))].map((cat) => {
   const of = fields.filter((f) => f.category === cat)
-  return { cat, name: of[0]!.categoryName, fields: of, entries: entries(of) }
+  return {
+    cat,
+    name: of[0]!.categoryName,
+    description: of[0]!.categoryDescription,
+    fields: of,
+    entries: entries(of)
+  }
 })
 
 const query = ref('')

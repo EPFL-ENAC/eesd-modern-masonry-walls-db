@@ -21,9 +21,9 @@
         <label v-for="f in c.fields" :key="f.n" class="box-option">
           <input
             type="checkbox"
-            :checked="model.includes(f.name)"
+            :checked="model.includes(f.key)"
             :disabled="c.cat === 'I'"
-            @change="toggle([f], !model.includes(f.name))"
+            @change="toggle([f], !model.includes(f.key))"
           />
           <FieldLabel :field="f" />
         </label>
@@ -32,7 +32,7 @@
     <button
       type="button"
       class="epfl-btn epfl-btn-secondary epfl-btn-sm"
-      @click="model = fields.map((f) => f.name)"
+      @click="model = fields.map((f) => f.key)"
     >
       {{ t('columns.showAll', { n: fields.length }) }}
     </button>
@@ -54,12 +54,12 @@ const label = (cat: string) => `${cat} · ${t(`fieldCategories.${cat}`)}`
 const categories = computed(() =>
   [...new Set(fields.map((f) => f.category))].map((cat) => {
     const of = fields.filter((f) => f.category === cat)
-    return { cat, fields: of, shown: of.filter((f) => model.value.includes(f.name)).length }
+    return { cat, fields: of, shown: of.filter((f) => model.value.includes(f.key)).length }
   })
 )
 
 function toggle(of: Field[], show: boolean) {
-  const names = of.map((f) => f.name)
+  const names = of.map((f) => f.key)
   model.value = show
     ? [...new Set([...model.value, ...names])]
     : model.value.filter((n) => !names.includes(n))
