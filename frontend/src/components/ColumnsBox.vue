@@ -7,7 +7,6 @@
           type="checkbox"
           :checked="c.shown === c.fields.length"
           :indeterminate="c.shown > 0 && c.shown < c.fields.length"
-          :disabled="c.cat === 'I'"
           :aria-label="
             t('columns.category', { name: label(c.cat), shown: c.shown, total: c.fields.length })
           "
@@ -22,7 +21,7 @@
           <input
             type="checkbox"
             :checked="model.includes(f.key)"
-            :disabled="c.cat === 'I'"
+            :disabled="LOCKED.includes(f.key)"
             @change="toggle([f], !model.includes(f.key))"
           />
           <FieldLabel :field="f" />
@@ -58,8 +57,11 @@ const categories = computed(() =>
   })
 )
 
+// The table's sticky pair: always shown.
+const LOCKED = ['N', 'Specimen name']
+
 function toggle(of: Field[], show: boolean) {
-  const names = of.map((f) => f.key)
+  const names = of.map((f) => f.key).filter((n) => !LOCKED.includes(n))
   model.value = show
     ? [...new Set([...model.value, ...names])]
     : model.value.filter((n) => !names.includes(n))
