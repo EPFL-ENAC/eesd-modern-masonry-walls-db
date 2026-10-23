@@ -142,9 +142,9 @@
   },
   "table": {
     "search": "Search specimen or reference",
-    "export": "Export",
+    "export": "Download data",
     "count": "{n} of {total} specimens",
-    "hint": "Select a row to open its specimen panel",
+    "hint": "Select a row to open the specimen",
     "removeFilter": "Remove filter {filter}",
     "fixed": "fixed",
     "rows": "Rows {from}–{to} of {n} · sorted by {field}",
@@ -155,7 +155,7 @@
     "page": "Page {n}"
   },
   "export": {
-    "title": "Export",
+    "title": "Download data",
     "specimens": "Specimens",
     "filtered": "Filtered",
     "full": "Full database",
@@ -174,6 +174,7 @@
   },
   "columns": {
     "title": "Columns",
+    "button": "Columns ({shown}/{total})",
     "showAll": "Show all {n} columns",
     "category": "{name}: {shown} of {total} columns shown"
   },

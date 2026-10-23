@@ -18,7 +18,14 @@
         <div id="db-toolbar" class="db-toolbar" />
       </div>
       <router-view />
-      <SpecimenPanel v-if="specimen" :key="specimen.N" :row="specimen" />
+      <ModalDialog
+        :model-value="!!specimen"
+        wide
+        :label="specimen ? t('specimen.label', { name: specimen.specimen }) : ''"
+        @update:model-value="(o) => o || close()"
+      >
+        <SpecimenPanel v-if="specimen" :key="specimen.N" :row="specimen" />
+      </ModalDialog>
     </div>
   </div>
 </template>
@@ -29,12 +36,16 @@ import { useI18n } from 'vue-i18n'
 import { useRoute } from 'vue-router'
 import { byN } from '../api/dataset.ts'
 import FilterSidebar from '../components/FilterSidebar.vue'
+import ModalDialog from '../components/ModalDialog.vue'
 import SpecimenPanel from '../components/SpecimenPanel.vue'
+import { useFilters } from '../composables/useFilters.ts'
 
 const { t } = useI18n()
 const route = useRoute()
-// ?specimen=N opens the panel under either view (HANDOFF §3).
+const { setQuery } = useFilters()
+// ?specimen=N opens the specimen in a dialog over either view (HANDOFF §3).
 const specimen = computed(() => byN.get(Number(route.query.specimen)))
+const close = () => setQuery({ specimen: undefined, tab: undefined })
 </script>
 
 <style scoped lang="scss">

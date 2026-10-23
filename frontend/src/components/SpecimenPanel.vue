@@ -128,7 +128,6 @@ async function downloadAll() {
 .panel {
   display: flex;
   flex-direction: column;
-  border: var(--border-w) solid var(--border);
 }
 
 .panel-head {

@@ -1,6 +1,16 @@
 <template>
-  <section id="export" class="box box-strong" tabindex="-1" aria-labelledby="export-h">
-    <h3 id="export-h" class="box-title">{{ t('export.title') }}</h3>
+  <section class="box export" aria-labelledby="export-h">
+    <div class="export-head">
+      <h2 id="export-h" class="box-title">{{ t('export.title') }}</h2>
+      <button
+        type="button"
+        class="export-close"
+        :aria-label="t('specimen.close')"
+        @click="emit('close')"
+      >
+        <q-icon :name="matClose" size="1.25rem" />
+      </button>
+    </div>
     <fieldset class="box-set">
       <legend class="box-legend">{{ t('export.specimens') }}</legend>
       <label v-for="s in ['filtered', 'full'] as const" :key="s" class="box-option">
@@ -34,7 +44,7 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { matFileDownload } from '@quasar/extras/material-icons'
+import { matClose, matFileDownload } from '@quasar/extras/material-icons'
 import {
   DATABASE_CSV,
   FIG_REFERENCES_CSV,
@@ -47,6 +57,7 @@ import {
 import { useFilters } from '../composables/useFilters.ts'
 import { saveBlob, zip } from '../lib/download.ts'
 
+const emit = defineEmits<{ close: [] }>()
 const { t } = useI18n()
 const { filtered } = useFilters()
 
@@ -100,6 +111,37 @@ async function download() {
 </script>
 
 <style scoped lang="scss">
+// The dialog frames it: no box border.
+.export {
+  gap: var(--space-3);
+  padding: var(--space-4);
+  border: 0;
+}
+
+.export-head {
+  display: flex;
+  gap: var(--space-2);
+  align-items: center;
+  justify-content: space-between;
+
+  .box-title {
+    font-size: var(--fs-h6);
+  }
+}
+
+.export-close {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  color: var(--fg);
+  cursor: pointer;
+  background: var(--bg);
+  border: var(--border-w) solid var(--epfl-gray-300);
+  border-radius: var(--radius);
+}
+
 .export-go {
   justify-content: center;
   width: 100%;
