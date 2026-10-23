@@ -129,6 +129,7 @@ const close = () => setQuery({ specimen: undefined, tab: undefined })
 
 .db-toolbar {
   display: flex;
+  flex-wrap: wrap;
   gap: var(--space-2);
   padding-bottom: 0.625rem;
 }

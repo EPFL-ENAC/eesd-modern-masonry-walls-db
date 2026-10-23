@@ -177,6 +177,25 @@ const nav = [
   }
 }
 
+// Phones: the footer's logo and columns stack.
+@media (width <= 40rem) {
+  .epfl-footer {
+    padding-inline: var(--space-3);
+  }
+
+  .epfl-footer-top {
+    flex-direction: column;
+  }
+
+  .epfl-footer-cols {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .footer-cite {
+    grid-column: auto;
+  }
+}
+
 .header-lab-tag {
   padding-left: 0.75rem;
   font-size: 0.9375rem;
