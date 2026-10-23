@@ -4,10 +4,10 @@
  * Written by `pnpm optimize-images`, checked by `pnpm convert`.
  */
 export const PHOTO_FOLDERS = [
-  '05_fig_setup',
-  '06_fig_failmode',
-  '07_fig_materials',
-  '08_fig_cracks'
+  '07_fig_setup',
+  '08_fig_failmode',
+  '09_fig_materials',
+  '10_fig_cracks'
 ]
 export const PHOTO_WIDTHS = [512, 1920] as const
 export type PhotoWidth = (typeof PHOTO_WIDTHS)[number]

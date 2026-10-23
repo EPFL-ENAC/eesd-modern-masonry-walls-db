@@ -6,8 +6,11 @@ conventions (`it4r-agent-kit`); this file only adds what is specific here.
 - The frontend is static and calls no backend. `backend/` is kept but unused.
 - The dataset lives in `frontend/public/data/` (photos in git-lfs).
   `pnpm convert` turns its CSVs into `frontend/src/assets/data/*.json`; commit both.
-- CSVs are UTF-8 with a BOM (Excel's "CSV UTF-8"; Windows Excel needs it), the
-  dataset's and every one the browser generates. `pnpm convert` rejects a BOM-less export.
+- CSVs are UTF-8 with a BOM (Windows Excel needs it), the dataset's and every one
+  the browser generates. `scripts/export-csv.py` writes the dataset's from the
+  xlsx; `pnpm convert` rejects a BOM-less export.
+- The Pavia [VI] and EPFL [VII] bilinear columns share their names (`Vbil+`, `δu+`…):
+  read values by `Field.key` (EPFL keys end in ` [VII]`, see `METHOD_SUFFIX`), never by name.
 - Photos show as WebP web versions (`pnpm optimize-images`, `src/lib/photos.ts`);
   downloads and exports keep the originals.
 - `src/api/dataset.ts` is the only module that reads the dataset.
@@ -16,7 +19,9 @@ conventions (`it4r-agent-kit`); this file only adds what is specific here.
   client-side" rule: there is no backend to hold them. Keep them there.
 - Filters live in the URL query (`useFilters()`), not in a store.
 - Styling uses the EPFL design system only: its tokens, classes and Vue kit
-  (`epfl-design-system/kits/vue`), no hex, no px (stylelint enforces it). Quasar sits
+  (`epfl-design-system/kits/vue`), no hex, no px (stylelint enforces it). It is
+  vendored in `frontend/vendor/epfl-design-system/` (aliased, never edited; its
+  README says how to update it), because its repository is private. Quasar sits
   in a lower cascade layer than the DS. Never mix in Vuetify.
 - Open design questions carry a `handoff-Q<n>` marker: `grep -rn handoff- frontend/src`.
 - Every user-facing string goes through `src/locales/en.json`.

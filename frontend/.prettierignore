@@ -6,3 +6,5 @@ pnpm-lock.yaml
 public/data/
 src/assets/data/
 tests/fixtures/
+# Vendored as is (vendor/epfl-design-system/README.md)
+vendor/

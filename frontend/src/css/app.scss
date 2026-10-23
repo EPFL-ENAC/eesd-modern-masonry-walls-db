@@ -185,6 +185,12 @@
         color: var(--epfl-white);
         background: var(--fg);
       }
+
+      &:disabled {
+        color: var(--fg-muted);
+        cursor: not-allowed;
+        background: var(--bg-subtle);
+      }
     }
   }
 

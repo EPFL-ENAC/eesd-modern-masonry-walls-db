@@ -25,6 +25,7 @@ export const photoUrl = (path: string, width: PhotoWidth) => fileUrl(variant(pat
 export const DATABASE_CSV = 'ModernMasonryDatabase_EIA_Database.csv'
 export const FIELDS_CSV = 'ModernMasonryDatabase_EIA_Fields.csv'
 export const REFERENCES_CSV = '01_references/ModernMasonryDatabase_EIA_References.csv'
+export const FIG_REFERENCES_CSV = '01_references/ModernMasonryDatabase_EIA_Fig_references.csv'
 
 /** A raw dataset file, as served under /data. */
 export async function fetchFile(path: string): Promise<Blob> {

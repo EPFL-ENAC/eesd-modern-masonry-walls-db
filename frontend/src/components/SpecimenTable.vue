@@ -22,14 +22,12 @@
               :key="f.n"
               class="th"
               :class="cellClass(f, i)"
-              :aria-sort="
-                sort.key === f.name ? (sort.desc ? 'descending' : 'ascending') : undefined
-              "
+              :aria-sort="sort.key === f.key ? (sort.desc ? 'descending' : 'ascending') : undefined"
               scope="col"
             >
-              <button type="button" class="th-sort" @click="sortBy(f.name)">
+              <button type="button" class="th-sort" @click="sortBy(f.key)">
                 <FieldLabel :field="f" :short="short(f)" units />
-                <span v-if="sort.key === f.name" aria-hidden="true">{{
+                <span v-if="sort.key === f.key" aria-hidden="true">{{
                   sort.desc ? ' ↓' : ' ↑'
                 }}</span>
               </button>
@@ -47,7 +45,7 @@
             @keydown.enter="open(r.N)"
           >
             <td v-for="(f, i) in columns" :key="f.n" class="td" :class="cellClass(f, i)">
-              {{ r.values[f.name] ?? '' }}
+              {{ r.values[f.key] ?? '' }}
             </td>
           </tr>
           <tr v-if="!rows.length">
@@ -111,9 +109,9 @@ const PAGE_SIZE = 12
 const NUMERIC = new Set(
   fields
     .filter((f) =>
-      allRows.every((r) => r.values[f.name] == null || !Number.isNaN(num(r.values[f.name])))
+      allRows.every((r) => r.values[f.key] == null || !Number.isNaN(num(r.values[f.key])))
     )
-    .map((f) => f.name)
+    .map((f) => f.key)
 )
 
 const short = (f: Field) => (te(`fieldShort.${f.n}`) ? t(`fieldShort.${f.n}`) : undefined)
@@ -121,8 +119,8 @@ const short = (f: Field) => (te(`fieldShort.${f.n}`) ? t(`fieldShort.${f.n}`) : 
 // N° and Specimen first (sticky), then the visible fields in database order.
 const STICKY = ['N', 'Specimen name']
 const columns = computed(() => [
-  ...STICKY.map((name) => fields.find((f) => f.name === name)!),
-  ...fields.filter((f) => !STICKY.includes(f.name) && props.visible.includes(f.name))
+  ...STICKY.map((name) => fields.find((f) => f.key === name)!),
+  ...fields.filter((f) => !STICKY.includes(f.key) && props.visible.includes(f.key))
 ])
 // Category header row; the sticky pair is its own group, so "I" may appear twice (named once).
 const groups = computed(() => {
@@ -135,7 +133,7 @@ const groups = computed(() => {
   return out
 })
 const cellClass = (f: Field, i: number) => ({
-  num: NUMERIC.has(f.name),
+  num: NUMERIC.has(f.key),
   fix1: i === 0,
   fix2: i === 1
 })
@@ -173,8 +171,8 @@ const goto = (p: number) => setQuery({ page: p === 1 ? undefined : String(p) })
 
 const status = computed(() => {
   const n = props.rows.length
-  const f = fields.find((x) => x.name === sort.value.key)
-  const field = f ? (short(f) ?? f.name) : sort.value.key
+  const f = fields.find((x) => x.key === sort.value.key)
+  const field = f ? (short(f) ?? f.key) : sort.value.key
   const from = n ? (page.value - 1) * PAGE_SIZE + 1 : 0
   const to = Math.min(n, page.value * PAGE_SIZE)
   return t(sort.value.desc ? 'table.rowsDesc' : 'table.rows', { from, to, n, field })

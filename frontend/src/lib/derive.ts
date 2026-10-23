@@ -17,6 +17,9 @@ export function avg(a: number, b: number): number {
   return (a + b) / 2
 }
 
+/** An availability column ('F-d data', 'Crack measurements'…): 'Yes' or a method, not empty or 'No'. */
+export const flagged = (v: string | null | undefined) => v != null && v !== '' && v !== 'No'
+
 export const NA = 'n/a'
 
 /** First label whose edge v is below, else the last label; NaN → n/a. */

@@ -37,6 +37,7 @@ import { useI18n } from 'vue-i18n'
 import { matFileDownload } from '@quasar/extras/material-icons'
 import {
   DATABASE_CSV,
+  FIG_REFERENCES_CSV,
   REFERENCES_CSV,
   databaseCsv,
   fetchFile,
@@ -54,8 +55,8 @@ const INCLUDE = ['table', 'curves', 'envelopes', 'figures', 'references'] as con
 type Include = (typeof INCLUDE)[number]
 const FOLDERS: Partial<Record<Include, RegExp>> = {
   curves: /^02_/,
-  envelopes: /^0[34]_/,
-  figures: /^0[5-8]_/
+  envelopes: /^0[3-6]_/,
+  figures: /^(0[7-9]|10)_/
 }
 
 const scope = ref<'filtered' | 'full'>('filtered')
@@ -73,7 +74,7 @@ async function download() {
     const paths = set
       .flatMap((r) => r.files)
       .filter((p) => INCLUDE.some((k) => want(k) && FOLDERS[k]?.test(p)))
-    if (want('references')) paths.push(REFERENCES_CSV)
+    if (want('references')) paths.push(REFERENCES_CSV, FIG_REFERENCES_CSV)
     const entries: [string, Blob | string][] = await Promise.all(
       paths.map(async (p): Promise<[string, Blob]> => [p, await fetchFile(p)])
     )

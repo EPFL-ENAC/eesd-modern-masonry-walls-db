@@ -3,16 +3,15 @@ import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { describe, expect, it } from 'vitest'
 import { parseCsv } from '../src/lib/csv.ts'
-import { counts, derive, medianIqr, type Row } from '../src/lib/derive.ts'
+import { counts, medianIqr, type Row } from '../src/lib/derive.ts'
 import { convert } from '../scripts/convert-data.ts'
 import specimens from '../src/assets/data/specimens.json'
 import fields from '../src/assets/data/fields.json'
 import references from '../src/assets/data/references.json'
 import meta from '../src/assets/data/meta.json'
 import summary from './fixtures/summary.json'
-import type { Specimen } from '../src/api/types.ts'
+import { rows20260924 as rows } from './fixtures/rows-2026-09-24.ts'
 
-const rows = (specimens as Specimen[]).map(derive)
 const fixture = (name: string) => new URL(`./fixtures/${name}`, import.meta.url)
 
 describe('derive() against build_charts.py', () => {
@@ -96,9 +95,17 @@ describe('committed JSON', () => {
     expect(() => convert(dir)).toThrow(/no UTF-8 BOM/)
   })
 
-  it('has 47 fields and 25 references', () => {
-    expect(fields).toHaveLength(47)
-    expect(references).toHaveLength(25)
-    expect(references.find((r) => r.nref === 25)?.citation).toBeNull()
+  it('has 236 specimens, 70 fields and 31 references', () => {
+    // N 237 has nothing but its number; Nref 32 and 33 nothing but theirs.
+    expect(specimens.map((s) => s.N)).toEqual(Array.from({ length: 236 }, (_, i) => i + 1))
+    expect(fields).toHaveLength(70)
+    expect(references).toHaveLength(31)
+    expect(references.find((r) => r.nref === 31)?.citation).toBeNull()
+  })
+
+  it('keys the EPFL bilinear columns apart from the Pavia ones', () => {
+    const vi = fields.filter((f) => f.category === 'VI').map((f) => f.key)
+    const vii = fields.filter((f) => f.category === 'VII').map((f) => f.key)
+    expect(vii).toEqual(vi.map((k) => `${k} [VII]`))
   })
 })

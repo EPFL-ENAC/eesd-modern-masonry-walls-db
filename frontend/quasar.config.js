@@ -26,16 +26,15 @@ export default defineConfig(() => ({
       viteConf.resolve.alias ??= {}
       viteConf.resolve.alias['quasar/dist/quasar.sass'] = empty
       viteConf.resolve.alias['quasar/dist/quasar.css'] = empty
+      // The EPFL design system is vendored (vendor/epfl-design-system/README.md).
+      viteConf.resolve.alias['epfl-design-system'] = path.resolve(
+        __dirname,
+        './vendor/epfl-design-system'
+      )
       viteConf.css ??= {}
       viteConf.css.preprocessorOptions ??= {}
       viteConf.css.preprocessorOptions.scss ??= {}
       viteConf.css.preprocessorOptions.scss.silenceDeprecations = ['import']
-      // The DS Vue kit ships .vue files, which esbuild's dependency pre-bundling can't read.
-      viteConf.optimizeDeps ??= {}
-      viteConf.optimizeDeps.exclude = [
-        ...(viteConf.optimizeDeps.exclude ?? []),
-        'epfl-design-system'
-      ]
     }
   },
 

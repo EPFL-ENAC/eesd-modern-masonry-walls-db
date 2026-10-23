@@ -2,19 +2,29 @@
   <div class="curves">
     <div class="curves-main">
       <div class="curves-bar">
-        <div class="curves-layers">
-          <span v-if="present.length" class="curves-muted">{{ t('specimen.layers') }}</span>
-          <button
-            v-for="l in present"
-            :key="l"
-            type="button"
-            class="layer"
-            :aria-pressed="layers[l]"
-            @click="layers[l] = !layers[l]"
+        <div class="curves-groups">
+          <div
+            v-for="g in groups"
+            :key="g.key"
+            class="curves-layers"
+            role="group"
+            :aria-labelledby="`layers-${g.key}`"
           >
-            <span class="line" :class="`line-${l}`" />
-            {{ t(`specimen.layer.${l}`) }}
-          </button>
+            <span :id="`layers-${g.key}`" class="curves-muted curves-group">{{ g.label }}</span>
+            <div class="curves-buttons">
+              <button
+                v-for="l in g.layers"
+                :key="l.id"
+                type="button"
+                class="layer"
+                :aria-pressed="isOn(l)"
+                @click="on[l.id] = !isOn(l)"
+              >
+                <span class="line" :style="swatch(l)" />
+                {{ label(l) }}
+              </button>
+            </div>
+          </div>
         </div>
         <div class="seg" role="group" :aria-label="t('specimen.axes')">
           <button
@@ -35,17 +45,34 @@
         :option="option"
         autoresize
         role="img"
-        :aria-label="t('specimen.chartLabel', { name: row.specimen })"
+        :aria-label="
+          t('specimen.chartLabel', { name: row.specimen, method: t(`specimen.methods.${method}`) })
+        "
       />
       <p v-else class="curves-muted">{{ t('specimen.noCurve') }}</p>
-      <ul v-if="present.length" class="fd-legend">
-        <li v-for="l in present" :key="l">
-          <span class="line" :class="`line-${l}`" />{{ t(`specimen.legend.${l}`) }}
+      <ul v-if="drawn.length" class="fd-legend">
+        <li v-for="l in drawn" :key="l.id">
+          <span class="line" :style="swatch(l)" />{{ legend(l) }}
         </li>
       </ul>
     </div>
 
     <aside class="curves-side">
+      <div class="curves-from">
+        <span class="curves-muted">{{ t('specimen.pointsFrom') }}</span>
+        <div class="seg" role="group" :aria-label="t('specimen.pointsFrom')">
+          <button
+            v-for="m in METHODS"
+            :key="m"
+            type="button"
+            :aria-pressed="method === m"
+            :disabled="!available.includes(m)"
+            @click="method = m"
+          >
+            {{ t(`specimen.methods.${m}`) }}
+          </button>
+        </div>
+      </div>
       <fieldset class="points">
         <!-- Symbols keep their case: uppercase would turn δ, τ into Δ, T. -->
         <legend class="section-label">
@@ -70,7 +97,7 @@
         </div>
         <div class="kv-row">
           <dt><FieldLabel :field="{ name: 'Vbil', units: '' }" /> {{ t('units.plusMinus') }}</dt>
-          <dd>{{ t('units.kN', { v: pair('Vbil', 1) }) }}</dd>
+          <dd>{{ t('units.kN', { v: pair('Vbil', 1, METHOD_SUFFIX[method]) }) }}</dd>
         </div>
         <div class="kv-row">
           <dt>{{ t('specimen.maxDrift') }} {{ t('units.plusMinus') }}</dt>
@@ -97,7 +124,16 @@ import { useI18n } from 'vue-i18n'
 import type { EChartsOption, SeriesOption } from 'echarts'
 import { loadCurve, type Curve } from '../../api/dataset.ts'
 import { VChart } from '../../charts/echarts.ts'
-import { POINTS, limitPoints, toAxes, type Mode, type Point } from '../../charts/fd.ts'
+import {
+  METHODS,
+  METHOD_SUFFIX,
+  POINTS,
+  limitPoints,
+  toAxes,
+  type Method,
+  type Mode,
+  type Point
+} from '../../charts/fd.ts'
 import { num, type Row } from '../../lib/derive.ts'
 import { cssColor } from '../../lib/tokens.ts'
 import FieldLabel from '../FieldLabel.vue'
@@ -105,34 +141,119 @@ import FieldLabel from '../FieldLabel.vue'
 const props = defineProps<{ row: Row }>()
 const { t, te } = useI18n()
 
-type Layer = 'fd' | 'envelope' | 'bilinear'
-const FOLDERS: Record<Layer, string> = {
-  fd: '02_fd_curve/',
-  envelope: '03_envelope/',
-  bilinear: '04_bilinear_curve/'
+type Kind = 'envelope' | 'bilinear'
+const KINDS: Kind[] = ['envelope', 'bilinear']
+/** Each method's curve folders; Pavia's also hold an envelope and a bilinear per loading cycle. */
+const FOLDERS: Record<Method, Record<Kind, string>> = {
+  Pavia: { envelope: '03_envelope_Pavia/', bilinear: '05_bilinear_curve_Pavia/' },
+  EPFL: { envelope: '04_envelope_EPFL/', bilinear: '06_bilinear_curve_EPFL/' }
+}
+const CYCLE = /_cycle(\d+)\.csv$/
+/** Line colour per method and kind, as in EESD's bilinearisation plots: one hue family per method. */
+const TOKENS: Record<Method, Record<Kind, string>> = {
+  Pavia: { envelope: '--fg', bilinear: '--primary' },
+  EPFL: { envelope: '--epfl-blue', bilinear: '--epfl-leman' }
+}
+const CYCLE_TOKENS = ['--epfl-orange', '--epfl-green-text', '--epfl-canard-dark']
+
+/** One switchable curve set: the F-d curve, or a method's envelope or bilinear, global or per cycle. */
+type Layer = {
+  id: string
+  method: Method | null
+  kind: Kind | 'fd'
+  cycle: number | null
+  files: string[]
+  token: string
+  width: number
+  dashed: boolean
 }
 
+// The panel draws whatever files exist (open question 4): nothing is hard-coded.
+const layers = computed<Layer[]>(() => {
+  const files = props.row.files
+  const fd = files.filter((f) => f.startsWith('02_fd_curve/'))
+  const out: Layer[] = []
+  if (fd.length) {
+    const base = { method: null, cycle: null, files: fd, width: 0.9, dashed: false }
+    out.push({ ...base, id: 'fd', kind: 'fd', token: '--border-strong' })
+  }
+  for (const m of METHODS) {
+    const of = (k: Kind) => files.filter((f) => f.startsWith(FOLDERS[m][k]))
+    const cycleOf = (f: string) => Number(CYCLE.exec(f)?.[1] ?? 0)
+    const line = (k: Kind) => ({ method: m, kind: k, dashed: k === 'bilinear' })
+    for (const k of KINDS) {
+      const global = of(k).filter((f) => !cycleOf(f))
+      if (global.length)
+        out.push({
+          ...line(k),
+          id: `${m}-${k}`,
+          cycle: null,
+          files: global,
+          token: TOKENS[m][k],
+          width: 2
+        })
+    }
+    for (const k of KINDS) {
+      for (const c of [...new Set(of(k).map(cycleOf))].filter(Boolean).sort()) {
+        const token = CYCLE_TOKENS[(c - 1) % CYCLE_TOKENS.length]!
+        const cycle = of(k).filter((f) => cycleOf(f) === c)
+        out.push({ ...line(k), id: `${m}-${k}-${c}`, cycle: c, files: cycle, token, width: 1.2 })
+      }
+    }
+  }
+  return out
+})
+const groups = computed(() =>
+  [null, ...METHODS]
+    .map((m) => ({
+      key: m ?? 'all',
+      label: m ? t(`specimen.methods.${m}`) : t('specimen.layers'),
+      layers: layers.value.filter((l) => l.method === m)
+    }))
+    .filter((g) => g.layers.length)
+)
+
+/** Methods with curves or bilinear values for this specimen. */
+const available = computed(() =>
+  METHODS.filter((m) => {
+    const p = limitPoints(props.row, m)
+    return p.yield.length || p.ultimate.length || layers.value.some((l) => l.method === m)
+  })
+)
+
 const mode = ref<Mode>('Vd')
-const layers = reactive<Record<Layer, boolean>>({ fd: true, envelope: true, bilinear: true })
+const method = ref<Method>(available.value[0] ?? 'Pavia')
+/** Toggled layers by id; by default the F-d curve and the first method's global curves (Pavia). */
+const on = reactive<Record<string, boolean>>({})
+const isOn = (l: Layer) =>
+  on[l.id] ?? (l.kind === 'fd' || (l.method === available.value[0] && l.cycle == null))
+const drawn = computed(() => layers.value.filter(isOn))
+
+const label = (l: Layer) =>
+  l.cycle ? t(`specimen.layer.${l.kind}Cycle`, { n: l.cycle }) : t(`specimen.layer.${l.kind}`)
+const legend = (l: Layer) =>
+  l.method
+    ? t('specimen.legendItem', { method: t(`specimen.methods.${l.method}`), layer: label(l) })
+    : t('specimen.legend.fd')
+/** The layer's line as a legend swatch, from the same token, width and dash as the chart. */
+const swatch = (l: Layer) => ({
+  borderTop: `${l.width >= 2 ? '0.125rem' : 'var(--border-w)'} ${l.dashed ? 'dashed' : 'solid'} var(${l.token})`
+})
 const shown = ref<Point[]>([...POINTS])
-const curves = shallowRef<Record<Layer, Curve[]>>({ fd: [], envelope: [], bilinear: [] })
+/** Every curve file of the specimen, both methods, by path. */
+const curves = shallowRef(new Map<string, Curve>())
 const error = ref('')
 
-// The panel draws whatever files exist (open question 4): nothing is hard-coded.
 watch(
   () => props.row,
   async (r) => {
     error.value = ''
-    curves.value = { fd: [], envelope: [], bilinear: [] }
+    curves.value = new Map()
+    if (!available.value.includes(method.value)) method.value = available.value[0] ?? 'Pavia'
     try {
-      const load = (l: Layer) =>
-        Promise.all(r.files.filter((f) => f.startsWith(FOLDERS[l])).map(loadCurve))
-      const [fd, envelope, bilinear] = await Promise.all([
-        load('fd'),
-        load('envelope'),
-        load('bilinear')
-      ])
-      if (r === props.row) curves.value = { fd, envelope, bilinear }
+      const paths = r.files.filter((f) => /^0[2-6]_/.test(f))
+      const loaded = await Promise.all(paths.map(loadCurve))
+      if (r === props.row) curves.value = new Map(paths.map((p, i) => [p, loaded[i]!]))
     } catch (e) {
       error.value = t('specimen.loadFailed', { reason: (e as Error).message })
     }
@@ -140,20 +261,15 @@ watch(
   { immediate: true }
 )
 
-const present = computed(() =>
-  (Object.keys(FOLDERS) as Layer[]).filter((l) =>
-    props.row.files.some((f) => f.startsWith(FOLDERS[l]))
-  )
-)
-const points = computed(() => limitPoints(props.row))
+const points = computed(() => limitPoints(props.row, method.value))
 const hasData = computed(
-  () => present.value.length > 0 || POINTS.some((p) => points.value[p].length)
+  () => layers.value.length > 0 || POINTS.some((p) => points.value[p].length)
 )
 
 const fixed = (v: number, digits: number) =>
   Number.isNaN(v) ? t('specimen.missing') : v.toFixed(digits)
-const pair = (name: string, digits: number) =>
-  `${fixed(num(props.row.values[`${name}+`]), digits)} / ${fixed(num(props.row.values[`${name}-`]), digits)}`
+const pair = (name: string, digits: number, suffix = '') =>
+  `${fixed(num(props.row.values[`${name}+${suffix}`]), digits)} / ${fixed(num(props.row.values[`${name}-${suffix}`]), digits)}`
 
 const failureMode = computed(() => {
   const code = props.row.failure_mode
@@ -188,22 +304,16 @@ const MARKERS: Record<
 const option = computed<EChartsOption>(() => {
   const map = toAxes(mode.value, props.row)
   const line = (c: Curve) => c.d.map((d, i) => map(d, c.V[i]!))
-  const style: Record<Layer, object> = {
-    fd: { color: cssColor('--border-strong'), width: 0.9 },
-    envelope: { color: cssColor('--fg'), width: 2 },
-    bilinear: { color: cssColor('--primary'), width: 2, type: [6, 4] }
-  }
   const series: SeriesOption[] = []
-  for (const l of present.value) {
-    if (!layers[l]) continue
-    for (const c of curves.value[l]) {
-      series.push({
-        type: 'line',
-        data: line(c),
-        symbol: 'none',
-        silent: true,
-        lineStyle: style[l]
-      })
+  for (const l of drawn.value) {
+    const lineStyle = {
+      color: cssColor(l.token),
+      width: l.width,
+      ...(l.dashed && { type: [6, 4] })
+    }
+    for (const f of l.files) {
+      const c = curves.value.get(f)
+      if (c) series.push({ type: 'line', data: line(c), symbol: 'none', silent: true, lineStyle })
     }
   }
   for (const p of ['yield', 'max', 'ultimate'] as const) {
@@ -235,10 +345,14 @@ const option = computed<EChartsOption>(() => {
       }
     })
   }
-  // Symmetric axes around the origin, 10 % margin, as in build_charts.py.
+  // Symmetric axes around the origin, 10 % margin, as in build_charts.py; over
+  // both methods, so switching keeps the scale.
   const all = [
-    ...present.value.flatMap((l) => curves.value[l].flatMap(line)),
-    ...POINTS.flatMap((p) => points.value[p].map(([d, V]) => map(d, V ?? 0)))
+    ...[...curves.value.values()].flatMap(line),
+    ...METHODS.flatMap((m) => {
+      const p = limitPoints(props.row, m)
+      return POINTS.flatMap((k) => p[k].map(([d, V]) => map(d, V ?? 0)))
+    })
   ]
   const extent = (i: 0 | 1) => Math.max(...all.map((xy) => Math.abs(xy[i])), 1e-3) * 1.1
   const axis = (name: string, max: number) => ({
@@ -287,13 +401,36 @@ const option = computed<EChartsOption>(() => {
   display: flex;
   flex-wrap: wrap;
   gap: var(--space-3);
-  align-items: center;
+  align-items: flex-start;
   justify-content: space-between;
 }
 
+.curves-groups {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+// Labels in one column, so each method's buttons, wrapped or not, start at the same place.
 .curves-layers {
+  display: grid;
+  grid-template-columns: 3.5rem minmax(0, 1fr);
+  gap: var(--space-2);
+  align-items: start;
+}
+
+.curves-group {
+  padding-top: 0.4375rem; // level with the first row of buttons
+}
+
+.curves-buttons {
   display: flex;
   flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.curves-from {
+  display: flex;
   gap: var(--space-2);
   align-items: center;
 }
@@ -333,18 +470,6 @@ const option = computed<EChartsOption>(() => {
   width: 1.5rem;
   height: 0;
   vertical-align: middle;
-}
-
-.line-fd {
-  border-top: var(--border-w) solid var(--border-strong);
-}
-
-.line-envelope {
-  border-top: 0.125rem solid var(--fg);
-}
-
-.line-bilinear {
-  border-top: 0.125rem dashed var(--primary);
 }
 
 .fd-chart {

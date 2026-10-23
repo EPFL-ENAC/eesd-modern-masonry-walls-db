@@ -2,7 +2,7 @@
  * Database filters, as they live in the URL query (shared by /database and
  * /database/visuals). OR within a group, AND across groups.
  */
-import { NA, ORDERS, type Row } from './derive.ts'
+import { NA, ORDERS, flagged, type Row } from './derive.ts'
 
 /** Checkbox groups: query key → the values a row offers to it. */
 export const LISTS = {
@@ -21,15 +21,15 @@ export type RangeKey = keyof typeof RANGES
 
 export const HAS = ['fd', 'envelope', 'bilinear', 'cracks', 'photos'] as const
 
-/** Data availability (open question 9): F-d and cracks from the database flags, the rest from files present. */
+/** Data availability (open question 9): curves and cracks from the database flags, photos from files present. */
 export function availability(r: Row): string[] {
-  const has = (folder: string) => r.files.some((f) => f.startsWith(folder))
+  const has = (folder: string) => r.files.some((f) => f.startsWith(`${folder}/`))
   const out = {
-    fd: r.values['F-d data'] != null,
-    envelope: has('03_envelope'),
-    bilinear: has('04_bilinear_curve'),
-    cracks: r.values['Crack measurements'] != null,
-    photos: has('05_fig_setup') || has('07_fig_materials')
+    fd: flagged(r.values['F-d data']),
+    envelope: flagged(r.values['Env curve']),
+    bilinear: flagged(r.values['Bil curve']),
+    cracks: flagged(r.values['Crack measurements']),
+    photos: has('07_fig_setup') || has('09_fig_materials')
   }
   return HAS.filter((k) => out[k])
 }

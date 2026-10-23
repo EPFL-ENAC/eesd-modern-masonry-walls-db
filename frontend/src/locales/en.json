@@ -122,13 +122,13 @@
   },
   "fieldShort": {
     "1": "N°",
-    "3": "Specimen",
-    "4": "Unit",
-    "5": "Courses",
-    "9": "Bed",
-    "10": "Head",
-    "11": "Void",
-    "30": "Failure"
+    "5": "Specimen",
+    "6": "Unit",
+    "7": "Courses",
+    "11": "Bed",
+    "12": "Head",
+    "14": "Void",
+    "40": "Failure"
   },
   "fieldCategories": {
     "I": "General",
@@ -136,8 +136,9 @@
     "III": "Material",
     "IV": "Test setup",
     "V": "Response",
-    "VI": "Bilinear",
-    "VII": "Cracks"
+    "VI": "Bilinear (Pavia)",
+    "VII": "Bilinear (EPFL)",
+    "VIII": "Cracks"
   },
   "table": {
     "search": "Search specimen or reference",
@@ -205,12 +206,18 @@
     "layer": {
       "fd": "F-d curve",
       "envelope": "Envelope",
-      "bilinear": "Bilinear"
+      "bilinear": "Bilinear",
+      "envelopeCycle": "Envelope cycle {n}",
+      "bilinearCycle": "Bilinear cycle {n}"
     },
     "legend": {
-      "fd": "F-d curve (cyclic)",
-      "envelope": "Envelope",
-      "bilinear": "Bilinear idealisation"
+      "fd": "F-d curve (cyclic)"
+    },
+    "legendItem": "{method} · {layer}",
+    "pointsFrom": "Points from",
+    "methods": {
+      "Pavia": "Pavia",
+      "EPFL": "EPFL"
     },
     "axes": "Axes",
     "mode": {
@@ -238,7 +245,7 @@
     },
     "maxDrift": "Max drift",
     "axialStress": "Axial stress",
-    "chartLabel": "Force–displacement response of {name}: cyclic curve, envelopes, bilinear idealisation and limit-state points",
+    "chartLabel": "Force–displacement response of {name}: cyclic curve, envelopes, {method} bilinear idealisation and limit-state points",
     "noCurve": "No force–displacement curve in the dataset for this specimen.",
     "loadFailed": "Could not load the curves: {reason}",
     "gallery": {
@@ -250,7 +257,8 @@
       "setupAlt": "Test setup of {name}",
       "failmodeAlt": "{name} after testing",
       "materialsAlt": "Units and mortar of {name}",
-      "cracksAlt": "Crack map of {name}"
+      "cracksAlt": "Crack map of {name}",
+      "source": "Figures from:"
     },
     "data": {
       "intro": "All {n} fields for this specimen, grouped by category. Definitions in the glossary.",
@@ -269,12 +277,14 @@
       "alsoCite": "When using the database, please also cite Morandi et al. (2018) and Morandi & Albanesi (2026).",
       "desc": {
         "02_fd_curve": "Full F-d curve · drift [%], force [kN]",
-        "03_envelope": "Backbone envelope",
-        "04_bilinear_curve": "Bilinear idealisation",
-        "05_fig_setup": "Test setup photo",
-        "06_fig_failmode": "Failure mechanism photo",
-        "07_fig_materials": "Materials photo",
-        "08_fig_cracks": "Crack map",
+        "03_envelope_Pavia": "Backbone envelope · Pavia",
+        "04_envelope_EPFL": "Backbone envelope · EPFL",
+        "05_bilinear_curve_Pavia": "Bilinear idealisation · Pavia",
+        "06_bilinear_curve_EPFL": "Bilinear idealisation · EPFL",
+        "07_fig_setup": "Test setup photo",
+        "08_fig_failmode": "Failure mechanism photo",
+        "09_fig_materials": "Materials photo",
+        "10_fig_cracks": "Crack map",
         "row": "Database row · {n} columns"
       }
     },
@@ -316,12 +326,14 @@
     "folders": {
       "01_references": "References",
       "02_fd_curve": "Force-displacement",
-      "03_envelope": "Backbone envelopes",
-      "04_bilinear_curve": "Bilinear idealisations",
-      "05_fig_setup": "Test setup",
-      "06_fig_failmode": "Failure mode",
-      "07_fig_materials": "Materials",
-      "08_fig_cracks": "Crack measurements"
+      "03_envelope_Pavia": "Backbone envelopes · Pavia",
+      "04_envelope_EPFL": "Backbone envelopes · EPFL",
+      "05_bilinear_curve_Pavia": "Bilinear idealisations · Pavia",
+      "06_bilinear_curve_EPFL": "Bilinear idealisations · EPFL",
+      "07_fig_setup": "Test setup",
+      "08_fig_failmode": "Failure mode",
+      "09_fig_materials": "Materials",
+      "10_fig_cracks": "Crack measurements"
     },
     "count": "{n} fields in {c} categories",
     "matching": "{n} of {total} fields match",
@@ -333,7 +345,7 @@
       "definition": "Definition",
       "n": "#"
     },
-    "bothDirections": ", positive / negative direction",
+    "bothDirections": "positive (negative)",
     "pair": "+ / −"
   },
   "others": {
@@ -485,9 +497,9 @@
     "dictionary": "Data dictionary",
     "guide": "Contribution guide",
     "p1": "Start from the starter kit: it is the submission folder laid out the way it should be — the template CSV with the database's {n} column headers, and one example file per response type. Fill in one row per specimen (the data dictionary says what each column expects), then drop the whole folder here.",
-    "p3": "Curves are stored as drift [%] and horizontal force [kN]; envelopes and bilinear idealisations come as one file per loading direction.",
+    "p3": "Curves are stored as drift [%] and horizontal force [kN]. Envelopes and bilinear idealisations come as one file per loading direction for each method, Pavia and EPFL; Pavia adds one per loading cycle.",
     "dropTitle": "Drop your submission folder here — or a zip, or CSV files",
-    "dropText": "The specimens CSV, plus one file per specimen and response type, named after the specimen, in its folder: 02_fd_curve, 03_envelope, 04_bilinear_curve, and photos in 05_fig_setup to 08_fig_cracks. Files are matched by name; what cannot be placed is listed below for you to sort out.",
+    "dropText": "The specimens CSV, plus one file per specimen and response type, named after the specimen, in its folder: 02_fd_curve, 03_envelope_Pavia to 06_bilinear_curve_EPFL, and photos in 07_fig_setup to 10_fig_cracks. Files are matched by name; what cannot be placed is listed below for you to sort out.",
     "chooseFolder": "Choose a folder",
     "chooseFiles": "Choose files",
     "addManual": "Add a specimen manually",
@@ -507,15 +519,15 @@
     "optional": "Optional",
     "curator": "Assigned by the curator",
     "tree": {
-      "table": "one row per specimen, {n} columns; leave N blank",
+      "table": "the database's 4 header rows, then one row per specimen, {n} columns; leave N blank",
       "fd": "Force–drift curve —",
-      "envelope": "Backbone envelope per direction —",
-      "bilinear": "Bilinear idealisation per direction —",
+      "envelope": "Backbone envelope per direction, Pavia and EPFL; Pavia also per loading cycle M —",
+      "bilinear": "Bilinear idealisation per direction, Pavia and EPFL; Pavia also per loading cycle M —",
       "photos": "Photos: test setup, failure mode, materials, crack measurements"
     },
     "downloadKit": "Download the starter kit",
     "noGuide": "No guide has been written for this database yet.",
-    "readme": "Modern Masonry Database — submission starter kit\n\nModernMasonryDatabase_EIA_Database.csv: one row per specimen, {n} columns. Leave N blank: the curator assigns it. The row for SW0.1 is an example; replace it.\n\nResponse files are named after the specimen and placed in the folder of their type:\n  02_fd_curve/fd_curve_{s}.csv\n  03_envelope/envelope_{s}_pos.csv and _neg.csv\n  04_bilinear_curve/bilinear_{s}_pos.csv and _neg.csv\n  05_fig_setup/ … 08_fig_cracks/fig_{k}_{s}.jpg\n\nCurves have two columns: drift [%], horizontal_force [kN].\nThe column definitions are in the data dictionary on the Documentation page.",
+    "readme": "Modern Masonry Database — submission starter kit\n\nModernMasonryDatabase_EIA_Database.csv: the database's 4 header rows (column number, category, number in the category, name), then one row per specimen, {n} columns. Leave N blank: the curator assigns it. The row for SW0.1 is an example; replace it. Categories VI (Pavia) and VII (EPFL) hold the same variables for the two bilinear idealisations: the category row tells them apart.\n\nResponse files are named after the specimen and placed in the folder of their type:\n  02_fd_curve/fd_curve_{s}.csv\n  03_envelope_Pavia/ and 04_envelope_EPFL/envelope_{s}_pos.csv and _neg.csv\n  05_bilinear_curve_Pavia/ and 06_bilinear_curve_EPFL/bilinear_{s}_pos.csv and _neg.csv\n  Pavia also has one file per loading cycle M: envelope_{s}_pos_cycleM.csv, bilinear_{s}_neg_cycleM.csv…\n  07_fig_setup/ … 10_fig_cracks/fig_{k}_{s}.jpg\n\nCurves have two columns: drift [%], horizontal_force [kN].\nThe column definitions are in the data dictionary on the Documentation page.",
     "p2": "Measured responses are separate files, one per specimen, named after the specimen they belong to ({file} for the specimen named SW0.1) and placed in the folder of their type. Drop the folder, a zip of it, or the files themselves: they are matched to the specimens by name."
   },
   "units": {
