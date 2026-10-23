@@ -2,7 +2,7 @@
   <dl class="kv">
     <div v-for="f in list" :key="f.n" class="kv-row">
       <dt><FieldLabel :field="f" units /></dt>
-      <dd>{{ row.values[f.key] ?? t('specimen.missing') }}</dd>
+      <dd>{{ row.values[f.key] == null ? t('specimen.missing') : display(row.values[f.key]) }}</dd>
     </div>
   </dl>
 </template>
@@ -11,7 +11,7 @@
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { fields } from '../../api/dataset.ts'
-import type { Row } from '../../lib/derive.ts'
+import { display, type Row } from '../../lib/derive.ts'
 import FieldLabel from '../FieldLabel.vue'
 
 const props = defineProps<{ row: Row; keys: readonly string[] }>()

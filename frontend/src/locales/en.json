@@ -67,7 +67,6 @@
     "Other": "SL, G, D — other"
   },
   "footer": {
-    "cite": "How to cite",
     "dataset": "Dataset",
     "lastUpdate": "Last update {date}",
     "counts": "{specimens} specimens · {fields} fields",
@@ -277,7 +276,6 @@
       "downloadBib": "Download .bib",
       "handoff-Q7-citation": "[Citation pending, open question 7]",
       "handoff-BIB-pending": "[BibTeX pending from EESD]",
-      "alsoCite": "When using the database, please also cite Morandi et al. (2018) and Morandi & Albanesi (2026).",
       "desc": {
         "02_fd_curve": "Full F-d curve · drift [%], force [kN]",
         "03_envelope_Pavia": "Backbone envelope · Pavia",

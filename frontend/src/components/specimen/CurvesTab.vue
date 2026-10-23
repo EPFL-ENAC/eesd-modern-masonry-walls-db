@@ -124,7 +124,13 @@
         <div class="kv-row">
           <dt>{{ t('specimen.dims') }}</dt>
           <dd>
-            {{ t('specimen.dimsValue', { h: row.values.H, l: row.values.L, t: row.values.t }) }}
+            {{
+              t('specimen.dimsValue', {
+                h: display(row.values.H),
+                l: display(row.values.L),
+                t: display(row.values.t)
+              })
+            }}
           </dd>
         </div>
       </dl>
@@ -148,7 +154,7 @@ import {
   type Mode,
   type Point
 } from '../../charts/fd.ts'
-import { num, type Row } from '../../lib/derive.ts'
+import { display, num, type Row } from '../../lib/derive.ts'
 import { cssColor } from '../../lib/tokens.ts'
 import FieldLabel from '../FieldLabel.vue'
 import { useGlossary } from '../../composables/useGlossary.ts'

@@ -40,10 +40,6 @@
           :style="logoMask"
         />
         <div class="epfl-footer-cols">
-          <div class="footer-cite">
-            <h6>{{ t('footer.cite') }}</h6>
-            <p v-for="c in citations" :key="c">{{ c }}</p>
-          </div>
           <div>
             <h6>{{ t('footer.dataset') }}</h6>
             <p>{{ t('footer.lastUpdate', { date: lastUpdate }) }}</p>
@@ -78,8 +74,6 @@ const route = useRoute()
 // Vite inlines the SVG as a data: URI with spaces, so the url() needs its quotes.
 const logoMask = { maskImage: `url("${logoUrl}")` }
 
-// readme.txt lists "Author et al., 2018: full citation"; the footer shows the citation.
-const citations = meta.sources.map((s) => s.replace(/^[^:]*:\s*/, ''))
 const lastUpdate = new Date(meta.lastUpdate).toLocaleDateString('en-GB', {
   day: 'numeric',
   month: 'long',
@@ -135,11 +129,6 @@ const nav = [
   flex-wrap: wrap;
 }
 
-// The cite column is twice as wide (the design's 2fr 1fr 1fr) in the DS 4-column grid.
-.footer-cite {
-  grid-column: span 2;
-}
-
 .epfl-footer p {
   margin: 0 0 var(--space-2);
   font-size: var(--fs-sm);
@@ -189,10 +178,6 @@ const nav = [
 
   .epfl-footer-cols {
     grid-template-columns: minmax(0, 1fr);
-  }
-
-  .footer-cite {
-    grid-column: auto;
   }
 }
 
