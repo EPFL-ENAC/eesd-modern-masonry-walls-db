@@ -35,7 +35,7 @@ const FLAGS: Record<string, string[]> = {
 /** Excel's "CSV UTF-8" starts with a BOM; Windows Excel needs it to show σ, δ, μ from /data. */
 function read(dir: string, path: string) {
   const text = readFileSync(join(dir, path), 'utf8')
-  if (!text.startsWith(BOM)) fail(`${path} has no UTF-8 BOM: export it from Excel as "CSV UTF-8"`)
+  if (!text.startsWith(BOM)) fail(`${path} has no UTF-8 BOM: write it with scripts/export-csv.py`)
   return parseCsv(text)
 }
 const nullable = (s: string | undefined) => (s === undefined || s === '' || s === 'NaN' ? null : s)
@@ -48,7 +48,7 @@ function fail(message: string): never {
 function assertUtf8(where: string, cells: string[]) {
   const bad = cells.find((c) => c.includes('?') || c.includes('�'))
   if (bad !== undefined)
-    fail(`${where} has ${JSON.stringify(bad)}: re-export the CSV from Excel as "CSV UTF-8"`)
+    fail(`${where} has ${JSON.stringify(bad)}: write the CSV with scripts/export-csv.py`)
 }
 
 /** A CSV with a header row, as one object per row keyed by column name. */
