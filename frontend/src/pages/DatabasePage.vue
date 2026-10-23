@@ -1,8 +1,20 @@
 <template>
-  <div class="db">
-    <FilterSidebar />
+  <div class="db" :class="{ 'filters-open': filtersOpen }">
+    <FilterSidebar v-show="filtersOpen" id="db-filters" />
     <div class="db-main">
       <div class="db-head">
+        <!-- Closed by default; the badge says filters apply while it is. -->
+        <button
+          type="button"
+          class="epfl-btn epfl-btn-secondary epfl-btn-sm db-filters"
+          :aria-expanded="filtersOpen"
+          aria-controls="db-filters"
+          @click="filtersOpen = !filtersOpen"
+        >
+          <q-icon :name="matFilterList" />
+          {{ t('filters.title') }}
+          <span v-if="active" class="db-badge">{{ active }}</span>
+        </button>
         <nav class="db-tabs" :aria-label="t('database.views')">
           <router-link
             v-for="v in ['table', 'visuals']"
@@ -31,9 +43,10 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRoute } from 'vue-router'
+import { matFilterList } from '@quasar/extras/material-icons'
 import { byN } from '../api/dataset.ts'
 import FilterSidebar from '../components/FilterSidebar.vue'
 import ModalDialog from '../components/ModalDialog.vue'
@@ -42,18 +55,25 @@ import { useFilters } from '../composables/useFilters.ts'
 
 const { t } = useI18n()
 const route = useRoute()
-const { setQuery } = useFilters()
+const { setQuery, chips, filters } = useFilters()
+const filtersOpen = ref(false)
+// Active filters, the search left out: it shows in its own box.
+const active = computed(() => chips.value.length - (filters.value.q ? 1 : 0))
 // ?specimen=N opens the specimen in a dialog over either view (HANDOFF §3).
 const specimen = computed(() => byN.get(Number(route.query.specimen)))
 const close = () => setQuery({ specimen: undefined, tab: undefined })
 </script>
 
 <style scoped lang="scss">
-// HANDOFF §1: 272 px filter sidebar, fluid main column.
+// HANDOFF §1: 272 px filter sidebar, fluid main column; the sidebar folds away.
 .db {
   display: grid;
-  grid-template-columns: 17rem minmax(0, 1fr);
+  grid-template-columns: minmax(0, 1fr);
   min-height: 100%;
+
+  &.filters-open {
+    grid-template-columns: 17rem minmax(0, 1fr);
+  }
 }
 
 .db-main {
@@ -76,6 +96,20 @@ const close = () => setQuery({ specimen: undefined, tab: undefined })
 .db-tabs {
   display: flex;
   gap: 1.75rem;
+  margin-right: auto;
+}
+
+.db-filters {
+  margin-bottom: 0.625rem;
+}
+
+.db-badge {
+  padding: 0 0.375rem;
+  font-size: 0.75rem;
+  font-weight: var(--w-bold);
+  color: var(--epfl-white);
+  background: var(--primary);
+  border-radius: var(--radius);
 }
 
 .db-tab {
@@ -100,7 +134,7 @@ const close = () => setQuery({ specimen: undefined, tab: undefined })
 }
 
 @media (width <= 64rem) {
-  .db {
+  .db.filters-open {
     grid-template-columns: minmax(0, 1fr);
   }
 }
