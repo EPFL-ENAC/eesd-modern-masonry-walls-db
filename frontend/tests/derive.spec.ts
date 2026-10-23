@@ -3,7 +3,7 @@ import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { describe, expect, it } from 'vitest'
 import { parseCsv } from '../src/lib/csv.ts'
-import { counts, derive, medianIqr, type Row } from '../src/lib/derive.ts'
+import { counts, derive, medianIqr, display, type Row } from '../src/lib/derive.ts'
 import { convert } from '../scripts/convert-data.ts'
 import specimens from '../src/assets/data/specimens.json'
 import fields from '../src/assets/data/fields.json'
@@ -127,5 +127,19 @@ describe('committed JSON', () => {
     const vi = fields.filter((f) => f.category === 'VI').map((f) => f.key)
     const vii = fields.filter((f) => f.category === 'VII').map((f) => f.key)
     expect(vii).toEqual(vi.map((k) => `${k} [VII]`))
+  })
+})
+
+describe('display()', () => {
+  it('rounds numbers to 3 decimals and leaves text as it is', () => {
+    expect(['135.601465754327', '0.2', '2014', '25-55%', 'solid', '', null].map(display)).toEqual([
+      '135.601',
+      '0.2',
+      '2014',
+      '25-55%',
+      'solid',
+      '',
+      ''
+    ])
   })
 })

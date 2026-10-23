@@ -45,7 +45,7 @@
             @keydown.enter="open(r.N)"
           >
             <td v-for="(f, i) in columns" :key="f.n" class="td" :class="cellClass(f, i)">
-              {{ r.values[f.key] ?? '' }}
+              {{ display(r.values[f.key]) }}
             </td>
           </tr>
           <tr v-if="!rows.length">
@@ -96,7 +96,7 @@ import { matChevronLeft, matChevronRight } from '@quasar/extras/material-icons'
 import { fields, rows as allRows } from '../api/dataset.ts'
 import type { Field } from '../api/types.ts'
 import { useFilters } from '../composables/useFilters.ts'
-import { num, type Row } from '../lib/derive.ts'
+import { num, display, type Row } from '../lib/derive.ts'
 import FieldLabel from './FieldLabel.vue'
 
 const props = defineProps<{ rows: readonly Row[]; visible: readonly string[] }>()

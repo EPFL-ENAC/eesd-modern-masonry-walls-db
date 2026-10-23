@@ -10,6 +10,12 @@ export function num(v: string | null | undefined): number {
   return v == null || v.trim() === '' ? NaN : Number(v)
 }
 
+/** A value as the site shows it: numbers to 3 decimals at most (#33). Downloads keep the raw value. */
+export function display(v: string | null | undefined): string {
+  const n = num(v)
+  return Number.isNaN(n) ? (v ?? '') : String(round3(n))
+}
+
 /** Mean of the + and − directions, ignoring a missing one (pandas mean(axis=1)). */
 export function avg(a: number, b: number): number {
   if (Number.isNaN(a)) return b
