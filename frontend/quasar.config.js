@@ -31,6 +31,19 @@ export default defineConfig(() => ({
         __dirname,
         './vendor/epfl-design-system'
       )
+      // Pre-bundle what the lazy pages import: found late on a cold dev start, they
+      // were re-optimized mid-load, so the page ran two copies of Vue (Vue warnings,
+      // blank charts until a reload).
+      viteConf.optimizeDeps ??= {}
+      viteConf.optimizeDeps.include = [
+        ...(viteConf.optimizeDeps.include ?? []),
+        'vue-echarts',
+        'echarts/core',
+        'echarts/charts',
+        'echarts/components',
+        'echarts/renderers',
+        'jszip'
+      ]
       viteConf.css ??= {}
       viteConf.css.preprocessorOptions ??= {}
       viteConf.css.preprocessorOptions.scss ??= {}

@@ -1,22 +1,20 @@
 <template>
   <div class="gallery">
     <figure v-for="fig in figures" :key="fig.key" class="fig">
-      <div>
-        <figcaption class="fig-title">{{ t(`specimen.gallery.${fig.key}`) }}</figcaption>
-        <button v-if="fig.path" type="button" class="fig-open" @click="enlarge(fig.path, fig.key)">
-          <img
-            :src="photoUrl(fig.path, 512)"
-            :srcset="`${photoUrl(fig.path, 512)} 512w, ${photoUrl(fig.path, 1920)} 1920w`"
-            sizes="(width <= 64rem) 100vw, 25vw"
-            :alt="t(`specimen.gallery.${fig.key}Alt`, { name: row.specimen })"
-            class="fig-img"
-            loading="lazy"
-          />
-        </button>
-        <!-- Missing photo: dashed placeholder with the expected file name (HANDOFF §5.2). -->
-        <div v-else class="fig-img fig-missing">
-          {{ t('specimen.gallery.missing', { file: `${fig.stem}_${pad(row.N)}` }) }}
-        </div>
+      <figcaption class="fig-title">{{ t(`specimen.gallery.${fig.key}`) }}</figcaption>
+      <button v-if="fig.path" type="button" class="fig-open" @click="enlarge(fig.path, fig.key)">
+        <img
+          :src="photoUrl(fig.path, 512)"
+          :srcset="`${photoUrl(fig.path, 512)} 512w, ${photoUrl(fig.path, 1920)} 1920w`"
+          sizes="(width <= 64rem) 100vw, 25vw"
+          :alt="t(`specimen.gallery.${fig.key}Alt`, { name: row.specimen })"
+          class="fig-img"
+          loading="lazy"
+        />
+      </button>
+      <!-- Missing photo: dashed placeholder with the expected file name (HANDOFF §5.2). -->
+      <div v-else class="fig-img fig-missing">
+        {{ t('specimen.gallery.missing', { file: `${fig.stem}_${pad(row.N)}` }) }}
       </div>
       <FieldRows :row="row" :keys="fig.fields" class="fig-kv" />
     </figure>
@@ -85,16 +83,28 @@ function enlarge(path: string, key: string) {
   gap: var(--space-4);
 }
 
+// <figcaption> must be the figure's own child: grid areas put the caption above
+// the photo and the values beside it.
 .fig {
   display: grid;
+  grid-template-areas:
+    'title .'
+    'photo kv';
   grid-template-columns: minmax(0, 1fr) 9.375rem;
-  gap: var(--space-3);
+  column-gap: var(--space-3);
+  align-items: start;
   margin: 0;
   padding-top: 0.75rem;
   border-top: var(--border-w) solid var(--fg);
 }
 
+.fig-open,
+.fig-missing {
+  grid-area: photo;
+}
+
 .fig-title {
+  grid-area: title;
   margin-bottom: 0.625rem;
   font-size: var(--fs-h6);
   font-weight: var(--w-bold);
@@ -134,7 +144,7 @@ function enlarge(path: string, key: string) {
 }
 
 .fig-kv {
-  margin-top: 2.125rem;
+  grid-area: kv;
 }
 
 .fig-dialog {
@@ -153,9 +163,21 @@ function enlarge(path: string, key: string) {
 }
 
 @media (width <= 64rem) {
-  .gallery,
-  .fig {
+  .gallery {
     grid-template-columns: minmax(0, 1fr);
+  }
+
+  .fig {
+    grid-template-areas:
+      'title'
+      'photo'
+      'kv';
+    grid-template-columns: minmax(0, 1fr);
+    row-gap: var(--space-3);
+  }
+
+  .fig-title {
+    margin-bottom: 0;
   }
 }
 </style>
