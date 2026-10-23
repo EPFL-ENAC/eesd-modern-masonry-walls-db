@@ -30,6 +30,9 @@
     --chart-seq-3: color-mix(in srgb, var(--epfl-canard) 80%, var(--epfl-white));
     --chart-seq-4: var(--epfl-canard);
     --chart-seq-5: var(--epfl-canard-dark);
+
+    // Quasar widgets (the filter sliders) take the DS red, not Quasar's blue.
+    --q-primary: var(--primary);
   }
 }
 

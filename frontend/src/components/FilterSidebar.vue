@@ -36,6 +36,18 @@
           </label>
         </div>
         <div v-else class="filters-range">
+          <!-- Writes the URL on release, not on every step of a drag. -->
+          <q-range
+            class="filters-slider"
+            :model-value="span(item.key)"
+            :min="bounds[item.key].min"
+            :max="bounds[item.key].max"
+            :step="0.01"
+            color="primary"
+            label
+            :aria-label="t(`filters.items.${item.key}`)"
+            @change="(v: Span) => setSpan(item.key, v)"
+          />
           <label v-for="end in ['min', 'max'] as const" :key="end">
             {{ t(`filters.${end}`) }}
             <input
@@ -43,7 +55,7 @@
               step="0.01"
               class="filters-input"
               :value="filters[`${item.key}_${end}`] ?? ''"
-              :placeholder="bounds[item.key][end]"
+              :placeholder="String(bounds[item.key][end])"
               @change="setBound(item.key, end, $event)"
             />
           </label>
@@ -89,13 +101,28 @@ const GROUPS = [
   { key: 'response', items: [list('fm_group')] }
 ]
 
-// Placeholders: the dataset's own extent.
+type Span = { min: number; max: number }
+// The dataset's own extent: the slider's ends and the inputs' placeholders.
 const bounds = Object.fromEntries(
   (Object.keys(RANGES) as RangeKey[]).map((k) => {
     const v = rows.map(RANGES[k]).filter((x) => !Number.isNaN(x))
-    return [k, { min: String(Math.min(...v)), max: String(Math.max(...v)) }]
+    return [k, { min: Math.min(...v), max: Math.max(...v) }]
   })
-) as Record<RangeKey, { min: string; max: string }>
+) as Record<RangeKey, Span>
+
+const span = (key: RangeKey): Span => ({
+  min: filters.value[`${key}_min`] ?? bounds[key].min,
+  max: filters.value[`${key}_max`] ?? bounds[key].max
+})
+
+// An end left at the dataset's extent is no bound.
+function setSpan(key: RangeKey, v: Span) {
+  const b = bounds[key]
+  update({
+    [`${key}_min`]: v.min === b.min ? null : v.min,
+    [`${key}_max`]: v.max === b.max ? null : v.max
+  })
+}
 
 const activeCount = (item: Item) =>
   item.kind === 'list'
@@ -234,6 +261,13 @@ function setBound(key: RangeKey, end: 'min' | 'max', e: Event) {
   padding: 0.375rem 0 0 1.25rem;
   font-size: 0.75rem;
   color: var(--fg-muted);
+}
+
+// Room for the value bubbles above the thumbs.
+.filters-slider {
+  grid-column: 1 / -1;
+  margin-top: var(--space-4);
+  padding: 0 var(--space-2);
 }
 
 .filters-input {
