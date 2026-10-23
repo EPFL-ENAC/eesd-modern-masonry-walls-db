@@ -207,15 +207,14 @@
       "fd": "F-d curve",
       "envelope": "Envelope",
       "bilinear": "Bilinear",
-      "cycles": "Per cycle"
+      "envelopeCycle": "Envelope cycle {n}",
+      "bilinearCycle": "Bilinear cycle {n}"
     },
     "legend": {
-      "fd": "F-d curve (cyclic)",
-      "envelope": "Envelope",
-      "bilinear": "Bilinear idealisation",
-      "cycles": "Envelope and bilinear per loading cycle"
+      "fd": "F-d curve (cyclic)"
     },
-    "method": "Bilinear method",
+    "legendItem": "{method} · {layer}",
+    "pointsFrom": "Points from",
     "methods": {
       "Pavia": "Pavia",
       "EPFL": "EPFL"

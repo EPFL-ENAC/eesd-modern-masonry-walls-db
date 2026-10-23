@@ -2,45 +2,40 @@
   <div class="curves">
     <div class="curves-main">
       <div class="curves-bar">
-        <div class="curves-layers">
-          <span v-if="present.length" class="curves-muted">{{ t('specimen.layers') }}</span>
-          <button
-            v-for="l in present"
-            :key="l"
-            type="button"
-            class="layer"
-            :aria-pressed="layers[l]"
-            @click="layers[l] = !layers[l]"
+        <div class="curves-groups">
+          <div
+            v-for="g in groups"
+            :key="g.key"
+            class="curves-layers"
+            role="group"
+            :aria-labelledby="`layers-${g.key}`"
           >
-            <span class="line" :class="`line-${l}`" />
-            {{ t(`specimen.layer.${l}`) }}
-          </button>
+            <span :id="`layers-${g.key}`" class="curves-muted curves-group">{{ g.label }}</span>
+            <div class="curves-buttons">
+              <button
+                v-for="l in g.layers"
+                :key="l.id"
+                type="button"
+                class="layer"
+                :aria-pressed="isOn(l)"
+                @click="on[l.id] = !isOn(l)"
+              >
+                <span class="line" :style="swatch(l)" />
+                {{ label(l) }}
+              </button>
+            </div>
+          </div>
         </div>
-        <div class="curves-switches">
-          <span class="curves-muted">{{ t('specimen.method') }}</span>
-          <div class="seg" role="group" :aria-label="t('specimen.method')">
-            <button
-              v-for="m in METHODS"
-              :key="m"
-              type="button"
-              :aria-pressed="method === m"
-              :disabled="!available.includes(m)"
-              @click="method = m"
-            >
-              {{ t(`specimen.methods.${m}`) }}
-            </button>
-          </div>
-          <div class="seg" role="group" :aria-label="t('specimen.axes')">
-            <button
-              v-for="m in ['Vd', 'tau'] as const"
-              :key="m"
-              type="button"
-              :aria-pressed="mode === m"
-              @click="mode = m"
-            >
-              {{ t(`specimen.mode.${m}`) }}
-            </button>
-          </div>
+        <div class="seg" role="group" :aria-label="t('specimen.axes')">
+          <button
+            v-for="m in ['Vd', 'tau'] as const"
+            :key="m"
+            type="button"
+            :aria-pressed="mode === m"
+            @click="mode = m"
+          >
+            {{ t(`specimen.mode.${m}`) }}
+          </button>
         </div>
       </div>
       <p v-if="error" class="curves-muted" role="alert">{{ error }}</p>
@@ -55,14 +50,29 @@
         "
       />
       <p v-else class="curves-muted">{{ t('specimen.noCurve') }}</p>
-      <ul v-if="present.length" class="fd-legend">
-        <li v-for="l in present" :key="l">
-          <span class="line" :class="`line-${l}`" />{{ t(`specimen.legend.${l}`) }}
+      <ul v-if="drawn.length" class="fd-legend">
+        <li v-for="l in drawn" :key="l.id">
+          <span class="line" :style="swatch(l)" />{{ legend(l) }}
         </li>
       </ul>
     </div>
 
     <aside class="curves-side">
+      <div class="curves-from">
+        <span class="curves-muted">{{ t('specimen.pointsFrom') }}</span>
+        <div class="seg" role="group" :aria-label="t('specimen.pointsFrom')">
+          <button
+            v-for="m in METHODS"
+            :key="m"
+            type="button"
+            :aria-pressed="method === m"
+            :disabled="!available.includes(m)"
+            @click="method = m"
+          >
+            {{ t(`specimen.methods.${m}`) }}
+          </button>
+        </div>
+      </div>
       <fieldset class="points">
         <!-- Symbols keep their case: uppercase would turn δ, τ into Δ, T. -->
         <legend class="section-label">
@@ -131,44 +141,103 @@ import FieldLabel from '../FieldLabel.vue'
 const props = defineProps<{ row: Row }>()
 const { t, te } = useI18n()
 
-type Layer = 'fd' | 'envelope' | 'bilinear' | 'cycles'
-const LAYERS: Layer[] = ['fd', 'envelope', 'bilinear', 'cycles']
+type Kind = 'envelope' | 'bilinear'
+const KINDS: Kind[] = ['envelope', 'bilinear']
 /** Each method's curve folders; Pavia's also hold an envelope and a bilinear per loading cycle. */
-const FOLDERS: Record<Method, Record<'envelope' | 'bilinear', string>> = {
+const FOLDERS: Record<Method, Record<Kind, string>> = {
   Pavia: { envelope: '03_envelope_Pavia/', bilinear: '05_bilinear_curve_Pavia/' },
   EPFL: { envelope: '04_envelope_EPFL/', bilinear: '06_bilinear_curve_EPFL/' }
 }
-const CYCLE = /_cycle\d+\.csv$/
+const CYCLE = /_cycle(\d+)\.csv$/
+/** Line colour per method and kind, as in EESD's bilinearisation plots: one hue family per method. */
+const TOKENS: Record<Method, Record<Kind, string>> = {
+  Pavia: { envelope: '--fg', bilinear: '--primary' },
+  EPFL: { envelope: '--epfl-blue', bilinear: '--epfl-leman' }
+}
+const CYCLE_TOKENS = ['--epfl-orange', '--epfl-green-text', '--epfl-canard-dark']
+
+/** One switchable curve set: the F-d curve, or a method's envelope or bilinear, global or per cycle. */
+type Layer = {
+  id: string
+  method: Method | null
+  kind: Kind | 'fd'
+  cycle: number | null
+  files: string[]
+  token: string
+  width: number
+  dashed: boolean
+}
 
 // The panel draws whatever files exist (open question 4): nothing is hard-coded.
-function layerFiles(m: Method, l: Layer) {
-  const { envelope, bilinear } = FOLDERS[m]
-  return props.row.files.filter((f) => {
-    if (l === 'fd') return f.startsWith('02_fd_curve/')
-    if (l === 'cycles') return CYCLE.test(f) && (f.startsWith(envelope) || f.startsWith(bilinear))
-    return !CYCLE.test(f) && f.startsWith(FOLDERS[m][l])
-  })
-}
+const layers = computed<Layer[]>(() => {
+  const files = props.row.files
+  const fd = files.filter((f) => f.startsWith('02_fd_curve/'))
+  const out: Layer[] = []
+  if (fd.length) {
+    const base = { method: null, cycle: null, files: fd, width: 0.9, dashed: false }
+    out.push({ ...base, id: 'fd', kind: 'fd', token: '--border-strong' })
+  }
+  for (const m of METHODS) {
+    const of = (k: Kind) => files.filter((f) => f.startsWith(FOLDERS[m][k]))
+    const cycleOf = (f: string) => Number(CYCLE.exec(f)?.[1] ?? 0)
+    const line = (k: Kind) => ({ method: m, kind: k, dashed: k === 'bilinear' })
+    for (const k of KINDS) {
+      const global = of(k).filter((f) => !cycleOf(f))
+      if (global.length)
+        out.push({
+          ...line(k),
+          id: `${m}-${k}`,
+          cycle: null,
+          files: global,
+          token: TOKENS[m][k],
+          width: 2
+        })
+    }
+    for (const k of KINDS) {
+      for (const c of [...new Set(of(k).map(cycleOf))].filter(Boolean).sort()) {
+        const token = CYCLE_TOKENS[(c - 1) % CYCLE_TOKENS.length]!
+        const cycle = of(k).filter((f) => cycleOf(f) === c)
+        out.push({ ...line(k), id: `${m}-${k}-${c}`, cycle: c, files: cycle, token, width: 1.2 })
+      }
+    }
+  }
+  return out
+})
+const groups = computed(() =>
+  [null, ...METHODS]
+    .map((m) => ({
+      key: m ?? 'all',
+      label: m ? t(`specimen.methods.${m}`) : t('specimen.layers'),
+      layers: layers.value.filter((l) => l.method === m)
+    }))
+    .filter((g) => g.layers.length)
+)
 
 /** Methods with curves or bilinear values for this specimen. */
 const available = computed(() =>
   METHODS.filter((m) => {
     const p = limitPoints(props.row, m)
-    return (
-      p.yield.length ||
-      p.ultimate.length ||
-      LAYERS.some((l) => l !== 'fd' && layerFiles(m, l).length)
-    )
+    return p.yield.length || p.ultimate.length || layers.value.some((l) => l.method === m)
   })
 )
 
 const mode = ref<Mode>('Vd')
 const method = ref<Method>(available.value[0] ?? 'Pavia')
-const layers = reactive<Record<Layer, boolean>>({
-  fd: true,
-  envelope: true,
-  bilinear: true,
-  cycles: false
+/** Toggled layers by id; by default the F-d curve and the first method's global curves (Pavia). */
+const on = reactive<Record<string, boolean>>({})
+const isOn = (l: Layer) =>
+  on[l.id] ?? (l.kind === 'fd' || (l.method === available.value[0] && l.cycle == null))
+const drawn = computed(() => layers.value.filter(isOn))
+
+const label = (l: Layer) =>
+  l.cycle ? t(`specimen.layer.${l.kind}Cycle`, { n: l.cycle }) : t(`specimen.layer.${l.kind}`)
+const legend = (l: Layer) =>
+  l.method
+    ? t('specimen.legendItem', { method: t(`specimen.methods.${l.method}`), layer: label(l) })
+    : t('specimen.legend.fd')
+/** The layer's line as a legend swatch, from the same token, width and dash as the chart. */
+const swatch = (l: Layer) => ({
+  borderTop: `${l.width >= 2 ? '0.125rem' : 'var(--border-w)'} ${l.dashed ? 'dashed' : 'solid'} var(${l.token})`
 })
 const shown = ref<Point[]>([...POINTS])
 /** Every curve file of the specimen, both methods, by path. */
@@ -192,10 +261,9 @@ watch(
   { immediate: true }
 )
 
-const present = computed(() => LAYERS.filter((l) => layerFiles(method.value, l).length))
 const points = computed(() => limitPoints(props.row, method.value))
 const hasData = computed(
-  () => present.value.length > 0 || POINTS.some((p) => points.value[p].length)
+  () => layers.value.length > 0 || POINTS.some((p) => points.value[p].length)
 )
 
 const fixed = (v: number, digits: number) =>
@@ -236,30 +304,16 @@ const MARKERS: Record<
 const option = computed<EChartsOption>(() => {
   const map = toAxes(mode.value, props.row)
   const line = (c: Curve) => c.d.map((d, i) => map(d, c.V[i]!))
-  const style: Record<Exclude<Layer, 'cycles'>, object> = {
-    fd: { color: cssColor('--border-strong'), width: 0.9 },
-    envelope: { color: cssColor('--fg'), width: 2 },
-    bilinear: { color: cssColor('--primary'), width: 2, type: [6, 4] }
-  }
-  // A cycle's curve: its envelope or bilinear style, thin and faded.
-  const cycleStyle = (f: string) => ({
-    ...style[f.startsWith(FOLDERS[method.value].bilinear) ? 'bilinear' : 'envelope'],
-    width: 1,
-    opacity: 0.5
-  })
   const series: SeriesOption[] = []
-  for (const l of present.value) {
-    if (!layers[l]) continue
-    for (const f of layerFiles(method.value, l)) {
+  for (const l of drawn.value) {
+    const lineStyle = {
+      color: cssColor(l.token),
+      width: l.width,
+      ...(l.dashed && { type: [6, 4] })
+    }
+    for (const f of l.files) {
       const c = curves.value.get(f)
-      if (!c) continue
-      series.push({
-        type: 'line',
-        data: line(c),
-        symbol: 'none',
-        silent: true,
-        lineStyle: l === 'cycles' ? cycleStyle(f) : style[l]
-      })
+      if (c) series.push({ type: 'line', data: line(c), symbol: 'none', silent: true, lineStyle })
     }
   }
   for (const p of ['yield', 'max', 'ultimate'] as const) {
@@ -347,20 +401,36 @@ const option = computed<EChartsOption>(() => {
   display: flex;
   flex-wrap: wrap;
   gap: var(--space-3);
-  align-items: center;
+  align-items: flex-start;
   justify-content: space-between;
 }
 
-.curves-switches {
+.curves-groups {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+// Labels in one column, so each method's buttons, wrapped or not, start at the same place.
+.curves-layers {
+  display: grid;
+  grid-template-columns: 3.5rem minmax(0, 1fr);
+  gap: var(--space-2);
+  align-items: start;
+}
+
+.curves-group {
+  padding-top: 0.4375rem; // level with the first row of buttons
+}
+
+.curves-buttons {
   display: flex;
   flex-wrap: wrap;
   gap: var(--space-2);
-  align-items: center;
 }
 
-.curves-layers {
+.curves-from {
   display: flex;
-  flex-wrap: wrap;
   gap: var(--space-2);
   align-items: center;
 }
@@ -400,23 +470,6 @@ const option = computed<EChartsOption>(() => {
   width: 1.5rem;
   height: 0;
   vertical-align: middle;
-}
-
-.line-fd {
-  border-top: var(--border-w) solid var(--border-strong);
-}
-
-.line-envelope {
-  border-top: 0.125rem solid var(--fg);
-}
-
-.line-bilinear {
-  border-top: 0.125rem dashed var(--primary);
-}
-
-.line-cycles {
-  border-top: var(--border-w) solid var(--fg);
-  opacity: 0.5;
 }
 
 .fd-chart {
