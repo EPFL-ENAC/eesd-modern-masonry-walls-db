@@ -8,11 +8,32 @@
       :value="filters.q"
       @input="update({ q: ($event.target as HTMLInputElement).value })"
     />
-    <button type="button" class="epfl-btn epfl-btn-secondary epfl-btn-sm" @click="toExport">
+    <button type="button" class="epfl-btn epfl-btn-secondary epfl-btn-sm">
+      <q-icon :name="matViewColumn" />
+      {{ t('columns.button', { shown: visible.length, total: fields.length }) }}
+      <q-menu
+        role="dialog"
+        :aria-label="t('columns.title')"
+        anchor="bottom right"
+        self="top right"
+        :offset="[0, 4]"
+      >
+        <ColumnsBox v-model="visible" />
+      </q-menu>
+    </button>
+    <button
+      type="button"
+      class="epfl-btn epfl-btn-secondary epfl-btn-sm"
+      aria-haspopup="dialog"
+      @click="exporting = true"
+    >
       <q-icon :name="matFileDownload" />
       {{ t('table.export') }}
     </button>
   </Teleport>
+  <ModalDialog v-model="exporting" :label="t('export.title')">
+    <ExportBox @close="exporting = false" />
+  </ModalDialog>
 
   <div class="status">
     <i18n-t keypath="table.count" tag="span" scope="global">
@@ -37,27 +58,23 @@
     <span class="status-hint">{{ t('table.hint') }}</span>
   </div>
 
-  <div class="table-layout">
-    <SpecimenTable :rows="filtered" :visible="visible" />
-    <div class="table-side">
-      <ExportBox />
-      <ColumnsBox v-model="visible" />
-    </div>
-  </div>
+  <SpecimenTable :rows="filtered" :visible="visible" />
 </template>
 
 <script setup lang="ts">
 import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { matClose, matFileDownload } from '@quasar/extras/material-icons'
-import { rows } from '../../api/dataset.ts'
+import { matClose, matFileDownload, matViewColumn } from '@quasar/extras/material-icons'
+import { fields, rows } from '../../api/dataset.ts'
 import ColumnsBox from '../../components/ColumnsBox.vue'
 import ExportBox from '../../components/ExportBox.vue'
+import ModalDialog from '../../components/ModalDialog.vue'
 import SpecimenTable from '../../components/SpecimenTable.vue'
 import { useFilters } from '../../composables/useFilters.ts'
 
 const { t } = useI18n()
 const { filters, filtered, update, chips } = useFilters()
+const exporting = ref(false)
 
 // The design's default columns (local state, not the URL).
 const visible = ref([
@@ -74,12 +91,6 @@ const visible = ref([
     'δu+'
   ]
 ])
-
-function toExport() {
-  const box = document.getElementById('export')
-  box?.scrollIntoView({ behavior: 'smooth', block: 'nearest' })
-  box?.focus({ preventScroll: true })
-}
 </script>
 
 <style scoped lang="scss">
@@ -107,25 +118,5 @@ function toExport() {
 .status-hint {
   margin-left: auto;
   color: var(--fg-muted);
-}
-
-// HANDOFF §4.2: fluid table, 232 px right column.
-.table-layout {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) 14.5rem;
-  gap: var(--space-4);
-  align-items: start;
-}
-
-.table-side {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-3);
-}
-
-@media (width <= 80rem) {
-  .table-layout {
-    grid-template-columns: minmax(0, 1fr);
-  }
 }
 </style>

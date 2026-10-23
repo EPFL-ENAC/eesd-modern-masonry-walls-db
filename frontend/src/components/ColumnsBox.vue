@@ -1,5 +1,5 @@
 <template>
-  <aside class="box" :aria-label="t('columns.title')">
+  <div class="box columns">
     <h3 class="box-title">{{ t('columns.title') }}</h3>
     <details v-for="c in categories" :key="c.cat" class="cols-cat">
       <summary class="box-option">
@@ -36,7 +36,7 @@
     >
       {{ t('columns.showAll', { n: fields.length }) }}
     </button>
-  </aside>
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -67,6 +67,12 @@ function toggle(of: Field[], show: boolean) {
 </script>
 
 <style scoped lang="scss">
+// Inside the Columns dropdown, which draws the frame.
+.columns {
+  width: 19rem;
+  border: 0;
+}
+
 .cols-cat {
   summary {
     list-style: none;
