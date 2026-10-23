@@ -28,11 +28,13 @@ function binner(edges: number[], labels: string[]) {
     Number.isNaN(v) ? NA : (labels[edges.findIndex((e) => v < e)] ?? labels[labels.length - 1]!)
 }
 
+// 0.5 (double fixed) and 1.0 (cantilever) are test set-ups: exact values get their own bin.
 function binH0H(v: number) {
   if (Number.isNaN(v)) return NA
-  if (v <= 0.5) return '≤ 0.5'
+  if (v < 0.5) return '< 0.5'
+  if (v === 0.5) return '= 0.5'
   if (v < 1) return '0.5–1.0'
-  if (v === 1) return '1.0'
+  if (v === 1) return '= 1.0'
   return '> 1.0'
 }
 
@@ -47,7 +49,7 @@ function fmGroup(mode: string | null) {
 export const ORDERS = {
   unit_type: ['HC', 'SB-C', 'AAC', 'CS', 'LAC', 'SB-CS', 'CB', 'HCB'],
   fm_group: ['Shear', 'Hybrid', 'Flexure', 'Other'],
-  bin_H0_H: ['≤ 0.5', '0.5–1.0', '1.0', '> 1.0', NA],
+  bin_H0_H: ['< 0.5', '= 0.5', '0.5–1.0', '= 1.0', '> 1.0', NA],
   bin_H: ['< 1.5', '1.5–2.0', '2.0–2.5', '≥ 2.5'],
   bin_sigma0: ['< 0.5', '0.5–1.0', '1.0–1.5', '≥ 1.5', NA],
   bin_H_L: ['< 1', '1–1.5', '≥ 1.5'],

@@ -3,7 +3,7 @@ import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { describe, expect, it } from 'vitest'
 import { parseCsv } from '../src/lib/csv.ts'
-import { counts, medianIqr, type Row } from '../src/lib/derive.ts'
+import { counts, derive, medianIqr, type Row } from '../src/lib/derive.ts'
 import { convert } from '../scripts/convert-data.ts'
 import specimens from '../src/assets/data/specimens.json'
 import fields from '../src/assets/data/fields.json'
@@ -18,7 +18,8 @@ describe('derive() against build_charts.py', () => {
   const [header, ...oracle] = parseCsv(readFileSync(fixture('derived_specimens.csv'), 'utf8'))
   // ALR was an assumption the dataset owners replaced by σ₀ (open question 1).
   // specimen/reference come from the old cp1252 export, which lost ć, Ž, ’.
-  const skip = new Set(['ALR', 'bin_ALR', 'specimen', 'reference'])
+  // bin_H0_H splits the handoff's '≤ 0.5' into '< 0.5' and '= 0.5' (requested 2026-10-23).
+  const skip = new Set(['ALR', 'bin_ALR', 'specimen', 'reference', 'bin_H0_H'])
 
   it('has one row per specimen, in order', () => {
     expect(rows.map((r) => r.N)).toEqual(oracle.map((o) => Number(o[0])))
@@ -50,8 +51,27 @@ describe('derive() against build_charts.py', () => {
 describe('summary.json', () => {
   it('has the donut counts', () => {
     expect(rows.length).toBe(summary.total)
-    for (const key of ['unit_type', 'fm_group', 'bin_H0_H', 'bin_H'] as const)
+    for (const key of ['unit_type', 'fm_group', 'bin_H'] as const)
       expect(Object.fromEntries(counts(rows, key))).toEqual(summary.donuts[key])
+  })
+
+  it('bins H₀/H with 0.5 and 1.0 apart', () => {
+    expect(counts(rows, 'bin_H0_H')).toEqual([
+      ['= 0.5', summary.donuts.bin_H0_H['≤ 0.5']],
+      ['0.5–1.0', summary.donuts.bin_H0_H['0.5–1.0']],
+      ['= 1.0', summary.donuts.bin_H0_H['1.0']],
+      ['> 1.0', summary.donuts.bin_H0_H['> 1.0']],
+      ['n/a', summary.donuts.bin_H0_H['n/a']]
+    ])
+    const bin = (v: string) => derive({ N: 0, values: { 'H0/H': v }, files: [] }).bin_H0_H
+    expect(['0.4', '0.5', '0.75', '1', '1.5', ''].map(bin)).toEqual([
+      '< 0.5',
+      '= 0.5',
+      '0.5–1.0',
+      '= 1.0',
+      '> 1.0',
+      'n/a'
+    ])
   })
 
   it('bins σ₀ in place of ALR', () => {
