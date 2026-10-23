@@ -61,6 +61,7 @@
         <div>{{ t('footer.copyright', { year: new Date().getFullYear() }) }}</div>
       </div>
     </footer>
+    <FieldTip />
   </div>
 </template>
 
@@ -70,6 +71,7 @@ import { useRoute } from 'vue-router'
 import { matNorthEast } from '@quasar/extras/material-icons'
 import { fields, meta, rows } from '../api/dataset.ts'
 import logoUrl from 'epfl-design-system/assets/svg/epfl-logo.svg'
+import FieldTip from '../components/FieldTip.vue'
 
 const { t } = useI18n()
 const route = useRoute()

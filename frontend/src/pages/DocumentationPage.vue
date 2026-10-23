@@ -82,7 +82,7 @@
               <tr v-for="e in c.entries" :key="e.n">
                 <td class="glossary-n">{{ e.n }}</td>
                 <th scope="row" class="glossary-field">
-                  <FieldLabel :field="e.field" /><template v-if="e.pair">
+                  <FieldLabel :field="e.field" no-tip /><template v-if="e.pair">
                     {{ t('docs.pair') }}</template
                   >
                 </th>

@@ -92,15 +92,29 @@
       </fieldset>
       <dl class="kv">
         <div class="kv-row">
-          <dt>{{ t('filters.items.fm_group') }}</dt>
+          <dt>
+            <span :data-tip="glossary('fm_group')">{{ t('filters.items.fm_group') }}</span>
+          </dt>
           <dd>{{ failureMode }}</dd>
         </div>
         <div class="kv-row">
-          <dt><FieldLabel :field="{ name: 'Vbil', units: '' }" /> {{ t('units.plusMinus') }}</dt>
+          <dt>
+            <FieldLabel
+              :field="{
+                name: 'Vbil',
+                units: '',
+                definition: glossary(`Vbil${METHOD_SUFFIX[method]}`)
+              }"
+            />
+            {{ t('units.plusMinus') }}
+          </dt>
           <dd>{{ t('units.kN', { v: pair('Vbil', 1, METHOD_SUFFIX[method]) }) }}</dd>
         </div>
         <div class="kv-row">
-          <dt>{{ t('specimen.maxDrift') }} {{ t('units.plusMinus') }}</dt>
+          <dt>
+            <span :data-tip="glossary('δmax')">{{ t('specimen.maxDrift') }}</span>
+            {{ t('units.plusMinus') }}
+          </dt>
           <dd>{{ t('units.percent', { v: pair('δmax', 2) }) }}</dd>
         </div>
         <div class="kv-row">
@@ -137,9 +151,11 @@ import {
 import { num, type Row } from '../../lib/derive.ts'
 import { cssColor } from '../../lib/tokens.ts'
 import FieldLabel from '../FieldLabel.vue'
+import { useGlossary } from '../../composables/useGlossary.ts'
 
 const props = defineProps<{ row: Row }>()
 const { t, te } = useI18n()
+const glossary = useGlossary()
 
 type Kind = 'envelope' | 'bilinear'
 const KINDS: Kind[] = ['envelope', 'bilinear']

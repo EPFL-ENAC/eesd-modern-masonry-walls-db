@@ -535,5 +535,10 @@
     "percent": "{v} %",
     "percentOf": "{n}%",
     "percentSign": "%"
+  },
+  "glossary": {
+    "tauMax": "Normalised shear strength: maximum shear force over the gross cross-section, Vmax / (L · t), averaging the positive and negative directions.",
+    "keff": "Effective stiffness: the bilinear plateau force Vbil over the yielding displacement δe · H, averaging the positive and negative directions.",
+    "aspect": "Aspect ratio: height H over length L of the specimen."
   }
 }

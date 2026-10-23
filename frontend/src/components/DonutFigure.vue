@@ -1,6 +1,8 @@
 <template>
   <figure class="donut">
-    <figcaption class="donut-title">{{ title }}</figcaption>
+    <figcaption class="donut-title">
+      <span :data-tip="tip">{{ title }}</span>
+    </figcaption>
     <div class="donut-chart">
       <VChart :option="option" autoresize role="img" :aria-label="summary" @click="onClick" />
       <div class="donut-centre" aria-hidden="true">
@@ -35,7 +37,7 @@ import { cssColor } from '../lib/tokens.ts'
 
 export type DonutItem = { value: string; label: string; count: number; color: string }
 
-const props = defineProps<{ title: string; items: DonutItem[]; selected?: string }>()
+const props = defineProps<{ title: string; tip?: string; items: DonutItem[]; selected?: string }>()
 const emit = defineEmits<{ select: [value: string] }>()
 const { t } = useI18n()
 

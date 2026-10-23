@@ -44,6 +44,7 @@
           v-for="d in donuts"
           :key="d.key"
           :title="t(`overview.donuts.${d.key}`)"
+          :tip="glossary(d.key)"
           :items="d.items"
           :selected="selected[d.key]"
           @select="toggle(d.key, $event)"
@@ -72,6 +73,7 @@
             <span
               v-for="(a, i) in FLOW_AXES"
               :key="a"
+              :data-tip="glossary(a)"
               :style="{ left: `${5 + (i * 90) / (FLOW_AXES.length - 1)}%` }"
             >
               {{ t(`overview.axes.${a}`) }}
@@ -100,10 +102,12 @@ import { VChart, darkTooltip } from '../charts/echarts.ts'
 import { FLOW_AXES, flows, nodeLabel, type Link } from '../charts/sankey.ts'
 import { EpflKeyNumber } from 'epfl-design-system/kits/vue'
 import DonutFigure from '../components/DonutFigure.vue'
+import { useGlossary } from '../composables/useGlossary.ts'
 import { NA, counts, type Category } from '../lib/derive.ts'
 import { categoryToken, cssColor, cssVar } from '../lib/tokens.ts'
 
 const { t } = useI18n()
+const glossary = useGlossary()
 
 const keyNumbers = [
   { value: rows.length, label: 'overview.keySpecimens' },

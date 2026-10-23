@@ -17,7 +17,9 @@
       >
         <summary>
           <q-icon :name="matChevronRight" class="filters-chev" />
-          <span class="filters-item-label">{{ t(`filters.items.${item.key}`) }}</span>
+          <span class="filters-item-label"
+            ><span :data-tip="glossary(item.key)">{{ t(`filters.items.${item.key}`) }}</span></span
+          >
           <span v-if="activeCount(item)" class="filters-badge">{{ activeCount(item) }}</span>
         </summary>
         <div v-if="item.kind === 'list'" class="filters-options">
@@ -87,10 +89,12 @@ import { useI18n } from 'vue-i18n'
 import { matChevronRight } from '@quasar/extras/material-icons'
 import { rows } from '../api/dataset.ts'
 import { useFilters } from '../composables/useFilters.ts'
+import { useGlossary } from '../composables/useGlossary.ts'
 import { RANGES, facet, isActive, type ListKey, type RangeKey } from '../lib/filters.ts'
 
 const { t } = useI18n()
 const { filters, update, optionLabel, reset } = useFilters()
+const glossary = useGlossary()
 
 type Item = { kind: 'list'; key: Exclude<ListKey, 'has'> } | { kind: 'range'; key: RangeKey }
 const list = (key: Exclude<ListKey, 'has'>): Item => ({ kind: 'list', key })
