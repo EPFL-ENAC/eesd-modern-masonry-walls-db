@@ -76,20 +76,14 @@ const { t } = useI18n()
 const { filters, filtered, update, chips } = useFilters()
 const exporting = ref(false)
 
-// The design's default columns (local state, not the URL).
+// Default columns (#32), local state, not the URL. Bilinear: Pavia's [VI], the curves' default.
 const visible = ref([
-  ...['N', 'Reference', 'Specimen name', 'Unit type', 'N° courses', 'H', 'L', 't'],
-  ...[
-    'Bed Joints',
-    'Head Joints',
-    'Void Ratio',
-    'fm,c',
-    'H0/H',
-    'σ0',
-    'Failure mode',
-    'Vmax+',
-    'δu+'
-  ]
+  ...['N', 'Reference', 'Specimen name'],
+  ...['Unit type', 'H', 'L', 't'],
+  ...['fb,norm,Ʇ', 'fm,c'],
+  ...['Boundary conditions', 'H0/H', 'σ0', 'ALR'],
+  'Failure mode',
+  ...['Vbil+', 'Vbil-', 'μu+', 'μu-']
 ])
 </script>
 
