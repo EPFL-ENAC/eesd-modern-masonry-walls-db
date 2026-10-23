@@ -20,9 +20,11 @@ const props = defineProps<{
 }>()
 
 // Symbols set their index as a subscript: fm,c → f + "m,c"; H0/H → H + "0" + "/H".
+// Words and the ALR acronym are not symbols.
+const PLAIN = new Set(['Reference', 'Institution', 'Year', 'ALR'])
 const parts = computed(() => {
   const { name } = props.field
-  if (props.short || name.length < 2 || /\s/.test(name) || name === 'Reference') return null
+  if (props.short || name.length < 2 || /\s/.test(name) || PLAIN.has(name)) return null
   return /^(.)([^/]*)(.*)$/.exec(name)!.slice(1)
 })
 </script>
