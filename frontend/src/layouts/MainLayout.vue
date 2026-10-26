@@ -2,12 +2,13 @@
   <div class="app-shell">
     <!-- DS `epfl-header` organism minus search and language switch (HANDOFF §1).
          Rendered from the DS classes: the kit's EpflHeader hard-codes href="#". -->
-    <header class="epfl-header" @keydown.esc="menuOpen = false">
+    <header class="epfl-header" @keydown.esc="closeMenu">
       <router-link to="/" class="epfl-logo" :aria-label="t('header.home')">
         <span class="logo logo-red" role="img" aria-label="EPFL" :style="logoMask" />
       </router-link>
       <!-- Phones only: the links fold into a menu under a one-line bar. -->
       <button
+        ref="menuBtn"
         type="button"
         class="epfl-btn epfl-btn-secondary epfl-btn-sm header-menu"
         :aria-expanded="menuOpen"
@@ -86,6 +87,13 @@ import FieldTip from '../components/FieldTip.vue'
 const { t } = useI18n()
 const route = useRoute()
 const menuOpen = ref(false)
+const menuBtn = ref<HTMLButtonElement>()
+// Escape closes the menu and puts focus back on its button, not on a hidden link.
+function closeMenu() {
+  if (!menuOpen.value) return
+  menuOpen.value = false
+  menuBtn.value?.focus()
+}
 // Following a link closes the menu.
 watch(
   () => route.fullPath,
