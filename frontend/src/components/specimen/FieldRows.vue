@@ -1,7 +1,7 @@
 <template>
   <dl class="kv">
     <div v-for="f in list" :key="f.n" class="kv-row">
-      <dt><FieldLabel :field="f" units /></dt>
+      <dt><FieldLabel :field="f" units link /></dt>
       <dd>{{ row.values[f.key] == null ? t('specimen.missing') : display(row.values[f.key]) }}</dd>
     </div>
   </dl>

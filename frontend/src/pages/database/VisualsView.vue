@@ -33,7 +33,7 @@
       </i18n-t>
       <span v-for="s in stats" :key="s.key" class="vis-stat">
         <i18n-t keypath="visuals.median" tag="span" scope="global">
-          <template #symbol><FieldLabel :field="{ name: s.symbol, units: '' }" /></template>
+          <template #symbol><FieldLabel :field="{ name: s.symbol, units: '' }" link /></template>
           <template #value
             ><b class="vis-num">{{
               s.n ? s.median.toFixed(2) : t('specimen.missing')
@@ -73,7 +73,7 @@
         </span>
       </figcaption>
       <div class="vis-plot">
-        <div class="vis-ytitle"><FieldLabel :field="p.y" units /></div>
+        <div class="vis-ytitle"><FieldLabel :field="p.y" units link /></div>
         <VChart
           class="vis-chart"
           :option="option(p, data[i]!)"
@@ -89,7 +89,7 @@
         />
       </div>
       <div class="vis-xtitle">
-        <FieldLabel :field="p.x" units />
+        <FieldLabel :field="p.x" units link />
         <span v-if="p.jitter" class="vis-jitter">{{ t('visuals.jittered') }}</span>
       </div>
     </figure>

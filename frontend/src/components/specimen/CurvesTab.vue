@@ -93,7 +93,9 @@
       <dl class="kv">
         <div class="kv-row">
           <dt>
-            <span :data-tip="glossary('fm_group')">{{ t('filters.items.fm_group') }}</span>
+            <router-link :to="glossaryRoute('Failure mode')" :data-tip="glossary('fm_group')">{{
+              t('filters.items.fm_group')
+            }}</router-link>
           </dt>
           <dd>{{ failureMode }}</dd>
         </div>
@@ -103,8 +105,10 @@
               :field="{
                 name: 'Vbil',
                 units: '',
+                key: `Vbil+${METHOD_SUFFIX[method]}`,
                 definition: glossary(`Vbil${METHOD_SUFFIX[method]}`)
               }"
+              link
             />
             {{ t('units.plusMinus') }}
           </dt>
@@ -112,13 +116,17 @@
         </div>
         <div class="kv-row">
           <dt>
-            <span :data-tip="glossary('δmax')">{{ t('specimen.maxDrift') }}</span>
+            <router-link :to="glossaryRoute('δmax+')" :data-tip="glossary('δmax')">{{
+              t('specimen.maxDrift')
+            }}</router-link>
             {{ t('units.plusMinus') }}
           </dt>
           <dd>{{ t('units.percent', { v: pair('δmax', 2) }) }}</dd>
         </div>
         <div class="kv-row">
-          <dt>{{ t('specimen.axialStress') }} <FieldLabel :field="{ name: 'σ0', units: '' }" /></dt>
+          <dt>
+            {{ t('specimen.axialStress') }} <FieldLabel :field="{ name: 'σ0', units: '' }" link />
+          </dt>
           <dd>{{ t('units.MPa', { v: fixed(row.sigma0, 2) }) }}</dd>
         </div>
         <div class="kv-row">
@@ -157,7 +165,7 @@ import {
 import { display, num, type Row } from '../../lib/derive.ts'
 import { cssColor } from '../../lib/tokens.ts'
 import FieldLabel from '../FieldLabel.vue'
-import { useGlossary } from '../../composables/useGlossary.ts'
+import { glossaryRoute, useGlossary } from '../../composables/useGlossary.ts'
 
 const props = defineProps<{ row: Row }>()
 const { t, te } = useI18n()
