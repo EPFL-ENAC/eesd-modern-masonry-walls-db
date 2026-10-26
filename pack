@@ -1,1 +1,1 @@
-{"clock":41,"ops":[{"kind":"seen","author":"d4dd02f9bf55c08ed70759b8926479f5b68e66a2","time":1793025137,"data":{"issue":"5386100d461e0be0eccb3c303506cf273c32b071","field":"status","value":"closed"}}]}
+{"clock":42,"ops":[{"kind":"run","author":"d4dd02f9bf55c08ed70759b8926479f5b68e66a2","time":1793025141,"data":{"started":1793025137}}]}
