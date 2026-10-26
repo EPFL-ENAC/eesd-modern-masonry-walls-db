@@ -24,18 +24,27 @@ const DERIVED: Record<string, string> = {
   bin_H_L: 'aspect'
 }
 
-/** A name's glossary definition, for tooltips. A ± pair ('δu') reads its '+' field for both directions. */
+/** The field behind a name the app shows; a ± pair ('δu', 'Vbil [VII]') gives its '+' field. */
+export function fieldOf(name: string) {
+  const n = FIELD[name] ?? name
+  const plus = n.replace(/( \[VII\])?$/, '+$1') // 'Vbil [VII]' → 'Vbil+ [VII]'
+  return fields.find((f) => f.key === n) ?? fields.find((f) => f.key === plus)
+}
+
+/** A field's row in the Documentation glossary, as an element id and as a route. */
+export const glossaryId = (key: string) => `field-${key.replace(/\s+/g, '_')}`
+export const glossaryRoute = (key: string) => ({
+  path: '/documentation',
+  hash: `#${glossaryId(key)}`
+})
+
+/** A name's glossary definition, for tooltips. A ± pair reads its '+' field for both directions. */
 export function useGlossary() {
   const { t } = useI18n()
   return (name: string): string | undefined => {
     if (DERIVED[name]) return t(`glossary.${DERIVED[name]}`)
-    const n = FIELD[name] ?? name
-    const plus = n.replace(/( \[VII\])?$/, '+$1') // 'Vbil [VII]' → 'Vbil+ [VII]'
-    return (
-      fields.find((f) => f.key === n)?.definition ??
-      fields
-        .find((f) => f.key === plus)
-        ?.definition.replaceAll('positive', t('docs.bothDirections'))
-    )
+    const f = fieldOf(name)
+    if (!f || f.key === (FIELD[name] ?? name)) return f?.definition
+    return f.definition.replaceAll('positive', t('docs.bothDirections'))
   }
 }

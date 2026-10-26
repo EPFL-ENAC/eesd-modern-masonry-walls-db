@@ -88,4 +88,14 @@ onBeforeUnmount(() => {
 :global(:is(button, summary, label) [data-tip]) {
   cursor: inherit;
 }
+
+// A label that links to its glossary row: text colour, solid underline on hover.
+:global(a[data-tip]) {
+  color: inherit;
+  cursor: pointer;
+}
+
+:global(a[data-tip]:hover) {
+  text-decoration-style: solid;
+}
 </style>

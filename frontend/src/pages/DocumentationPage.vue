@@ -79,9 +79,16 @@
               </tr>
             </thead>
             <tbody>
-              <tr v-for="e in c.entries" :key="e.n">
+              <!-- Each field has an anchor (#field-<key>); a ± pair's '−' key points into its row. -->
+              <tr
+                v-for="e in c.entries"
+                :id="glossaryId(e.keys[0]!)"
+                :key="e.n"
+                :class="{ 'glossary-target': e.keys.some((k) => glossaryId(k) === target) }"
+              >
                 <td class="glossary-n">{{ e.n }}</td>
                 <th scope="row" class="glossary-field">
+                  <span v-for="k in e.keys.slice(1)" :id="glossaryId(k)" :key="k" />
                   <FieldLabel :field="e.field" no-tip /><template v-if="e.pair">
                     {{ t('docs.pair') }}</template
                   >
@@ -108,11 +115,16 @@
 <script setup lang="ts">
 import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
+import { useRoute } from 'vue-router'
 import { FIELDS_CSV, fields, fileUrl, meta, rows } from '../api/dataset.ts'
 import type { Field } from '../api/types.ts'
 import FieldLabel from '../components/FieldLabel.vue'
+import { glossaryId } from '../composables/useGlossary.ts'
 
 const { t } = useI18n()
+const route = useRoute()
+// The row a field link points to. Router navigation doesn't update CSS :target.
+const target = computed(() => route.hash.slice(1))
 
 const TOP = ['about', 'files', 'glossary'] as const
 // File-name patterns from readme.txt.
@@ -138,6 +150,7 @@ const lastUpdate = new Date(meta.lastUpdate).toLocaleDateString('en-GB', {
 
 type Entry = {
   n: string
+  keys: string[]
   field: Pick<Field, 'name' | 'units'>
   pair: boolean
   definition: string
@@ -164,6 +177,7 @@ function entries(of: Field[]): Entry[] {
       : undefined
     out.push({
       n: twin ? `${f.n}–${twin.n}` : String(f.n),
+      keys: twin ? [f.key, twin.key] : [f.key],
       field: twin ? { name: f.name.slice(0, -1), units: f.units } : f,
       pair: !!twin,
       // The + definition, read for both: "…in the positive (negative) direction."
@@ -383,6 +397,15 @@ onBeforeUnmount(() => observer?.disconnect())
     vertical-align: top;
     border-bottom: var(--border-w) solid var(--border-subtle);
   }
+}
+
+// Field anchors: the row, or for a ± pair's '−' key a span in it.
+.glossary [id] {
+  scroll-margin-top: var(--space-5);
+}
+
+.glossary-target {
+  background: var(--bg-subtle);
 }
 
 .glossary-n {
