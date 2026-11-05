@@ -100,7 +100,7 @@ import { num, display, type Row } from '../lib/derive.ts'
 import FieldLabel from './FieldLabel.vue'
 
 const props = defineProps<{ rows: readonly Row[]; visible: readonly string[] }>()
-const { t, te } = useI18n()
+const { t, tm, rt } = useI18n()
 const route = useRoute()
 const { setQuery } = useFilters()
 
@@ -114,7 +114,9 @@ const NUMERIC = new Set(
     .map((f) => f.key)
 )
 
-const short = (f: Field) => (te(`fieldShort.${f.n}`) ? t(`fieldShort.${f.n}`) : undefined)
+// By key, not by column number: keys like 'Specimen name' survive new columns.
+const SHORT = tm('fieldShort') as Record<string, string>
+const short = (f: Field) => (SHORT[f.key] ? rt(SHORT[f.key]) : undefined)
 
 // N° and Specimen first (sticky), then the visible fields in database order.
 const STICKY = ['N', 'Specimen name']

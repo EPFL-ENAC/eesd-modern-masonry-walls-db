@@ -52,13 +52,12 @@
       <p v-if="reference?.linkData" class="cite-text">
         <a :href="reference.linkData">{{ t('specimen.files.data') }}</a>
       </p>
-      <!-- handoff-BIB (#18): BibTeX comes from the EESD .bib, not supplied yet. -->
-      <pre class="cite-bib">{{ t('specimen.files.handoff-BIB-pending') }}</pre>
-      <div class="cite-actions">
-        <button type="button" class="epfl-btn epfl-btn-secondary epfl-btn-sm" disabled>
-          {{ t('specimen.files.copyBib') }}
+      <pre class="cite-bib">{{ reference?.bibtex ?? t('specimen.files.noBib') }}</pre>
+      <div v-if="reference?.bibtex" class="cite-actions">
+        <button type="button" class="epfl-btn epfl-btn-secondary epfl-btn-sm" @click="copyBib">
+          {{ copied ? t('specimen.files.bibCopied') : t('specimen.files.copyBib') }}
         </button>
-        <button type="button" class="epfl-btn epfl-btn-secondary epfl-btn-sm" disabled>
+        <button type="button" class="epfl-btn epfl-btn-secondary epfl-btn-sm" @click="saveBib">
           {{ t('specimen.files.downloadBib') }}
         </button>
       </div>
@@ -72,7 +71,7 @@ import { useI18n } from 'vue-i18n'
 import { matFileDownload } from '@quasar/extras/material-icons'
 import { fields, fileUrl, referenceById } from '../../api/dataset.ts'
 import type { Row } from '../../lib/derive.ts'
-import { pad, saveSpecimenRow, saveSpecimenZip } from '../../lib/download.ts'
+import { pad, saveBlob, saveSpecimenRow, saveSpecimenZip } from '../../lib/download.ts'
 
 const props = defineProps<{ row: Row }>()
 const { t } = useI18n()
@@ -80,6 +79,20 @@ const { t } = useI18n()
 const reference = computed(() => referenceById.get(props.row.reference))
 const name = (p: string) => p.split('/').pop()!
 const doi = (url: string) => url.replace(/^https?:\/\/(dx\.)?doi\.org\//, 'doi:')
+// '@article{petry_beyer_2015,' → 'petry_beyer_2015'
+const bibKey = (entry: string) => /\{([^,]+),/.exec(entry)![1]
+
+const saveBib = () => {
+  const bib = reference.value!.bibtex!
+  saveBlob(new Blob([bib]), `${bibKey(bib)}.bib`)
+}
+
+const copied = ref(false)
+async function copyBib() {
+  await navigator.clipboard.writeText(reference.value!.bibtex!)
+  copied.value = true
+  setTimeout(() => (copied.value = false), 2000)
+}
 
 const busy = ref(false)
 const error = ref('')

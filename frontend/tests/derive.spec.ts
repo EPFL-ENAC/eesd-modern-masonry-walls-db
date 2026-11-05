@@ -115,12 +115,22 @@ describe('committed JSON', () => {
     expect(() => convert(dir)).toThrow(/no UTF-8 BOM/)
   })
 
-  it('has 236 specimens, 70 fields and 31 references', () => {
+  it('has 236 specimens, 72 fields and 31 references', () => {
     // N 237 has nothing but its number; Nref 32 and 33 nothing but theirs.
     expect(specimens.map((s) => s.N)).toEqual(Array.from({ length: 236 }, (_, i) => i + 1))
-    expect(fields).toHaveLength(70)
+    expect(fields).toHaveLength(72)
     expect(references).toHaveLength(31)
     expect(references.find((r) => r.nref === 31)?.citation).toBeNull()
+  })
+
+  it('joins Fig_references by Nref and BibTeX by key', () => {
+    // Nref 14: the data from Petry & Beyer (2014), the photos from their 2015 paper.
+    const petry = references.find((r) => r.nref === 14)!
+    expect(petry.figCitation).toMatch(/^Petry, S\. and Beyer, K\. \(2015\)/)
+    expect(petry.bibtex).toBeNull() // petry_beyer_2014 is missing from the .bib (#18)
+    expect(references.find((r) => r.nref === 30)?.bibtex).toMatch(
+      /^@article\{inzunzaaraya_et_al_2026,/
+    )
   })
 
   it('keys the EPFL bilinear columns apart from the Pavia ones', () => {

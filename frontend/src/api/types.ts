@@ -4,6 +4,7 @@
 export type Values = Record<string, string | null>
 
 export interface Specimen {
+  /** N_id: names the files and the ?specimen= link, and never changes (#40). The N column only counts rows. */
   N: number
   values: Values
   /** Dataset paths present for this specimen, e.g. '02_fd_curve/fd_curve_0227.csv'. */
@@ -30,6 +31,8 @@ export interface Reference {
   citation: string | null
   linkDocument: string | null
   linkData: string | null
+  /** Its entry in the delivered .bib; null when EESD gave it no key. */
+  bibtex: string | null
   /** Where the specimen photos come from, when it isn't the data's own publication. */
   figCitation: string | null
   figLink: string | null

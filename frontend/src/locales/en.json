@@ -122,14 +122,15 @@
     "U": "U — unfilled"
   },
   "fieldShort": {
-    "1": "N°",
-    "5": "Specimen",
-    "6": "Unit",
-    "7": "Courses",
-    "11": "Bed",
-    "12": "Head",
-    "14": "Void",
-    "40": "Failure"
+    "N": "N°",
+    "Specimen name": "Specimen",
+    "Unit type": "Unit",
+    "N° courses": "Courses",
+    "Bed Joints": "Bed",
+    "Head Joints": "Head",
+    "Void Ratio (min)": "Void min",
+    "Void Ratio (max)": "Void max",
+    "Failure mode": "Failure"
   },
   "fieldCategories": {
     "I": "General",
@@ -166,7 +167,7 @@
       "curves": "F-d curves",
       "envelopes": "Envelopes and bilinear",
       "figures": "Figures",
-      "references": "References (.csv)"
+      "references": "References (.csv, .bib)"
     },
     "download": "Download {n} specimens",
     "busy": "Preparing…",
@@ -275,7 +276,8 @@
       "copyBib": "Copy BibTeX",
       "downloadBib": "Download .bib",
       "handoff-Q7-citation": "[Citation pending, open question 7]",
-      "handoff-BIB-pending": "[BibTeX pending from EESD]",
+      "noBib": "No BibTeX entry for this reference.",
+      "bibCopied": "BibTeX copied",
       "desc": {
         "02_fd_curve": "Full F-d curve · drift [%], force [kN]",
         "03_envelope_Pavia": "Backbone envelope · Pavia",
