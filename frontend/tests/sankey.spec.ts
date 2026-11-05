@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { rows } from '../src/api/dataset.ts'
+import { rows20260924 as rows } from './fixtures/rows-2026-09-24.ts'
 import { FLOW_AXES, flows } from '../src/charts/sankey.ts'
 
 describe('flows', () => {

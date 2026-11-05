@@ -1,5 +1,5 @@
 <template>
-  <aside class="box" :aria-label="t('columns.title')">
+  <div class="box columns">
     <h3 class="box-title">{{ t('columns.title') }}</h3>
     <details v-for="c in categories" :key="c.cat" class="cols-cat">
       <summary class="box-option">
@@ -7,7 +7,6 @@
           type="checkbox"
           :checked="c.shown === c.fields.length"
           :indeterminate="c.shown > 0 && c.shown < c.fields.length"
-          :disabled="c.cat === 'I'"
           :aria-label="
             t('columns.category', { name: label(c.cat), shown: c.shown, total: c.fields.length })
           "
@@ -21,9 +20,9 @@
         <label v-for="f in c.fields" :key="f.n" class="box-option">
           <input
             type="checkbox"
-            :checked="model.includes(f.name)"
-            :disabled="c.cat === 'I'"
-            @change="toggle([f], !model.includes(f.name))"
+            :checked="model.includes(f.key)"
+            :disabled="LOCKED.includes(f.key)"
+            @change="toggle([f], !model.includes(f.key))"
           />
           <FieldLabel :field="f" />
         </label>
@@ -32,11 +31,11 @@
     <button
       type="button"
       class="epfl-btn epfl-btn-secondary epfl-btn-sm"
-      @click="model = fields.map((f) => f.name)"
+      @click="model = fields.map((f) => f.key)"
     >
       {{ t('columns.showAll', { n: fields.length }) }}
     </button>
-  </aside>
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -54,12 +53,15 @@ const label = (cat: string) => `${cat} · ${t(`fieldCategories.${cat}`)}`
 const categories = computed(() =>
   [...new Set(fields.map((f) => f.category))].map((cat) => {
     const of = fields.filter((f) => f.category === cat)
-    return { cat, fields: of, shown: of.filter((f) => model.value.includes(f.name)).length }
+    return { cat, fields: of, shown: of.filter((f) => model.value.includes(f.key)).length }
   })
 )
 
+// The table's sticky pair: always shown.
+const LOCKED = ['N', 'Specimen name']
+
 function toggle(of: Field[], show: boolean) {
-  const names = of.map((f) => f.name)
+  const names = of.map((f) => f.key).filter((n) => !LOCKED.includes(n))
   model.value = show
     ? [...new Set([...model.value, ...names])]
     : model.value.filter((n) => !names.includes(n))
@@ -67,6 +69,12 @@ function toggle(of: Field[], show: boolean) {
 </script>
 
 <style scoped lang="scss">
+// Inside the Columns dropdown, which draws the frame.
+.columns {
+  width: 19rem;
+  border: 0;
+}
+
 .cols-cat {
   summary {
     list-style: none;

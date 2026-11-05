@@ -1,5 +1,5 @@
 /**
- * public/data/05…08 photos → web versions (`pnpm optimize-images`), as in
+ * public/data/07…10 photos → web versions (`pnpm optimize-images`), as in
  * sxl-recrete-atlas: 512 and 1920 px wide WebP beside each original. Up-to-date
  * outputs are skipped. Commit the results (git-lfs, like the originals).
  */

@@ -35,7 +35,7 @@ const FM_GROUP: Record<string, string> = {
   Flexure: '--epfl-blue',
   Other: '--border-strong'
 }
-// The design spreads 4 ordered bins over the 5-step ramp, skipping step 2.
+// The design spreads 4 ordered bins over the 5-step ramp, skipping step 2; 5 bins take every step.
 const SEQ = ['--chart-seq-1', '--chart-seq-3', '--chart-seq-4', '--chart-seq-5']
 
 /** Token name of a category's colour: fixed for unit types and failure modes, ramp for bins. */
@@ -43,5 +43,7 @@ export function categoryToken(key: Category, value: string): string {
   if (value === NA) return '--epfl-gray-300'
   if (key === 'unit_type') return UNIT[value]!
   if (key === 'fm_group') return FM_GROUP[value]!
-  return SEQ[(ORDERS[key] as readonly string[]).indexOf(value)] ?? '--chart-seq-5'
+  const bins = (ORDERS[key] as readonly string[]).filter((v) => v !== NA)
+  const i = bins.indexOf(value)
+  return bins.length > SEQ.length ? `--chart-seq-${i + 1}` : (SEQ[i] ?? '--chart-seq-5')
 }

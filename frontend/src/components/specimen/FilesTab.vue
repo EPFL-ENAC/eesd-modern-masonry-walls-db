@@ -25,12 +25,12 @@
           </a>
         </li>
         <li class="files-row">
-          <span>specimen_{{ pad(row.N) }}.csv</span>
+          <span>specimen_{{ pad(row.id) }}.csv</span>
           <span class="files-desc">{{ t('specimen.files.desc.row', { n: fields.length }) }}</span>
           <button
             type="button"
             class="files-icon"
-            :aria-label="t('specimen.files.download', { name: `specimen_${pad(row.N)}.csv` })"
+            :aria-label="t('specimen.files.download', { name: `specimen_${pad(row.id)}.csv` })"
             @click="run(() => saveSpecimenRow(row))"
           >
             <q-icon :name="matFileDownload" size="1.25rem" />
@@ -52,17 +52,15 @@
       <p v-if="reference?.linkData" class="cite-text">
         <a :href="reference.linkData">{{ t('specimen.files.data') }}</a>
       </p>
-      <!-- handoff-BIB (#18): BibTeX comes from the EESD .bib, not supplied yet. -->
-      <pre class="cite-bib">{{ t('specimen.files.handoff-BIB-pending') }}</pre>
-      <div class="cite-actions">
-        <button type="button" class="epfl-btn epfl-btn-secondary epfl-btn-sm" disabled>
-          {{ t('specimen.files.copyBib') }}
+      <pre class="cite-bib">{{ reference?.bibtex ?? t('specimen.files.noBib') }}</pre>
+      <div v-if="reference?.bibtex" class="cite-actions">
+        <button type="button" class="epfl-btn epfl-btn-secondary epfl-btn-sm" @click="copyBib">
+          {{ copied ? t('specimen.files.bibCopied') : t('specimen.files.copyBib') }}
         </button>
-        <button type="button" class="epfl-btn epfl-btn-secondary epfl-btn-sm" disabled>
+        <button type="button" class="epfl-btn epfl-btn-secondary epfl-btn-sm" @click="saveBib">
           {{ t('specimen.files.downloadBib') }}
         </button>
       </div>
-      <p class="cite-note">{{ t('specimen.files.alsoCite') }}</p>
     </section>
   </div>
 </template>
@@ -73,7 +71,7 @@ import { useI18n } from 'vue-i18n'
 import { matFileDownload } from '@quasar/extras/material-icons'
 import { fields, fileUrl, referenceById } from '../../api/dataset.ts'
 import type { Row } from '../../lib/derive.ts'
-import { pad, saveSpecimenRow, saveSpecimenZip } from '../../lib/download.ts'
+import { pad, saveBlob, saveSpecimenRow, saveSpecimenZip } from '../../lib/download.ts'
 
 const props = defineProps<{ row: Row }>()
 const { t } = useI18n()
@@ -81,6 +79,10 @@ const { t } = useI18n()
 const reference = computed(() => referenceById.get(props.row.reference))
 const name = (p: string) => p.split('/').pop()!
 const doi = (url: string) => url.replace(/^https?:\/\/(dx\.)?doi\.org\//, 'doi:')
+const saveBib = () => {
+  const r = reference.value!
+  saveBlob(new Blob([r.bibtex!]), `${r.bibKey}.bib`)
+}
 
 const busy = ref(false)
 const error = ref('')
@@ -95,6 +97,17 @@ async function run(job: () => Promise<void>) {
     busy.value = false
   }
 }
+const copied = ref(false)
+let copiedTimer: ReturnType<typeof setTimeout> | undefined
+// No clipboard on plain http or when the permission is denied: run() shows the error.
+const copyBib = () =>
+  run(async () => {
+    await navigator.clipboard.writeText(reference.value!.bibtex!)
+    copied.value = true
+    clearTimeout(copiedTimer)
+    copiedTimer = setTimeout(() => (copied.value = false), 2000)
+  })
+
 const all = () => run(() => saveSpecimenZip(props.row))
 </script>
 
@@ -188,12 +201,6 @@ const all = () => run(() => saveSpecimenZip(props.row))
   display: flex;
   flex-wrap: wrap;
   gap: var(--space-2);
-}
-
-.cite-note {
-  margin: 0;
-  font-size: 0.8125rem;
-  color: var(--fg-muted);
 }
 
 @media (width <= 64rem) {

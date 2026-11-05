@@ -2,7 +2,7 @@
  * Database filters, as they live in the URL query (shared by /database and
  * /database/visuals). OR within a group, AND across groups.
  */
-import { NA, ORDERS, type Row } from './derive.ts'
+import { NA, ORDERS, flagged, type Row } from './derive.ts'
 
 /** Checkbox groups: query key → the values a row offers to it. */
 export const LISTS = {
@@ -21,15 +21,15 @@ export type RangeKey = keyof typeof RANGES
 
 export const HAS = ['fd', 'envelope', 'bilinear', 'cracks', 'photos'] as const
 
-/** Data availability (open question 9): F-d and cracks from the database flags, the rest from files present. */
+/** Data availability (open question 9): curves and cracks from the database flags, photos from files present. */
 export function availability(r: Row): string[] {
-  const has = (folder: string) => r.files.some((f) => f.startsWith(folder))
+  const has = (folder: string) => r.files.some((f) => f.startsWith(`${folder}/`))
   const out = {
-    fd: r.values['F-d data'] != null,
-    envelope: has('03_envelope'),
-    bilinear: has('04_bilinear_curve'),
-    cracks: r.values['Crack measurements'] != null,
-    photos: has('05_fig_setup') || has('07_fig_materials')
+    fd: flagged(r.values['F-d data']),
+    envelope: flagged(r.values['Env curve']),
+    bilinear: flagged(r.values['Bil curve']),
+    cracks: flagged(r.values['Crack measurements']),
+    photos: has('07_fig_setup') || has('09_fig_materials')
   }
   return HAS.filter((k) => out[k])
 }
@@ -75,7 +75,7 @@ export const isActive = (f: Filters) => Object.values(filtersToQuery(f)).some(Bo
 
 function matches(r: Row, f: Filters, skip?: ListKey): boolean {
   const q = f.q.trim().toLowerCase()
-  if (q && ![String(r.N), r.specimen, r.reference].some((s) => s.toLowerCase().includes(q)))
+  if (q && ![r.values.N ?? '', r.specimen, r.reference].some((s) => s.toLowerCase().includes(q)))
     return false
   for (const k of Object.keys(LISTS) as ListKey[]) {
     const want = f[k]
@@ -100,9 +100,10 @@ const ORDER: Partial<Record<ListKey, readonly string[]>> = {
   has: HAS
 }
 
-/** Options of a group, in chart order, else by count; each counted against the *other* groups. */
+/** Options of a group, in chart order (every bin, even empty), else by count; each counted against the *other* groups. */
 export function facet(rows: readonly Row[], f: Filters, key: ListKey): [string, number][] {
-  const total = new Map<string, number>()
+  const order: readonly string[] = ORDER[key] ?? []
+  const total = new Map<string, number>(order.map((v) => [v, 0]))
   const live = new Map<string, number>()
   for (const r of rows) {
     const ok = matches(r, f, key)
@@ -111,7 +112,6 @@ export function facet(rows: readonly Row[], f: Filters, key: ListKey): [string, 
       if (ok) live.set(v, (live.get(v) ?? 0) + 1)
     }
   }
-  const order: readonly string[] = ORDER[key] ?? []
   const keys = [...total.keys()].sort(
     (a, b) =>
       (order.includes(a) ? order.indexOf(a) : 99) - (order.includes(b) ? order.indexOf(b) : 99) ||

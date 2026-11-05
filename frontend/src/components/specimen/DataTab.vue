@@ -9,7 +9,7 @@
     <div class="data-cols">
       <section v-for="c in categories" :key="c.cat" class="data-cat">
         <h3 class="data-cat-title">{{ c.cat }} · {{ c.name }}</h3>
-        <FieldRows :row="row" :names="c.names" />
+        <FieldRows :row="row" :keys="c.keys" />
       </section>
     </div>
   </div>
@@ -26,7 +26,7 @@ const { t } = useI18n()
 
 const categories = [...new Set(fields.map((f) => f.category))].map((cat) => {
   const of = fields.filter((f) => f.category === cat)
-  return { cat, name: of[0]!.categoryName, names: of.map((f) => f.name) }
+  return { cat, name: of[0]!.categoryName, keys: of.map((f) => f.key) }
 })
 </script>
 

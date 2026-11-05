@@ -3,26 +3,27 @@ import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { describe, expect, it } from 'vitest'
 import { parseCsv } from '../src/lib/csv.ts'
-import { counts, derive, medianIqr, type Row } from '../src/lib/derive.ts'
+import { counts, derive, medianIqr, display, type Row } from '../src/lib/derive.ts'
 import { convert } from '../scripts/convert-data.ts'
 import specimens from '../src/assets/data/specimens.json'
 import fields from '../src/assets/data/fields.json'
 import references from '../src/assets/data/references.json'
 import meta from '../src/assets/data/meta.json'
 import summary from './fixtures/summary.json'
-import type { Specimen } from '../src/api/types.ts'
+import { rows20260924 as rows } from './fixtures/rows-2026-09-24.ts'
 
-const rows = (specimens as Specimen[]).map(derive)
 const fixture = (name: string) => new URL(`./fixtures/${name}`, import.meta.url)
 
 describe('derive() against build_charts.py', () => {
   const [header, ...oracle] = parseCsv(readFileSync(fixture('derived_specimens.csv'), 'utf8'))
   // ALR was an assumption the dataset owners replaced by σ₀ (open question 1).
   // specimen/reference come from the old cp1252 export, which lost ć, Ž, ’.
-  const skip = new Set(['ALR', 'bin_ALR', 'specimen', 'reference'])
+  // bin_H0_H splits the handoff's '≤ 0.5' into '< 0.5' and '= 0.5' (requested 2026-10-23).
+  // N is checked against id by the test below.
+  const skip = new Set(['N', 'ALR', 'bin_ALR', 'specimen', 'reference', 'bin_H0_H'])
 
   it('has one row per specimen, in order', () => {
-    expect(rows.map((r) => r.N)).toEqual(oracle.map((o) => Number(o[0])))
+    expect(rows.map((r) => r.id)).toEqual(oracle.map((o) => Number(o[0])))
   })
 
   for (const [i, col] of header!.entries()) {
@@ -32,9 +33,9 @@ describe('derive() against build_charts.py', () => {
         const want = o[i]!
         const got = rows[j]![col as keyof Row]
         if (typeof got === 'number') {
-          if (want === '') expect(got, `N ${rows[j]!.N}`).toBeNaN()
-          else expect(got, `N ${rows[j]!.N}`).toBeCloseTo(Number(want), 9)
-        } else expect(got ?? '', `N ${rows[j]!.N}`).toBe(want)
+          if (want === '') expect(got, `N ${rows[j]!.id}`).toBeNaN()
+          else expect(got, `N ${rows[j]!.id}`).toBeCloseTo(Number(want), 9)
+        } else expect(got ?? '', `N ${rows[j]!.id}`).toBe(want)
       }
     })
   }
@@ -51,8 +52,27 @@ describe('derive() against build_charts.py', () => {
 describe('summary.json', () => {
   it('has the donut counts', () => {
     expect(rows.length).toBe(summary.total)
-    for (const key of ['unit_type', 'fm_group', 'bin_H0_H', 'bin_H'] as const)
+    for (const key of ['unit_type', 'fm_group', 'bin_H'] as const)
       expect(Object.fromEntries(counts(rows, key))).toEqual(summary.donuts[key])
+  })
+
+  it('bins H₀/H with 0.5 and 1.0 apart', () => {
+    expect(counts(rows, 'bin_H0_H')).toEqual([
+      ['= 0.5', summary.donuts.bin_H0_H['≤ 0.5']],
+      ['0.5–1.0', summary.donuts.bin_H0_H['0.5–1.0']],
+      ['= 1.0', summary.donuts.bin_H0_H['1.0']],
+      ['> 1.0', summary.donuts.bin_H0_H['> 1.0']],
+      ['n/a', summary.donuts.bin_H0_H['n/a']]
+    ])
+    const bin = (v: string) => derive({ id: 0, values: { 'H0/H': v }, files: [] }).bin_H0_H
+    expect(['0.4', '0.5', '0.75', '1', '1.5', ''].map(bin)).toEqual([
+      '< 0.5',
+      '= 0.5',
+      '0.5–1.0',
+      '= 1.0',
+      '> 1.0',
+      'n/a'
+    ])
   })
 
   it('bins σ₀ in place of ALR', () => {
@@ -96,9 +116,61 @@ describe('committed JSON', () => {
     expect(() => convert(dir)).toThrow(/no UTF-8 BOM/)
   })
 
-  it('has 47 fields and 25 references', () => {
-    expect(fields).toHaveLength(47)
-    expect(references).toHaveLength(25)
-    expect(references.find((r) => r.nref === 25)?.citation).toBeNull()
+  it('rejects a row without N_id and skips .bib @comment blocks', () => {
+    const dir = mkdtempSync(join(tmpdir(), 'mmdb-'))
+    cpSync(new URL('../public/data', import.meta.url).pathname, dir, {
+      recursive: true,
+      filter: (src) => !/\.jpe?g$/i.test(src)
+    })
+    const bib = join(dir, '01_references/ModernMasonryDatabase_EIA_References.bib')
+    writeFileSync(
+      bib,
+      readFileSync(bib, 'utf8') + '\n@Comment{jabref-meta: databaseType:bibtex;}\n'
+    )
+    const db = join(dir, 'ModernMasonryDatabase_EIA_Database.csv')
+    const csv = readFileSync(db, 'utf8')
+    writeFileSync(db, csv.replace(/^1,1,/m, '1,,'))
+    expect(() => convert(dir)).toThrow(/row N = 1 has N_id = null/)
+    writeFileSync(db, csv)
+    // The copy has no photos, so convert stops at the photo check, past the .bib.
+    expect(() => convert(dir)).not.toThrow(/\.bib/)
+  })
+
+  it('has 236 specimens, 72 fields and 31 references', () => {
+    // N 237 has nothing but its number; Nref 32 and 33 nothing but theirs.
+    expect(specimens.map((s) => s.id)).toEqual(Array.from({ length: 236 }, (_, i) => i + 1))
+    expect(fields).toHaveLength(72)
+    expect(references).toHaveLength(31)
+    expect(references.find((r) => r.nref === 31)?.citation).toBeNull()
+  })
+
+  it('joins Fig_references by Nref and BibTeX by key', () => {
+    // Nref 14: the data from Petry & Beyer (2014), the photos from their 2015 paper.
+    const petry = references.find((r) => r.nref === 14)!
+    expect(petry.figCitation).toMatch(/^Petry, S\. and Beyer, K\. \(2015\)/)
+    expect(petry.bibtex).toBeNull() // petry_beyer_2014 is missing from the .bib (#18)
+    expect(references.find((r) => r.nref === 30)?.bibtex).toMatch(
+      /^@article\{inzunzaaraya_et_al_2026,/
+    )
+  })
+
+  it('keys the EPFL bilinear columns apart from the Pavia ones', () => {
+    const vi = fields.filter((f) => f.category === 'VI').map((f) => f.key)
+    const vii = fields.filter((f) => f.category === 'VII').map((f) => f.key)
+    expect(vii).toEqual(vi.map((k) => `${k} [VII]`))
+  })
+})
+
+describe('display()', () => {
+  it('rounds numbers to 3 decimals and leaves text as it is', () => {
+    expect(['135.601465754327', '0.2', '2014', '25-55%', 'solid', '', null].map(display)).toEqual([
+      '135.601',
+      '0.2',
+      '2014',
+      '25-55%',
+      'solid',
+      '',
+      ''
+    ])
   })
 })

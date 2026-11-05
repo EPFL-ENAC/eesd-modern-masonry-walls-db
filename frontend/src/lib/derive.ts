@@ -10,12 +10,21 @@ export function num(v: string | null | undefined): number {
   return v == null || v.trim() === '' ? NaN : Number(v)
 }
 
+/** A value as the site shows it: numbers to 3 decimals at most (#33). Downloads keep the raw value. */
+export function display(v: string | null | undefined): string {
+  const n = num(v)
+  return Number.isNaN(n) ? (v ?? '') : String(round3(n))
+}
+
 /** Mean of the + and − directions, ignoring a missing one (pandas mean(axis=1)). */
 export function avg(a: number, b: number): number {
   if (Number.isNaN(a)) return b
   if (Number.isNaN(b)) return a
   return (a + b) / 2
 }
+
+/** An availability column ('F-d data', 'Crack measurements'…): 'Yes' or a method, not empty or 'No'. */
+export const flagged = (v: string | null | undefined) => v != null && v !== '' && v !== 'No'
 
 export const NA = 'n/a'
 
@@ -25,11 +34,13 @@ function binner(edges: number[], labels: string[]) {
     Number.isNaN(v) ? NA : (labels[edges.findIndex((e) => v < e)] ?? labels[labels.length - 1]!)
 }
 
+// 0.5 (double fixed) and 1.0 (cantilever) are test set-ups: exact values get their own bin.
 function binH0H(v: number) {
   if (Number.isNaN(v)) return NA
-  if (v <= 0.5) return '≤ 0.5'
+  if (v < 0.5) return '< 0.5'
+  if (v === 0.5) return '= 0.5'
   if (v < 1) return '0.5–1.0'
-  if (v === 1) return '1.0'
+  if (v === 1) return '= 1.0'
   return '> 1.0'
 }
 
@@ -44,7 +55,7 @@ function fmGroup(mode: string | null) {
 export const ORDERS = {
   unit_type: ['HC', 'SB-C', 'AAC', 'CS', 'LAC', 'SB-CS', 'CB', 'HCB'],
   fm_group: ['Shear', 'Hybrid', 'Flexure', 'Other'],
-  bin_H0_H: ['≤ 0.5', '0.5–1.0', '1.0', '> 1.0', NA],
+  bin_H0_H: ['< 0.5', '= 0.5', '0.5–1.0', '= 1.0', '> 1.0', NA],
   bin_H: ['< 1.5', '1.5–2.0', '2.0–2.5', '≥ 2.5'],
   bin_sigma0: ['< 0.5', '0.5–1.0', '1.0–1.5', '≥ 1.5', NA],
   bin_H_L: ['< 1', '1–1.5', '≥ 1.5'],
@@ -65,7 +76,7 @@ const bin = {
 export type Row = ReturnType<typeof derive>
 
 /** One specimen with every derived column of derived_specimens.csv (bin_ALR → bin_sigma0). */
-export function derive({ N, values, files }: Specimen) {
+export function derive({ id, values, files }: Specimen) {
   const v = (name: string) => num(values[name])
   const pm = (name: string) => avg(v(`${name}+`), v(`${name}-`))
   const H = v('H')
@@ -80,7 +91,7 @@ export function derive({ N, values, files }: Specimen) {
   const drift_e = pm('δe')
   const fm_group = fmGroup(values['Failure mode'] ?? null)
   return {
-    N,
+    id,
     values,
     files,
     specimen: values['Specimen name'] ?? '',

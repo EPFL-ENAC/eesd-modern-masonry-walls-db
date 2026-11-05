@@ -4,8 +4,7 @@
 FROM node:26.5.0-alpine AS build
 
 # Installed with npm: corepack no longer ships with recent Node images.
-# git: pnpm fetches the design system (a GitHub dependency) with it.
-RUN apk add --no-cache git && npm install -g pnpm@11
+RUN npm install -g pnpm@11
 WORKDIR /app
 
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./

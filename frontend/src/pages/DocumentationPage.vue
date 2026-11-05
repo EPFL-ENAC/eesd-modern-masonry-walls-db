@@ -68,6 +68,7 @@
 
         <section v-for="c in shown" :id="`cat-${c.cat}`" :key="c.cat" class="glossary-cat">
           <h3 class="glossary-cat-title">{{ c.cat }} · {{ c.name }}</h3>
+          <p class="docs-muted">{{ c.description }}</p>
           <table class="glossary">
             <thead>
               <tr>
@@ -78,10 +79,17 @@
               </tr>
             </thead>
             <tbody>
-              <tr v-for="e in c.entries" :key="e.n">
+              <!-- Each field has an anchor (#field-<key>); a ± pair's '−' key points into its row. -->
+              <tr
+                v-for="e in c.entries"
+                :id="glossaryId(e.keys[0]!)"
+                :key="e.n"
+                :class="{ 'glossary-target': e.keys.some((k) => glossaryId(k) === target) }"
+              >
                 <td class="glossary-n">{{ e.n }}</td>
                 <th scope="row" class="glossary-field">
-                  <FieldLabel :field="e.field" /><template v-if="e.pair">
+                  <span v-for="k in e.keys.slice(1)" :id="glossaryId(k)" :key="k" />
+                  <FieldLabel :field="e.field" no-tip /><template v-if="e.pair">
                     {{ t('docs.pair') }}</template
                   >
                 </th>
@@ -107,23 +115,30 @@
 <script setup lang="ts">
 import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
+import { useRoute } from 'vue-router'
 import { FIELDS_CSV, fields, fileUrl, meta, rows } from '../api/dataset.ts'
 import type { Field } from '../api/types.ts'
 import FieldLabel from '../components/FieldLabel.vue'
+import { glossaryId } from '../composables/useGlossary.ts'
 
 const { t } = useI18n()
+const route = useRoute()
+// The row a field link points to. Router navigation doesn't update CSS :target.
+const target = computed(() => route.hash.slice(1))
 
 const TOP = ['about', 'files', 'glossary'] as const
 // File-name patterns from readme.txt.
 const FOLDERS = [
-  { folder: '01_references', pattern: '…_References.csv' },
+  { folder: '01_references', pattern: '…_References.csv · …_Fig_references.csv' },
   { folder: '02_fd_curve', pattern: 'fd_curve_N' },
-  { folder: '03_envelope', pattern: 'envelope_N_pos / _neg' },
-  { folder: '04_bilinear_curve', pattern: 'bilinear_N_pos / _neg' },
-  { folder: '05_fig_setup', pattern: 'fig_setup_N' },
-  { folder: '06_fig_failmode', pattern: 'fig_failmode_N' },
-  { folder: '07_fig_materials', pattern: 'fig_mat_N' },
-  { folder: '08_fig_cracks', pattern: 'fig_cracks_N' }
+  { folder: '03_envelope_Pavia', pattern: 'envelope_N_pos / _neg (_cycleM)' },
+  { folder: '04_envelope_EPFL', pattern: 'envelope_N_pos / _neg' },
+  { folder: '05_bilinear_curve_Pavia', pattern: 'bilinear_N_pos / _neg (_cycleM)' },
+  { folder: '06_bilinear_curve_EPFL', pattern: 'bilinear_N_pos / _neg' },
+  { folder: '07_fig_setup', pattern: 'fig_setup_N' },
+  { folder: '08_fig_failmode', pattern: 'fig_failmode_N' },
+  { folder: '09_fig_materials', pattern: 'fig_mat_N' },
+  { folder: '10_fig_cracks', pattern: 'fig_cracks_N' }
 ]
 
 const lastUpdate = new Date(meta.lastUpdate).toLocaleDateString('en-GB', {
@@ -135,6 +150,7 @@ const lastUpdate = new Date(meta.lastUpdate).toLocaleDateString('en-GB', {
 
 type Entry = {
   n: string
+  keys: string[]
   field: Pick<Field, 'name' | 'units'>
   pair: boolean
   definition: string
@@ -161,10 +177,12 @@ function entries(of: Field[]): Entry[] {
       : undefined
     out.push({
       n: twin ? `${f.n}–${twin.n}` : String(f.n),
+      keys: twin ? [f.key, twin.key] : [f.key],
       field: twin ? { name: f.name.slice(0, -1), units: f.units } : f,
       pair: !!twin,
+      // The + definition, read for both: "…in the positive (negative) direction."
       definition: twin
-        ? f.definition.replace(/ in the positive direction$/, '') + t('docs.bothDirections')
+        ? f.definition.replaceAll('positive', t('docs.bothDirections'))
         : f.definition,
       codes: codes(f.definition)
     })
@@ -174,7 +192,13 @@ function entries(of: Field[]): Entry[] {
 
 const categories = [...new Set(fields.map((f) => f.category))].map((cat) => {
   const of = fields.filter((f) => f.category === cat)
-  return { cat, name: of[0]!.categoryName, fields: of, entries: entries(of) }
+  return {
+    cat,
+    name: of[0]!.categoryName,
+    description: of[0]!.categoryDescription,
+    fields: of,
+    entries: entries(of)
+  }
 })
 
 const query = ref('')
@@ -373,6 +397,15 @@ onBeforeUnmount(() => observer?.disconnect())
     vertical-align: top;
     border-bottom: var(--border-w) solid var(--border-subtle);
   }
+}
+
+// Field anchors: the row, or for a ± pair's '−' key a span in it.
+.glossary [id] {
+  scroll-margin-top: var(--space-5);
+}
+
+.glossary-target {
+  background: var(--bg-subtle);
 }
 
 .glossary-n {

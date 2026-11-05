@@ -22,7 +22,6 @@
   "dependencies": {
     "@quasar/extras": "=1.18.0",
     "echarts": "=6.1.0",
-    "epfl-design-system": "github:EPFL-ENAC/epfl-design-skill#30818ba2036bea3507e9064cfc2b5eeb01771b27",
     "jszip": "^3.10.1",
     "quasar": "^2.33.2",
     "vue": "=3.5.43",

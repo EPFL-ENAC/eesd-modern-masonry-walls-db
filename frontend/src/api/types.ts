@@ -1,21 +1,25 @@
 /** Shapes of src/assets/data/*.json, written by scripts/convert-data.ts. */
 
-/** Database values by field name; '' and 'NaN' become null, the rest stays a raw string. */
+/** Database values by field key; '' and 'NaN' become null, the rest stays a raw string. */
 export type Values = Record<string, string | null>
 
 export interface Specimen {
-  N: number
+  /** N_id: names the files and the ?specimen= link, and never changes (#40). The N column only counts rows. */
+  id: number
   values: Values
-  /** Dataset paths present for this specimen, e.g. '02_fd_curve/fd_curve_0189.csv'. */
+  /** Dataset paths present for this specimen, e.g. '02_fd_curve/fd_curve_0227.csv'. */
   files: string[]
 }
 
 export interface Field {
-  /** Position in the Database CSV, 1–47. */
+  /** Position in the Database CSV, 1–70. */
   n: number
-  /** Roman numeral, 'I'–'VII'. */
+  /** Key in Values: the name, or for a name an earlier category already uses, 'name [VII]'. */
+  key: string
+  /** Roman numeral, 'I'–'VIII'. */
   category: string
   categoryName: string
+  categoryDescription: string
   name: string
   units: string
   definition: string
@@ -27,6 +31,12 @@ export interface Reference {
   citation: string | null
   linkDocument: string | null
   linkData: string | null
+  /** Its key and entry in the delivered .bib; null when EESD gave it none. */
+  bibKey: string | null
+  bibtex: string | null
+  /** Where the specimen photos come from, when it isn't the data's own publication. */
+  figCitation: string | null
+  figLink: string | null
 }
 
 export interface Meta {
