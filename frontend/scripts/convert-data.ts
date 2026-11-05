@@ -112,32 +112,65 @@ function readFields(dir: string, header: string[], categories: string[]): Field[
   })
 }
 
+/** BibTeX key → its whole entry, from the delivered .bib. */
+function readBib(dir: string) {
+  const text = readFileSync(
+    join(dir, '01_references/ModernMasonryDatabase_EIA_References.bib'),
+    'utf8'
+  )
+  return new Map(
+    text
+      .split(/^(?=@)/m)
+      .map((e) => e.trim())
+      // @comment, @string and @preamble blocks (JabRef adds them) are not references.
+      .filter((e) => e && !/^@(comment|string|preamble)\b/i.test(e))
+      .map((e) => [
+        /^@\w+\{([^,]+),/.exec(e)?.[1] ?? fail(`.bib entry without a key: ${e.slice(0, 40)}`),
+        e
+      ])
+  )
+}
+
 function readReferences(dir: string): Reference[] {
+  const bib = readBib(dir)
+  // Same Nref as References, but its own Reference ID when the photos come from another paper.
   const figs = new Map(
     readTable(dir, '01_references/ModernMasonryDatabase_EIA_Fig_references.csv', [
+      'Nref',
       'Reference ID',
       'Reference',
       'Link document'
-    ]).map((r) => [r['Reference ID'], r])
+    ])
+      .filter((r) => r['Reference ID'])
+      .map((r) => [r.Nref, r])
   )
   const rows = readTable(dir, '01_references/ModernMasonryDatabase_EIA_References.csv', [
     'Nref',
     'Reference ID',
     'Reference',
     'Link document',
-    'Link data'
+    'Link data',
+    'Bibtex key'
   ]).filter((r) => r['Reference ID']) // numbered placeholder rows
-  const ids = new Set(rows.map((r) => r['Reference ID']))
-  for (const id of figs.keys()) if (id && !ids.has(id)) fail(`Fig_references.csv: unknown "${id}"`)
-  return rows.map((r) => ({
-    nref: Number(r.Nref),
-    id: r['Reference ID']!,
-    citation: nullable(r.Reference),
-    linkDocument: nullable(r['Link document']),
-    linkData: nullable(r['Link data']),
-    figCitation: nullable(figs.get(r['Reference ID'])?.Reference),
-    figLink: nullable(figs.get(r['Reference ID'])?.['Link document'])
-  }))
+  const nrefs = new Set(rows.map((r) => r.Nref))
+  for (const n of figs.keys()) if (n && !nrefs.has(n)) fail(`Fig_references.csv: unknown Nref ${n}`)
+  return rows.map((r) => {
+    const key = nullable(r['Bibtex key'])
+    // Not fatal: the reference still shows, without BibTeX. Raise it with EESD (#18).
+    if (key && !bib.has(key))
+      console.warn(`convert-data: ${r['Reference ID']}: no "${key}" in the .bib`)
+    return {
+      nref: Number(r.Nref),
+      id: r['Reference ID']!,
+      citation: nullable(r.Reference),
+      linkDocument: nullable(r['Link document']),
+      linkData: nullable(r['Link data']),
+      bibKey: key && bib.has(key) ? key : null,
+      bibtex: (key && bib.get(key)) || null,
+      figCitation: nullable(figs.get(r.Nref)?.Reference),
+      figLink: nullable(figs.get(r.Nref)?.['Link document'])
+    }
+  })
 }
 
 function readMeta(dir: string): Meta {
@@ -156,7 +189,7 @@ function readMeta(dir: string): Meta {
   return { lastUpdate: `${y}-${m}-${d}`, sources }
 }
 
-/** N → dataset paths present, from the file names (fd_curve_0189.csv, envelope_0189_pos.csv…). */
+/** N_id → dataset paths present, from the file names (fd_curve_0189.csv, envelope_0189_pos.csv…). */
 function scanFiles(dir: string, known: Set<number>): Map<number, string[]> {
   const files = new Map<number, string[]>()
   const all: string[] = []
@@ -170,7 +203,7 @@ function scanFiles(dir: string, known: Set<number>): Map<number, string[]> {
         /_(\d{4})(?:_(?:pos|neg)(?:_cycle\d+)?)?\.\w+$/.exec(name) ??
         fail(`${folder}/${name}: no specimen number`)
       const N = Number(m[1])
-      if (!known.has(N)) fail(`${folder}/${name}: no specimen ${N} in the database`)
+      if (!known.has(N)) fail(`${folder}/${name}: no specimen with N_id ${N} in the database`)
       files.set(N, [...(files.get(N) ?? []), `${folder}/${name}`])
     }
   }
@@ -192,24 +225,27 @@ export function convert(dir: string): Dataset {
   const references = readReferences(dir)
   const refIds = new Set(references.map((r) => r.id))
 
-  // A row with nothing but its N is a placeholder (N 237 in the 22/10/2026 delivery).
-  const rows = db.slice(4).filter((r) => r.slice(1).some((c) => c !== ''))
+  // A row with nothing but its N (and N_id) is a placeholder (N 237 in the 22/10/2026 delivery).
+  const rows = db.slice(4).filter((r) => r.slice(2).some((c) => c !== ''))
   const specimens: Specimen[] = rows.map((r) => {
     const values = Object.fromEntries(fields.map((f, i) => [f.key, nullable(r[i])]))
-    const N = Number(values.N)
-    if (!Number.isInteger(N)) fail(`row with N = ${values.N}`)
+    // N_id, not N: it names the files and never changes once delivered (#40).
+    const id = values.N_id == null ? NaN : Number(values.N_id) // Number('') is 0
+    if (!Number.isInteger(id)) fail(`row N = ${values.N} has N_id = ${values.N_id}`)
     if (!refIds.has(values.Reference!))
-      fail(`specimen ${N}: unknown reference "${values.Reference}"`)
-    return { N, values, files: [] }
+      fail(`specimen ${id}: unknown reference "${values.Reference}"`)
+    return { id, values, files: [] }
   })
-  const files = scanFiles(dir, new Set(specimens.map((s) => s.N)))
+  const dup = specimens.find((s, i) => specimens.findIndex((t) => t.id === s.id) !== i)
+  if (dup) fail(`N_id ${dup.id} is used twice`)
+  const files = scanFiles(dir, new Set(specimens.map((s) => s.id)))
   for (const s of specimens) {
-    s.files = files.get(s.N) ?? []
+    s.files = files.get(s.id) ?? []
     for (const [flag, folders] of Object.entries(FLAGS)) {
       const has = s.files.some((f) => folders.some((d) => f.startsWith(`${d}/`)))
       if (flagged(s.values[flag]) !== has)
         fail(
-          `specimen ${s.N}: "${flag}" is ${s.values[flag] ?? 'empty'} but ${folders.join(', ')} ${has ? 'has' : 'lacks'} its file`
+          `specimen ${s.id}: "${flag}" is ${s.values[flag] ?? 'empty'} but ${folders.join(', ')} ${has ? 'has' : 'lacks'} its file`
         )
     }
   }

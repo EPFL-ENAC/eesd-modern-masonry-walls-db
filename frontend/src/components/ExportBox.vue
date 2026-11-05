@@ -21,7 +21,6 @@
     </fieldset>
     <fieldset class="box-set">
       <legend class="box-legend">{{ t('export.include') }}</legend>
-      <!-- handoff-BIB (#18): the .bib joins "references" once EESD supplies it. -->
       <label v-for="k in INCLUDE" :key="k" class="box-option">
         <input v-model="include" type="checkbox" :value="k" />
         {{ t(`export.items.${k}`, { n: fields.length }) }}
@@ -48,6 +47,7 @@ import { matClose, matFileDownload } from '@quasar/extras/material-icons'
 import {
   DATABASE_CSV,
   FIG_REFERENCES_CSV,
+  REFERENCES_BIB,
   REFERENCES_CSV,
   databaseCsv,
   fetchFile,
@@ -85,7 +85,7 @@ async function download() {
     const paths = set
       .flatMap((r) => r.files)
       .filter((p) => INCLUDE.some((k) => want(k) && FOLDERS[k]?.test(p)))
-    if (want('references')) paths.push(REFERENCES_CSV, FIG_REFERENCES_CSV)
+    if (want('references')) paths.push(REFERENCES_CSV, FIG_REFERENCES_CSV, REFERENCES_BIB)
     const entries: [string, Blob | string][] = await Promise.all(
       paths.map(async (p): Promise<[string, Blob]> => [p, await fetchFile(p)])
     )
@@ -95,7 +95,7 @@ async function download() {
           ? [DATABASE_CSV, await fetchFile(DATABASE_CSV)]
           : [
               DATABASE_CSV.replace('.csv', '_filtered.csv'),
-              await databaseCsv(new Set(set.map((r) => r.N)))
+              await databaseCsv(new Set(set.map((r) => r.id)))
             ]
       )
     }

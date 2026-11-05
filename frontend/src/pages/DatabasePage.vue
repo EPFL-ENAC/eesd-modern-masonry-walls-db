@@ -36,7 +36,7 @@
         :label="specimen ? t('specimen.label', { name: specimen.specimen }) : ''"
         @update:model-value="(o) => o || close()"
       >
-        <SpecimenPanel v-if="specimen" :key="specimen.N" :row="specimen" />
+        <SpecimenPanel v-if="specimen" :key="specimen.id" :row="specimen" />
       </ModalDialog>
     </div>
   </div>
@@ -47,7 +47,7 @@ import { computed, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRoute } from 'vue-router'
 import { matFilterList } from '@quasar/extras/material-icons'
-import { byN } from '../api/dataset.ts'
+import { byId } from '../api/dataset.ts'
 import FilterSidebar from '../components/FilterSidebar.vue'
 import ModalDialog from '../components/ModalDialog.vue'
 import SpecimenPanel from '../components/SpecimenPanel.vue'
@@ -59,8 +59,8 @@ const { setQuery, chips, filters } = useFilters()
 const filtersOpen = ref(false)
 // Active filters, the search left out: it shows in its own box.
 const active = computed(() => chips.value.length - (filters.value.q ? 1 : 0))
-// ?specimen=N opens the specimen in a dialog over either view (HANDOFF §3).
-const specimen = computed(() => byN.get(Number(route.query.specimen)))
+// ?specimen=<N_id> opens the specimen in a dialog over either view (HANDOFF §3).
+const specimen = computed(() => byId.get(Number(route.query.specimen)))
 const close = () => setQuery({ specimen: undefined, tab: undefined })
 </script>
 

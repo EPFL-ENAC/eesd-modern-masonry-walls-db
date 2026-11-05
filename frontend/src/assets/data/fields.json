@@ -11,6 +11,16 @@
  },
  {
   "n": 2,
+  "key": "N_id",
+  "category": "I",
+  "categoryName": "General Information",
+  "categoryDescription": "It contains general information about the test campaign to which the specimen belongs.",
+  "name": "N_id",
+  "units": "[-]",
+  "definition": "Number assigned to the test/specimen. This number is used for naming the cuves files and figures. Normally, N and N_id should match, but if any test is deleted only N would be updated because it counts the number of tests/specimens included in the database. N_id remains unchanged because it is the notation to name the additional files (data and figures)."
+ },
+ {
+  "n": 3,
   "key": "Reference",
   "category": "I",
   "categoryName": "General Information",
@@ -20,7 +30,7 @@
   "definition": "Literature reference of the campaign."
  },
  {
-  "n": 3,
+  "n": 4,
   "key": "Institution",
   "category": "I",
   "categoryName": "General Information",
@@ -30,7 +40,7 @@
   "definition": "Institution that conducted the test."
  },
  {
-  "n": 4,
+  "n": 5,
   "key": "Year",
   "category": "I",
   "categoryName": "General Information",
@@ -40,7 +50,7 @@
   "definition": "Year of the document containing the test."
  },
  {
-  "n": 5,
+  "n": 6,
   "key": "Specimen name",
   "category": "I",
   "categoryName": "General Information",
@@ -50,7 +60,7 @@
   "definition": "Name of the test unit in the original reference."
  },
  {
-  "n": 6,
+  "n": 7,
   "key": "Unit type",
   "category": "II",
   "categoryName": "Wall Characteristics",
@@ -60,7 +70,7 @@
   "definition": "HC (Hollow Clay), AAC (Autoclaved Aerated Concrete), CS (Calcium Silicate), LAC (Lightweight Aggregate Concrete), SB-C (Solid Brick Clay), SB-CS (Solid Brick Calcium Silicate), CB (Concrete Brick), HCB (Hollow Concrete Block)."
  },
  {
-  "n": 7,
+  "n": 8,
   "key": "N° courses",
   "category": "II",
   "categoryName": "Wall Characteristics",
@@ -70,7 +80,7 @@
   "definition": "Number of unit courses."
  },
  {
-  "n": 8,
+  "n": 9,
   "key": "H",
   "category": "II",
   "categoryName": "Wall Characteristics",
@@ -80,7 +90,7 @@
   "definition": "Height of the specimen."
  },
  {
-  "n": 9,
+  "n": 10,
   "key": "L",
   "category": "II",
   "categoryName": "Wall Characteristics",
@@ -90,7 +100,7 @@
   "definition": "Length of the specimen."
  },
  {
-  "n": 10,
+  "n": 11,
   "key": "t",
   "category": "II",
   "categoryName": "Wall Characteristics",
@@ -100,7 +110,7 @@
   "definition": "Thickness of the specimen."
  },
  {
-  "n": 11,
+  "n": 12,
   "key": "Bed Joints",
   "category": "II",
   "categoryName": "Wall Characteristics",
@@ -110,7 +120,7 @@
   "definition": "GP (General Purpose), TL (Thin Layer)."
  },
  {
-  "n": 12,
+  "n": 13,
   "key": "Head Joints",
   "category": "II",
   "categoryName": "Wall Characteristics",
@@ -120,7 +130,7 @@
   "definition": "F (Filled), TF (Thin Filled), MP (Mortar Pocket), UTG (Unfilled, Tongue and Groove), U (Unfilled)."
  },
  {
-  "n": 13,
+  "n": 14,
   "key": "H/L",
   "category": "II",
   "categoryName": "Wall Characteristics",
@@ -130,17 +140,27 @@
   "definition": "Aspect ratio."
  },
  {
-  "n": 14,
-  "key": "Void Ratio",
+  "n": 15,
+  "key": "Void Ratio (min)",
   "category": "III",
   "categoryName": "Material Properties",
   "categoryDescription": "It contains parameters to characterise the mechanical behaviour of each constituent material of the specimen.",
-  "name": "Void Ratio",
+  "name": "Void Ratio (min)",
   "units": "[%]",
-  "definition": "Percentage of voids."
+  "definition": "Percentage of voids reported. Minimum value of the range."
  },
  {
-  "n": 15,
+  "n": 16,
+  "key": "Void Ratio (max)",
+  "category": "III",
+  "categoryName": "Material Properties",
+  "categoryDescription": "It contains parameters to characterise the mechanical behaviour of each constituent material of the specimen.",
+  "name": "Void Ratio (max)",
+  "units": "[%]",
+  "definition": "Percentage of voids reported. Maximum value of the range."
+ },
+ {
+  "n": 17,
   "key": "Unit density",
   "category": "III",
   "categoryName": "Material Properties",
@@ -150,7 +170,7 @@
   "definition": "Gross density of units (weight over the gross volume of the units)."
  },
  {
-  "n": 16,
+  "n": 18,
   "key": "lb",
   "category": "III",
   "categoryName": "Material Properties",
@@ -160,7 +180,7 @@
   "definition": "Average length of the unit."
  },
  {
-  "n": 17,
+  "n": 19,
   "key": "wb",
   "category": "III",
   "categoryName": "Material Properties",
@@ -170,7 +190,7 @@
   "definition": "Average width of the unit."
  },
  {
-  "n": 18,
+  "n": 20,
   "key": "hb",
   "category": "III",
   "categoryName": "Material Properties",
@@ -180,7 +200,7 @@
   "definition": "Average height of the unit."
  },
  {
-  "n": 19,
+  "n": 21,
   "key": "fb,Ʇ",
   "category": "III",
   "categoryName": "Material Properties",
@@ -190,7 +210,7 @@
   "definition": "Mean compressive strength of units in the direction perpendicular to bed joint."
  },
  {
-  "n": 20,
+  "n": 22,
   "key": "fb,norm,Ʇ",
   "category": "III",
   "categoryName": "Material Properties",
@@ -200,7 +220,7 @@
   "definition": "Normalised compressive strength of units in the direction perpendicular to bed joint."
  },
  {
-  "n": 21,
+  "n": 23,
   "key": "fb,ǁ",
   "category": "III",
   "categoryName": "Material Properties",
@@ -210,7 +230,7 @@
   "definition": "Mean compressive strength of units in the direction parallel to bed joint."
  },
  {
-  "n": 22,
+  "n": 24,
   "key": "fb,norm,ǁ",
   "category": "III",
   "categoryName": "Material Properties",
@@ -220,7 +240,7 @@
   "definition": "Normalised compressive strength of units in the direction parallel to bed joint."
  },
  {
-  "n": 23,
+  "n": 25,
   "key": "Strength class",
   "category": "III",
   "categoryName": "Material Properties",
@@ -230,7 +250,7 @@
   "definition": "Mortar strength class reported in the test campaign."
  },
  {
-  "n": 24,
+  "n": 26,
   "key": "fmo",
   "category": "III",
   "categoryName": "Material Properties",
@@ -240,7 +260,7 @@
   "definition": "Mean compressive strength of mortar. When this parameter was not reported, the minimum value according to the strength class was considered."
  },
  {
-  "n": 25,
+  "n": 27,
   "key": "fm,c",
   "category": "III",
   "categoryName": "Material Properties",
@@ -250,7 +270,7 @@
   "definition": "Mean compressive strength of masonry."
  },
  {
-  "n": 26,
+  "n": 28,
   "key": "fm,t",
   "category": "III",
   "categoryName": "Material Properties",
@@ -260,7 +280,7 @@
   "definition": "Mean diagonal tensile strength of masonry."
  },
  {
-  "n": 27,
+  "n": 29,
   "key": "Emo",
   "category": "III",
   "categoryName": "Material Properties",
@@ -270,7 +290,7 @@
   "definition": "Elastic modulus of mortar."
  },
  {
-  "n": 28,
+  "n": 30,
   "key": "Em",
   "category": "III",
   "categoryName": "Material Properties",
@@ -280,7 +300,7 @@
   "definition": "Elastic modulus of masonry."
  },
  {
-  "n": 29,
+  "n": 31,
   "key": "Gm",
   "category": "III",
   "categoryName": "Material Properties",
@@ -290,7 +310,7 @@
   "definition": "Shear modulus of masonry."
  },
  {
-  "n": 30,
+  "n": 32,
   "key": "fv0",
   "category": "III",
   "categoryName": "Material Properties",
@@ -300,7 +320,7 @@
   "definition": "Initial shear strength of masonry."
  },
  {
-  "n": 31,
+  "n": 33,
   "key": "μ",
   "category": "III",
   "categoryName": "Material Properties",
@@ -310,7 +330,7 @@
   "definition": "Friction coefficient of masonry."
  },
  {
-  "n": 32,
+  "n": 34,
   "key": "Boundary conditions",
   "category": "IV",
   "categoryName": "Test setup",
@@ -320,7 +340,7 @@
   "definition": "Test boundary conditions reported in the test campaign: DF (Double fixed), C (Cantilever), O (Other)."
  },
  {
-  "n": 33,
+  "n": 35,
   "key": "H0/H",
   "category": "IV",
   "categoryName": "Test setup",
@@ -330,7 +350,7 @@
   "definition": "Shear span ratio (ratio of height of zero moment to specimen height). When this value has not been provided, we have considered that \"Cantilever\" correspond to 1.0 and \"Double fixed\" to 0.5."
  },
  {
-  "n": 34,
+  "n": 36,
   "key": "σ0",
   "category": "IV",
   "categoryName": "Test setup",
@@ -340,7 +360,7 @@
   "definition": "Compressive axial stress (total axial load divided by gross cross section of the specimen)."
  },
  {
-  "n": 35,
+  "n": 37,
   "key": "ALR",
   "category": "IV",
   "categoryName": "Test setup",
@@ -350,7 +370,7 @@
   "definition": "Axial load ratio (compressive axial stress divided by the mean compressive strength of the masonry)."
  },
  {
-  "n": 36,
+  "n": 38,
   "key": "F-d data",
   "category": "V",
   "categoryName": "Force-displacement response",
@@ -360,7 +380,7 @@
   "definition": "Availability of displacement vs force curve as data files."
  },
  {
-  "n": 37,
+  "n": 39,
   "key": "F-d figure",
   "category": "V",
   "categoryName": "Force-displacement response",
@@ -370,7 +390,7 @@
   "definition": "Availability of displacement vs force curve only as a figure from where it can be manually traced envelopes and bilinear curves."
  },
  {
-  "n": 38,
+  "n": 40,
   "key": "Env curve",
   "category": "V",
   "categoryName": "Force-displacement response",
@@ -380,7 +400,7 @@
   "definition": "Availability of envelope curve as data files. If either F-d data or F-d figure is \"Yes\", then the envelope can be obtained."
  },
  {
-  "n": 39,
+  "n": 41,
   "key": "Bil curve",
   "category": "V",
   "categoryName": "Force-displacement response",
@@ -390,7 +410,7 @@
   "definition": "Availability of bilinear idealisation curve as data files. If either F-d data or F-d figure is \"Yes\", then the bilinear idealisation can be obtained."
  },
  {
-  "n": 40,
+  "n": 42,
   "key": "Failure mode",
   "category": "V",
   "categoryName": "Force-displacement response",
@@ -400,7 +420,7 @@
   "definition": "S (Shear), F (Flexure), H- (Hybrid followed by two main mechanisms), G (gaping), SL (Sliding), D (uncertain)."
  },
  {
-  "n": 41,
+  "n": 43,
   "key": "δcr",
   "category": "V",
   "categoryName": "Force-displacement response",
@@ -410,7 +430,7 @@
   "definition": "Drift at onset of cracking (drift at first crack reported in the test)."
  },
  {
-  "n": 42,
+  "n": 44,
   "key": "δVmax+",
   "category": "V",
   "categoryName": "Force-displacement response",
@@ -420,7 +440,7 @@
   "definition": "Drift at maximum shear force in the positive direction."
  },
  {
-  "n": 43,
+  "n": 45,
   "key": "δVmax-",
   "category": "V",
   "categoryName": "Force-displacement response",
@@ -430,7 +450,7 @@
   "definition": "Drift at maximum shear force in the negative direction."
  },
  {
-  "n": 44,
+  "n": 46,
   "key": "Vmax+",
   "category": "V",
   "categoryName": "Force-displacement response",
@@ -440,7 +460,7 @@
   "definition": "Maximum shear force in the positive direction."
  },
  {
-  "n": 45,
+  "n": 47,
   "key": "Vmax-",
   "category": "V",
   "categoryName": "Force-displacement response",
@@ -450,7 +470,7 @@
   "definition": "Maximum shear force in the negative direction."
  },
  {
-  "n": 46,
+  "n": 48,
   "key": "δmax+",
   "category": "V",
   "categoryName": "Force-displacement response",
@@ -460,7 +480,7 @@
   "definition": "Maximum drift recorded under controlled conditions (before collapse) in the positive direction."
  },
  {
-  "n": 47,
+  "n": 49,
   "key": "δmax-",
   "category": "V",
   "categoryName": "Force-displacement response",
@@ -470,7 +490,7 @@
   "definition": "Maximum drift recorded under controlled conditions (before collapse) in the negative direction."
  },
  {
-  "n": 48,
+  "n": 50,
   "key": "Vδmax+",
   "category": "V",
   "categoryName": "Force-displacement response",
@@ -480,7 +500,7 @@
   "definition": "Shear force at maximum drift recorded under controlled conditions (before collapse) in the positive direction."
  },
  {
-  "n": 49,
+  "n": 51,
   "key": "Vδmax-",
   "category": "V",
   "categoryName": "Force-displacement response",
@@ -490,7 +510,7 @@
   "definition": "Shear force at maximum drift recorded under controlled conditions (before collapse) in the negative direction."
  },
  {
-  "n": 50,
+  "n": 52,
   "key": "Vbil+",
   "category": "VI",
   "categoryName": "Bilinear idealisation Pavia",
@@ -500,7 +520,7 @@
   "definition": "Equivalent shear force of the bilinear curve's plateau in the positive direction. This corresponds to the mean value of each shear force of the cyclic bilinear curve's plateau in the positive direction. The shear force of the cyclic bilinear curve's plateau in the positive direction (horizontal branch), determined by ensuring that the areas below the positive cyclic envelope curve and below the equivalent bilinear curve are equal."
  },
  {
-  "n": 51,
+  "n": 53,
   "key": "Vbil-",
   "category": "VI",
   "categoryName": "Bilinear idealisation Pavia",
@@ -510,7 +530,7 @@
   "definition": "Equivalent shear force of the bilinear curve's plateau in the negative direction. This corresponds to the mean value of each shear force of the cyclic bilinear curve's plateau in the negative direction. The shear force of the cyclic bilinear curve's plateau in the negative direction (horizontal branch), determined by ensuring that the areas below the negative cyclic envelope curve and below the equivalent bilinear curve are equal."
  },
  {
-  "n": 52,
+  "n": 54,
   "key": "δe+",
   "category": "VI",
   "categoryName": "Bilinear idealisation Pavia",
@@ -520,7 +540,7 @@
   "definition": "Equivalent yielding drift in th positive direction. This corresponds to the mean value of each cyclic yielding drift in the positive direction. The  cyclic yielding drift in the positive direction is determined by intersecting the two branches of the positive cyclic envelope."
  },
  {
-  "n": 53,
+  "n": 55,
   "key": "δe-",
   "category": "VI",
   "categoryName": "Bilinear idealisation Pavia",
@@ -530,7 +550,7 @@
   "definition": "Equivalent yielding drift in th negative direction. This corresponds to the mean value of each cyclic yielding drift in the negative direction. The  cyclic yielding drift in the negative direction is determined by intersecting the two branches of the negative cyclic envelope."
  },
  {
-  "n": 54,
+  "n": 56,
   "key": "δu+",
   "category": "VI",
   "categoryName": "Bilinear idealisation Pavia",
@@ -540,7 +560,7 @@
   "definition": "Equivalent ultimate drift in the positive direction. This corresponds to the minimum value of each cyclic ultimate drift in the positive direction. The cyclic ultimate drift in the positive direction is the drift obtained  at 20% drop of positive maximum shear force in the positive cyclic envelope."
  },
  {
-  "n": 55,
+  "n": 57,
   "key": "δu-",
   "category": "VI",
   "categoryName": "Bilinear idealisation Pavia",
@@ -550,7 +570,7 @@
   "definition": "Equivalent ultimate drift in the negative direction. This corresponds to the minimum value of each cyclic ultimate drift in the negative direction. The cyclic ultimate drift in the negative direction is the drift obtained  at 20% drop of negative maximum shear force in the negative cyclic envelope."
  },
  {
-  "n": 56,
+  "n": 58,
   "key": "keff+",
   "category": "VI",
   "categoryName": "Bilinear idealisation Pavia",
@@ -560,7 +580,7 @@
   "definition": "Equivalent effective stiffness in the positive direction. This corresponds to the ratio between the equivalent shear force of the bilinear curve's plateau and the equivalent yield drift in the positive direction."
  },
  {
-  "n": 57,
+  "n": 59,
   "key": "keff-",
   "category": "VI",
   "categoryName": "Bilinear idealisation Pavia",
@@ -570,7 +590,7 @@
   "definition": "Equivalent effective stiffness in the negative direction. This corresponds to the ratio between the equivalent shear force of the bilinear curve's plateau and the equivalent yield drift in the negative direction."
  },
  {
-  "n": 58,
+  "n": 60,
   "key": "μu+",
   "category": "VI",
   "categoryName": "Bilinear idealisation Pavia",
@@ -580,7 +600,7 @@
   "definition": "Ductility (equivalent ultimate drift-to-equivalent yielding drift ratio) in the positive direction."
  },
  {
-  "n": 59,
+  "n": 61,
   "key": "μu-",
   "category": "VI",
   "categoryName": "Bilinear idealisation Pavia",
@@ -590,7 +610,7 @@
   "definition": "Ductility (equivalent ultimate drift-to-equivalent yielding drift ratio) in the negative direction."
  },
  {
-  "n": 60,
+  "n": 62,
   "key": "Vbil+ [VII]",
   "category": "VII",
   "categoryName": "Bilinear idealisation EPFL",
@@ -600,7 +620,7 @@
   "definition": "Shear force of the bilinear curve's plateau in the positive direction (horizontal branch), determined by ensuring that the areas below the positive envelope curve and below the equivalent bilinear curve are equal."
  },
  {
-  "n": 61,
+  "n": 63,
   "key": "Vbil- [VII]",
   "category": "VII",
   "categoryName": "Bilinear idealisation EPFL",
@@ -610,7 +630,7 @@
   "definition": "Shear force of the bilinear curve's plateau in the negative direction (horizontal branch), determined by ensuring that the areas below the negative envelope curve and below the equivalent bilinear curve are equal."
  },
  {
-  "n": 62,
+  "n": 64,
   "key": "δe+ [VII]",
   "category": "VII",
   "categoryName": "Bilinear idealisation EPFL",
@@ -620,7 +640,7 @@
   "definition": "Yielding drift in the positive direction, determined by intersecting the two branches of the positive envelope."
  },
  {
-  "n": 63,
+  "n": 65,
   "key": "δe- [VII]",
   "category": "VII",
   "categoryName": "Bilinear idealisation EPFL",
@@ -630,7 +650,7 @@
   "definition": "Yielding drift in the negative direction, determined by intersecting the two branches of the negative envelope."
  },
  {
-  "n": 64,
+  "n": 66,
   "key": "δu+ [VII]",
   "category": "VII",
   "categoryName": "Bilinear idealisation EPFL",
@@ -640,7 +660,7 @@
   "definition": "Ultimate drift in the positive direction, equivalent to the drift where the positive envelope undergoes 20% drop of positive maximum shear force."
  },
  {
-  "n": 65,
+  "n": 67,
   "key": "δu- [VII]",
   "category": "VII",
   "categoryName": "Bilinear idealisation EPFL",
@@ -650,7 +670,7 @@
   "definition": "Ultimate drift in the nagetive direction, equivalent to the drift where the negative envelope undergoes 20% drop of negative maximum shear force."
  },
  {
-  "n": 66,
+  "n": 68,
   "key": "keff+ [VII]",
   "category": "VII",
   "categoryName": "Bilinear idealisation EPFL",
@@ -660,7 +680,7 @@
   "definition": "Effective stiffness in the positive direction (secant to positive envelope at 70% of the positive maximum shear force). This slope determine the inclined branch of the positive envelope."
  },
  {
-  "n": 67,
+  "n": 69,
   "key": "keff- [VII]",
   "category": "VII",
   "categoryName": "Bilinear idealisation EPFL",
@@ -670,7 +690,7 @@
   "definition": "Effective stiffness in the negative direction (secant to negative envelope at 70% of the negative maximum shear force). This slope determine the inclined branch of the negative envelope."
  },
  {
-  "n": 68,
+  "n": 70,
   "key": "μu+ [VII]",
   "category": "VII",
   "categoryName": "Bilinear idealisation EPFL",
@@ -680,7 +700,7 @@
   "definition": "Ductility (ultimate drift-to-yielding drift ratio) in the positive direction."
  },
  {
-  "n": 69,
+  "n": 71,
   "key": "μu- [VII]",
   "category": "VII",
   "categoryName": "Bilinear idealisation EPFL",
@@ -690,7 +710,7 @@
   "definition": "Ductility (ultimate drift-to-yielding drift ratio) in the negative direction."
  },
  {
-  "n": 70,
+  "n": 72,
   "key": "Crack measurements",
   "category": "VIII",
   "categoryName": "Cracks",

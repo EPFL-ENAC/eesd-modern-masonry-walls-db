@@ -1,8 +1,8 @@
 import { describe, expect, it } from 'vitest'
-import { byN } from '../src/api/dataset.ts'
+import { byId } from '../src/api/dataset.ts'
 import { limitPoints, toAxes } from '../src/charts/fd.ts'
 
-const r = byN.get(227)! // SW0.1: H 1.4 m, L 1.075 m, t 0.25 m
+const r = byId.get(227)! // SW0.1: H 1.4 m, L 1.075 m, t 0.25 m
 
 describe('toAxes', () => {
   it('V vs d: drift [%] of the wall height, in mm', () => {

@@ -13,7 +13,7 @@ export const fields = fieldsJson as Field[]
 export const references = referencesJson as Reference[]
 export const meta = metaJson as Meta
 
-export const byN = new Map(rows.map((r) => [r.N, r]))
+export const byId = new Map(rows.map((r) => [r.id, r]))
 export const referenceById = new Map(references.map((r) => [r.id, r]))
 
 /** URL of a dataset file, e.g. fileUrl('02_fd_curve/fd_curve_0189.csv'). */
@@ -25,6 +25,7 @@ export const photoUrl = (path: string, width: PhotoWidth) => fileUrl(variant(pat
 export const DATABASE_CSV = 'ModernMasonryDatabase_EIA_Database.csv'
 export const FIELDS_CSV = 'ModernMasonryDatabase_EIA_Fields.csv'
 export const REFERENCES_CSV = '01_references/ModernMasonryDatabase_EIA_References.csv'
+export const REFERENCES_BIB = '01_references/ModernMasonryDatabase_EIA_References.bib'
 export const FIG_REFERENCES_CSV = '01_references/ModernMasonryDatabase_EIA_Fig_references.csv'
 
 /** A raw dataset file, as served under /data. */
@@ -42,7 +43,9 @@ export async function databaseTable(): Promise<string[][]> {
 /** The database CSV cut down to the given specimens, with its 4 header rows as delivered. */
 export async function databaseCsv(ns: ReadonlySet<number>): Promise<string> {
   const all = await databaseTable()
-  return BOM + toCsv([...all.slice(0, 4), ...all.slice(4).filter((r) => ns.has(Number(r[0])))])
+  const id = all[3]!.indexOf('N_id')
+  if (id < 0) throw new Error(`${DATABASE_CSV} has no N_id column`)
+  return BOM + toCsv([...all.slice(0, 4), ...all.slice(4).filter((r) => ns.has(Number(r[id])))])
 }
 
 export type Curve = { d: number[]; V: number[] }

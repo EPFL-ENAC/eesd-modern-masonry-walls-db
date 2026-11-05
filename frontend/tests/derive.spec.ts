@@ -19,10 +19,11 @@ describe('derive() against build_charts.py', () => {
   // ALR was an assumption the dataset owners replaced by σ₀ (open question 1).
   // specimen/reference come from the old cp1252 export, which lost ć, Ž, ’.
   // bin_H0_H splits the handoff's '≤ 0.5' into '< 0.5' and '= 0.5' (requested 2026-10-23).
-  const skip = new Set(['ALR', 'bin_ALR', 'specimen', 'reference', 'bin_H0_H'])
+  // N is checked against id by the test below.
+  const skip = new Set(['N', 'ALR', 'bin_ALR', 'specimen', 'reference', 'bin_H0_H'])
 
   it('has one row per specimen, in order', () => {
-    expect(rows.map((r) => r.N)).toEqual(oracle.map((o) => Number(o[0])))
+    expect(rows.map((r) => r.id)).toEqual(oracle.map((o) => Number(o[0])))
   })
 
   for (const [i, col] of header!.entries()) {
@@ -32,9 +33,9 @@ describe('derive() against build_charts.py', () => {
         const want = o[i]!
         const got = rows[j]![col as keyof Row]
         if (typeof got === 'number') {
-          if (want === '') expect(got, `N ${rows[j]!.N}`).toBeNaN()
-          else expect(got, `N ${rows[j]!.N}`).toBeCloseTo(Number(want), 9)
-        } else expect(got ?? '', `N ${rows[j]!.N}`).toBe(want)
+          if (want === '') expect(got, `N ${rows[j]!.id}`).toBeNaN()
+          else expect(got, `N ${rows[j]!.id}`).toBeCloseTo(Number(want), 9)
+        } else expect(got ?? '', `N ${rows[j]!.id}`).toBe(want)
       }
     })
   }
@@ -63,7 +64,7 @@ describe('summary.json', () => {
       ['> 1.0', summary.donuts.bin_H0_H['> 1.0']],
       ['n/a', summary.donuts.bin_H0_H['n/a']]
     ])
-    const bin = (v: string) => derive({ N: 0, values: { 'H0/H': v }, files: [] }).bin_H0_H
+    const bin = (v: string) => derive({ id: 0, values: { 'H0/H': v }, files: [] }).bin_H0_H
     expect(['0.4', '0.5', '0.75', '1', '1.5', ''].map(bin)).toEqual([
       '< 0.5',
       '= 0.5',
@@ -115,12 +116,42 @@ describe('committed JSON', () => {
     expect(() => convert(dir)).toThrow(/no UTF-8 BOM/)
   })
 
-  it('has 236 specimens, 70 fields and 31 references', () => {
+  it('rejects a row without N_id and skips .bib @comment blocks', () => {
+    const dir = mkdtempSync(join(tmpdir(), 'mmdb-'))
+    cpSync(new URL('../public/data', import.meta.url).pathname, dir, {
+      recursive: true,
+      filter: (src) => !/\.jpe?g$/i.test(src)
+    })
+    const bib = join(dir, '01_references/ModernMasonryDatabase_EIA_References.bib')
+    writeFileSync(
+      bib,
+      readFileSync(bib, 'utf8') + '\n@Comment{jabref-meta: databaseType:bibtex;}\n'
+    )
+    const db = join(dir, 'ModernMasonryDatabase_EIA_Database.csv')
+    const csv = readFileSync(db, 'utf8')
+    writeFileSync(db, csv.replace(/^1,1,/m, '1,,'))
+    expect(() => convert(dir)).toThrow(/row N = 1 has N_id = null/)
+    writeFileSync(db, csv)
+    // The copy has no photos, so convert stops at the photo check, past the .bib.
+    expect(() => convert(dir)).not.toThrow(/\.bib/)
+  })
+
+  it('has 236 specimens, 72 fields and 31 references', () => {
     // N 237 has nothing but its number; Nref 32 and 33 nothing but theirs.
-    expect(specimens.map((s) => s.N)).toEqual(Array.from({ length: 236 }, (_, i) => i + 1))
-    expect(fields).toHaveLength(70)
+    expect(specimens.map((s) => s.id)).toEqual(Array.from({ length: 236 }, (_, i) => i + 1))
+    expect(fields).toHaveLength(72)
     expect(references).toHaveLength(31)
     expect(references.find((r) => r.nref === 31)?.citation).toBeNull()
+  })
+
+  it('joins Fig_references by Nref and BibTeX by key', () => {
+    // Nref 14: the data from Petry & Beyer (2014), the photos from their 2015 paper.
+    const petry = references.find((r) => r.nref === 14)!
+    expect(petry.figCitation).toMatch(/^Petry, S\. and Beyer, K\. \(2015\)/)
+    expect(petry.bibtex).toBeNull() // petry_beyer_2014 is missing from the .bib (#18)
+    expect(references.find((r) => r.nref === 30)?.bibtex).toMatch(
+      /^@article\{inzunzaaraya_et_al_2026,/
+    )
   })
 
   it('keys the EPFL bilinear columns apart from the Pavia ones', () => {

@@ -1,5 +1,6 @@
-Last update: 22/10/2026
-Database modification after considering comments of ENAC IT4R in the first meeting to discuss the creation of the platform (01/10/2026), and the feedback provided by Pavia in our meeting (19/10/2026)
+Last update: 28/10/2026
+Database modification after considering comments of ENAC IT4R in the first meeting to discuss the creation of the platform (01/10/2026), and the feedback provided by Pavia in our meeting (19/10/2026).
+Some additional modifications were implemented after comments received on 26/10/2026 from ENAC IT4R.
 
 MODIFICATIONS ON THE PREVIOUS VERSION
 The references were edited. References with Nref = 17, 18 and 21 were merged into a single one. References of the new tests added to the database were included.
@@ -21,6 +22,9 @@ The 2 folders containing the envelope and bilinear curves we re-structured into 
 The both bilinear methods were applied to the 10 tests already included (227-236), updating the data in the respective envelope and bilinear folders (for Pavia and EPFL) and in the "Database" csv (Categeries VI and VII).
 F-d curves of 6 tests were included (118-123) into the "02_fd_curve" folder. Also the envelope and bilinear curves were generated and the Categories VI and VII were updated.
 It was added a new csv file specifying the reference of the figures. In this way the figures can be properly cited, because in few cases the publication that contains the data of the table is not the same as the one that contains the figures. The file is called "ModernMasonryDatabase_EIA_Fig_references" and it is inside the "01_references" folder.
+1 new column was added in "Category I". "N_id" is described in the "Fields" csv.
+Void ratio was modified. Now instead of 1 column the void ratio is presented into 2 columns since it is often characterised as a range. This modification is included in "Fields" csv.
+1 new file was included in the reference folder containing all the references in bibtex format: "ModernMasonryDatabase_EIA_References.bib". "ModernMasonryDatabase_EIA_References.csv" and "ModernMasonryDatabase_EIA_Fig_references.csv" have an additional column "Bibtex key" specifying the bibtex key for the bib files.
 
 GENERAL DESCRIPTION
 Database of 236 shear-compression tests on modern masonry walls reported in the literature.
@@ -33,89 +37,91 @@ This dataset has been updated by the authors (01/10/2026) by including 37 new te
 
 DATABASE CONTENT
 The database is contained in "ModernMasonryDatabase_EIA.xlsx" (Database tab) and "ModernMasonryDatabase_EIA_Database.csv".
-The table includes 70 columns (#1, #2, ...) organised in 8 categories (I, II, ...).
+The table includes 72 columns (#1, #2, ...) organised in 8 categories (I, II, ...).
 
-[I] General Information (5 columns)
-#01 N°: number of test/specimen.
-#02 Reference: literature reference of the campaign.
-#03 Institution: institution that conducted the test.
-#04 Year: year of the document containing the test.
-#05 Specimen name: name of the specimen in the original reference.
+[I] General Information (6 columns)
+#01 N: number of test/specimen.
+#02 N_id: number assigned to the test/specimen. This number is used for naming the cuves files and figures. Normally, N and N_id should match, but if any test is deleted only N would be updated because it counts the number of tests/specimens included in the database. N_id remains unchanged because it is the notation to name the additional files (data and figures).
+#03 Reference: literature reference of the campaign.
+#04 Institution: institution that conducted the test.
+#05 Year: year of the document containing the test.
+#06 Specimen name: name of the specimen in the original reference.
 [II] Wall Characteristics (8 columns)
-#06 Unit type: HC (Hollow Clay), AAC (Autoclaved Aerated Concrete), CS (Calcium Silicate), LAC (Lightweight Aggregate Concrete), SB-C (Solid Brick Clay), SB-CS (Solid Brick Calcium Silicate), CB (Concrete Brick), HCB (Hollow Concrete Block).
-#07 N° Courses: number of unit courses.
-#08 H [mm]: height of the specimen.
-#09 L [mm]: length of the specimen.
-#10 t [mm]: length of the specimen.
-#11 Bed joints: GP (General Purpose), TL (Thin Layer).
-#12 Head joints: F (Filled), TF (Thin Filled), MP (Mortar Pocket), UTG (Unfilled, Tongue and Groove), U (Unfilled).
-#13 H/L [-]: aspect ratio.
+#07 Unit type: HC (Hollow Clay), AAC (Autoclaved Aerated Concrete), CS (Calcium Silicate), LAC (Lightweight Aggregate Concrete), SB-C (Solid Brick Clay), SB-CS (Solid Brick Calcium Silicate), CB (Concrete Brick), HCB (Hollow Concrete Block).
+#08 N° Courses: number of unit courses.
+#09 H [mm]: height of the specimen.
+#10 L [mm]: length of the specimen.
+#11 t [mm]: length of the specimen.
+#12 Bed joints: GP (General Purpose), TL (Thin Layer).
+#13 Head joints: F (Filled), TF (Thin Filled), MP (Mortar Pocket), UTG (Unfilled, Tongue and Groove), U (Unfilled).
+#14 H/L [-]: aspect ratio.
 [III] Material Properties (18 columns)
-#14 Void ratio [%]: percentage of voids.
-#15 Unit density [kg/m3]: gross density of units (weight over the gross volume of the units).
-#16 lb [mm]: average length of the unit.
-#17 wb [mm]: average width of the unit.
-#18 hb [mm]: average height of the unit.
-#19 fb,perp [MPa]: mean compressive strength of units in the direction perpendicular to the bed joint.
-#20 fb,norm,perp [MPa]: normalised compressive strength of units in the direction perpendicular to the bed joint.
-#21 fb,paral [MPa]: mean compressive strength of units in the direction parallel to the bed joint.
-#22 fb,norm,paral [MPa]: normalised compressive strength of units in the direction parallel to the bed joint.
-#23 Strength class: mortar strength class reported in the test campaign.
-#24 fmo [MPa]: mean compressive strength of mortar. When this parameter was not reported, the minimum value according to the strength class was considered.
-#25 fm,c [MPa]: mean compressive strength of masonry.
-#26 fm,t [MPa]: mean diagonal tensile strength of masonry.
-#27 Emo [MPa]: elastic modulus of mortar.
-#28 Em [MPa]: elastic modulus of masonry.
-#29 Gm [MPa]: shear modulus of masonry.
-#30 fv0 [MPa]: initial shear strength of masonry.
-#31 μ [-]: friction coefficient of masonry.
+#15 Void ratio (min) [%]: percentage of voids reported. Minimum value of the range.
+#16 Void ratio (max) [%]: percentage of voids reported. Maximum value of the range.
+#17 Unit density [kg/m3]: gross density of units (weight over the gross volume of the units).
+#18 lb [mm]: average length of the unit.
+#19 wb [mm]: average width of the unit.
+#20 hb [mm]: average height of the unit.
+#21 fb,perp [MPa]: mean compressive strength of units in the direction perpendicular to the bed joint.
+#22 fb,norm,perp [MPa]: normalised compressive strength of units in the direction perpendicular to the bed joint.
+#23 fb,paral [MPa]: mean compressive strength of units in the direction parallel to the bed joint.
+#24 fb,norm,paral [MPa]: normalised compressive strength of units in the direction parallel to the bed joint.
+#25 Strength class: mortar strength class reported in the test campaign.
+#26 fmo [MPa]: mean compressive strength of mortar. When this parameter was not reported, the minimum value according to the strength class was considered.
+#27 fm,c [MPa]: mean compressive strength of masonry.
+#28 fm,t [MPa]: mean diagonal tensile strength of masonry.
+#29 Emo [MPa]: elastic modulus of mortar.
+#30 Em [MPa]: elastic modulus of masonry.
+#31 Gm [MPa]: shear modulus of masonry.
+#32 fv0 [MPa]: initial shear strength of masonry.
+#33 μ [-]: friction coefficient of masonry.
 [IV] Test setup (4 columns)
-#32 Boundary conditions: test boundary conditions reported in the test campaign: DF (Double fixed), C (Cantilever), O (Other).
-#33 H0/H [-]: shear span ratio (height of zero moment-to-wall height ratio). When this value has not been provided, we have considered that "Cantilever" correspond to 1.0 and "Double fixed" to 0.5.
-#34 σ0 [MPa]: compressive axial stress (total axial load divided by gross cross section of the specimen).
-#35 ALR [-]: axial load ratio (compressive axial stress divided by the mean compressive strength of the masonry).
+#34 Boundary conditions: test boundary conditions reported in the test campaign: DF (Double fixed), C (Cantilever), O (Other).
+#35 H0/H [-]: shear span ratio (height of zero moment-to-wall height ratio). When this value has not been provided, we have considered that "Cantilever" correspond to 1.0 and "Double fixed" to 0.5.
+#36 σ0 [MPa]: compressive axial stress (total axial load divided by gross cross section of the specimen).
+#37 ALR [-]: axial load ratio (compressive axial stress divided by the mean compressive strength of the masonry).
 [V] Force-displacement response (14 columns)
-#36 F-d data: availability of displacement vs force curve as data files.
-#37 F-d figure: availability of displacement vs force curve only as a figure from where it can be manually traced envelopes and bilinear curves.
-#38 Env curve: availability of envelope curve as data files. If either F-d data or F-d figure is "Yes", then the envelope can be obtained.
-#39 Bil curve: availability of bilinear idealisation curve as data files. If either F-d data or F-d figure is "Yes", then the bilinear idealisation can be obtained.
-#40 Failure mode: S (Shear), F (Flexure), H- (Hybrid followed by two main mechanisms), G (gaping), SL (Sliding), D (uncertain).
-#41 δcr [%]: drift at onset of cracking (drift at first crack reported in the test).
-#42 δVmax+ [%]: drift at maximum shear force in the positive direction.
-#43 δVmax- [%]: drift at maximum shear force in the negative direction.
-#44 Vmax+ [kN]: maximum shear force in the positive direction.
-#45 Vmax- [kN]: maximum shear force in the negative direction.
-#46 δmax+ [%]: maximum drift recorded under controlled conditions (before collapse) in the positive direction.
-#47 δmax- [%]: maximum drift recorded under controlled conditions (before collapse) in the negative direction.
-#48 Vδmax+ [kN]: shear force at maximum drift recorded under controlled conditions (before collapse) in the positive direction.
-#49 Vδmax- [kN]: shear force at maximum drift recorded under controlled conditions (before collapse) in the negative direction.
+#38 F-d data: availability of displacement vs force curve as data files.
+#39 F-d figure: availability of displacement vs force curve only as a figure from where it can be manually traced envelopes and bilinear curves.
+#40 Env curve: availability of envelope curve as data files. If either F-d data or F-d figure is "Yes", then the envelope can be obtained.
+#41 Bil curve: availability of bilinear idealisation curve as data files. If either F-d data or F-d figure is "Yes", then the bilinear idealisation can be obtained.
+#42 Failure mode: S (Shear), F (Flexure), H- (Hybrid followed by two main mechanisms), G (gaping), SL (Sliding), D (uncertain).
+#43 δcr [%]: drift at onset of cracking (drift at first crack reported in the test).
+#44 δVmax+ [%]: drift at maximum shear force in the positive direction.
+#45 δVmax- [%]: drift at maximum shear force in the negative direction.
+#46 Vmax+ [kN]: maximum shear force in the positive direction.
+#47 Vmax- [kN]: maximum shear force in the negative direction.
+#48 δmax+ [%]: maximum drift recorded under controlled conditions (before collapse) in the positive direction.
+#49 δmax- [%]: maximum drift recorded under controlled conditions (before collapse) in the negative direction.
+#50 Vδmax+ [kN]: shear force at maximum drift recorded under controlled conditions (before collapse) in the positive direction.
+#51 Vδmax- [kN]: shear force at maximum drift recorded under controlled conditions (before collapse) in the negative direction.
 [VI] Bilinear idealisation Pavia (10 columns)
-#50 Vbil+ [kN]: equivalent shear force of the bilinear curve's plateau in the positive direction. This corresponds to the mean value of each shear force of the cyclic bilinear curve's plateau in the positive direction. The shear force of the cyclic bilinear curve's plateau in the positive direction (horizontal branch), determined by ensuring that the areas below the positive cyclic envelope curve and below the equivalent bilinear curve are equal.
-#51 Vbil- [kN]: equivalent shear force of the bilinear curve's plateau in the negative direction. This corresponds to the mean value of each shear force of the cyclic bilinear curve's plateau in the negative direction. The shear force of the cyclic bilinear curve's plateau in the negative direction (horizontal branch), determined by ensuring that the areas below the negative cyclic envelope curve and below the equivalent bilinear curve are equal.
-#52 δy+ [%]: equivalent yielding drift in th positive direction. This corresponds to the mean value of each cyclic yielding drift in the positive direction. The  cyclic yielding drift in the positive direction is determined by intersecting the two branches of the positive cyclic envelope.
-#53 δy- [%]: equivalent yielding drift in th negative direction. This corresponds to the mean value of each cyclic yielding drift in the negative direction. The  cyclic yielding drift in the negative direction is determined by intersecting the two branches of the negative cyclic envelope.
-#54 δu+ [%]: equivalent ultimate drift in the positive direction. This corresponds to the minimum value of each cyclic ultimate drift in the positive direction. The cyclic ultimate drift in the positive direction is the drift obtained  at 20% drop of positive maximum shear force in the positive cyclic envelope.
-#55 δu- [%]: equivalent ultimate drift in the negative direction. This corresponds to the minimum value of each cyclic ultimate drift in the negative direction. The cyclic ultimate drift in the negative direction is the drift obtained  at 20% drop of negative maximum shear force in the negative cyclic envelope.
-#56 keff+ [kN/mm]: equivalent effective stiffness in the positive direction. This corresponds to the ratio between the equivalent shear force of the bilinear curve's plateau and the equivalent yield drift in the positive direction.
-#57 keff- [kN/mm]: equivalent effective stiffness in the negative direction. This corresponds to the ratio between the equivalent shear force of the bilinear curve's plateau and the equivalent yield drift in the negative direction.
-#58 μu+ [-]: ductility (equivalent ultimate drift-to-equivalent yielding drift ratio) in the positive direction.
-#59 μu- [-]: ductility (equivalent ultimate drift-to-equivalent yielding drift ratio) in the negative direction.
+#52 Vbil+ [kN]: equivalent shear force of the bilinear curve's plateau in the positive direction. This corresponds to the mean value of each shear force of the cyclic bilinear curve's plateau in the positive direction. The shear force of the cyclic bilinear curve's plateau in the positive direction (horizontal branch), determined by ensuring that the areas below the positive cyclic envelope curve and below the equivalent bilinear curve are equal.
+#53 Vbil- [kN]: equivalent shear force of the bilinear curve's plateau in the negative direction. This corresponds to the mean value of each shear force of the cyclic bilinear curve's plateau in the negative direction. The shear force of the cyclic bilinear curve's plateau in the negative direction (horizontal branch), determined by ensuring that the areas below the negative cyclic envelope curve and below the equivalent bilinear curve are equal.
+#54 δy+ [%]: equivalent yielding drift in th positive direction. This corresponds to the mean value of each cyclic yielding drift in the positive direction. The  cyclic yielding drift in the positive direction is determined by intersecting the two branches of the positive cyclic envelope.
+#55 δy- [%]: equivalent yielding drift in th negative direction. This corresponds to the mean value of each cyclic yielding drift in the negative direction. The  cyclic yielding drift in the negative direction is determined by intersecting the two branches of the negative cyclic envelope.
+#56 δu+ [%]: equivalent ultimate drift in the positive direction. This corresponds to the minimum value of each cyclic ultimate drift in the positive direction. The cyclic ultimate drift in the positive direction is the drift obtained  at 20% drop of positive maximum shear force in the positive cyclic envelope.
+#57 δu- [%]: equivalent ultimate drift in the negative direction. This corresponds to the minimum value of each cyclic ultimate drift in the negative direction. The cyclic ultimate drift in the negative direction is the drift obtained  at 20% drop of negative maximum shear force in the negative cyclic envelope.
+#58 keff+ [kN/mm]: equivalent effective stiffness in the positive direction. This corresponds to the ratio between the equivalent shear force of the bilinear curve's plateau and the equivalent yield drift in the positive direction.
+#59 keff- [kN/mm]: equivalent effective stiffness in the negative direction. This corresponds to the ratio between the equivalent shear force of the bilinear curve's plateau and the equivalent yield drift in the negative direction.
+#60 μu+ [-]: ductility (equivalent ultimate drift-to-equivalent yielding drift ratio) in the positive direction.
+#61 μu- [-]: ductility (equivalent ultimate drift-to-equivalent yielding drift ratio) in the negative direction.
 [VII] Bilinear idealisation EPFL (10 columns)
-#60 Vbil+ [kN]: shear force of the bilinear curve's plateau in the positive direction (horizontal branch), determined by ensuring that the areas below the positive envelope curve and below the equivalent bilinear curve are equal.
-#61 Vbil- [kN]: shear force of the bilinear curve's plateau in the negative direction (horizontal branch), determined by ensuring that the areas below the negative envelope curve and below the equivalent bilinear curve are equal.
-#62 δy+ [%]: yielding drift in the positive direction, determined by intersecting the two branches of the positive envelope.
-#63 δy- [%]: yielding drift in the negative direction, determined by intersecting the two branches of the negative envelope.
-#64 δu+ [%]: ultimate drift in the positive direction, equivalent to the drift where the positive envelope undergoes 20% drop of positive maximum shear force.
-#65 δu- [%]: ultimate drift in the nagetive direction, equivalent to the drift where the negative envelope undergoes 20% drop of negative maximum shear force.
-#66 keff+ [kN/mm]: effective stiffness in the positive direction (secant to positive envelope at 70% of the positive maximum shear force). This slope determine the inclined branch of the positive envelope.
-#67 keff- [kN/mm]: effective stiffness in the negative direction (secant to negative envelope at 70% of the negative maximum shear force). This slope determine the inclined branch of the negative envelope.
-#68 μu+ [-]: ductility (ultimate drift-to-yielding drift ratio) in the positive direction.
-#69 μu- [-]: ductility (ultimate drift-to-yielding drift ratio) in the negative direction.
+#62 Vbil+ [kN]: shear force of the bilinear curve's plateau in the positive direction (horizontal branch), determined by ensuring that the areas below the positive envelope curve and below the equivalent bilinear curve are equal.
+#63 Vbil- [kN]: shear force of the bilinear curve's plateau in the negative direction (horizontal branch), determined by ensuring that the areas below the negative envelope curve and below the equivalent bilinear curve are equal.
+#64 δy+ [%]: yielding drift in the positive direction, determined by intersecting the two branches of the positive envelope.
+#65 δy- [%]: yielding drift in the negative direction, determined by intersecting the two branches of the negative envelope.
+#66 δu+ [%]: ultimate drift in the positive direction, equivalent to the drift where the positive envelope undergoes 20% drop of positive maximum shear force.
+#67 δu- [%]: ultimate drift in the nagetive direction, equivalent to the drift where the negative envelope undergoes 20% drop of negative maximum shear force.
+#68 keff+ [kN/mm]: effective stiffness in the positive direction (secant to positive envelope at 70% of the positive maximum shear force). This slope determine the inclined branch of the positive envelope.
+#69 keff- [kN/mm]: effective stiffness in the negative direction (secant to negative envelope at 70% of the negative maximum shear force). This slope determine the inclined branch of the negative envelope.
+#70 μu+ [-]: ductility (ultimate drift-to-yielding drift ratio) in the positive direction.
+#71 μu- [-]: ductility (ultimate drift-to-yielding drift ratio) in the negative direction.
 [VII] Cracks (1 column)
-#70 Crack measurements: crack measurements reported, specifying the method used: No (if no crack measurements were conducted), method implemented/short description (DIC, deep learning, fractal, etc).
+#72 Crack measurements: crack measurements reported, specifying the method used: No (if no crack measurements were conducted), method implemented/short description (DIC, deep learning, fractal, etc).
 
 FOLDER ORGANISATION OF THE COMPLETE DATA (INCLUDING CURVES AND IMAGES)
-The folder "01_references" contains the details of the references where the data of each test specimen is contained and from where the figures were extracted. The information is stored in the csv files "ModernMasonryDatabase_EIA_References.csv" (for the data) and "ModernMasonryDatabase_EIA_Fig_references.csv" (for the figures), indicating the "Reference ID", "Institution ID" and "Year" that are referred in the "Reference", "Institution" and "Year" columns of "ModernMasonryDatabase_EIA_Database.csv"
+The folder "01_references" contains the details of the references where the data of each test specimen is contained and from where the figures were extracted. The information is stored in the csv files "ModernMasonryDatabase_EIA_References.csv" (for the data) and "ModernMasonryDatabase_EIA_Fig_references.csv" (for the figures), indicating the "Reference ID", "Institution ID" and "Year" that are referred in the "Reference", "Institution" and "Year" columns of "ModernMasonryDatabase_EIA_Database.csv". In addition to the csv files, there is 1 bib file containing all the references in bibtex format "ModernMasonryDatabase_EIA_References.bib".
 The folder "02_fd_curve" contains the force-displacement curves in terms of drift [%] and force [kN] stored in csv files, identified according to the N column in "ModernMasonryDatabase_EIA_Database.csv" that specifies the specimen number and following the format "fd_curve_N"
 The folder "03_envelope_Pavia" contains the backbone cyclic envelopes in the positive and negative direction in terms of drift [%] and force [kN] stored in csv files, identified according to the N column in "ModernMasonryDatabase_EIA_Database.csv" that specifies the specimen number and following the format "envelope_N_pos_cycleM" or "envelope_N_neg_cycleM" (where M is the number of cycle according to the loading protocol, normally taking values 2 or 3). In addition it contains the global envelope curves in the positive and negative directions following the format "envelope_N_pos" and "envelope_N_neg"
 The folder "04_envelope_EPFL" contains the backbone envelopes in the positive and negative direction in terms of drift [%] and force [kN] stored in csv files, identified according to the N column in "ModernMasonryDatabase_EIA_Database.csv" that specifies the specimen number and following the format "envelope_N_pos" or "envelope_N_neg"

@@ -76,7 +76,7 @@ const bin = {
 export type Row = ReturnType<typeof derive>
 
 /** One specimen with every derived column of derived_specimens.csv (bin_ALR → bin_sigma0). */
-export function derive({ N, values, files }: Specimen) {
+export function derive({ id, values, files }: Specimen) {
   const v = (name: string) => num(values[name])
   const pm = (name: string) => avg(v(`${name}+`), v(`${name}-`))
   const H = v('H')
@@ -91,7 +91,7 @@ export function derive({ N, values, files }: Specimen) {
   const drift_e = pm('δe')
   const fm_group = fmGroup(values['Failure mode'] ?? null)
   return {
-    N,
+    id,
     values,
     files,
     specimen: values['Specimen name'] ?? '',

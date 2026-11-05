@@ -37,12 +37,12 @@
         <tbody>
           <tr
             v-for="r in pageRows"
-            :key="r.N"
+            :key="r.id"
             tabindex="0"
-            :class="{ sel: r.N === selected }"
-            :aria-selected="r.N === selected"
-            @click="open(r.N)"
-            @keydown.enter="open(r.N)"
+            :class="{ sel: r.id === selected }"
+            :aria-selected="r.id === selected"
+            @click="open(r.id)"
+            @keydown.enter="open(r.id)"
           >
             <td v-for="(f, i) in columns" :key="f.n" class="td" :class="cellClass(f, i)">
               {{ display(r.values[f.key]) }}
@@ -100,7 +100,7 @@ import { num, display, type Row } from '../lib/derive.ts'
 import FieldLabel from './FieldLabel.vue'
 
 const props = defineProps<{ rows: readonly Row[]; visible: readonly string[] }>()
-const { t, te } = useI18n()
+const { t, tm, rt } = useI18n()
 const route = useRoute()
 const { setQuery } = useFilters()
 
@@ -114,7 +114,9 @@ const NUMERIC = new Set(
     .map((f) => f.key)
 )
 
-const short = (f: Field) => (te(`fieldShort.${f.n}`) ? t(`fieldShort.${f.n}`) : undefined)
+// By key, not by column number: keys like 'Specimen name' survive new columns.
+const SHORT = tm('fieldShort') as Record<string, string>
+const short = (f: Field) => (SHORT[f.key] ? rt(SHORT[f.key]) : undefined)
 
 // N° and Specimen first (sticky), then the visible fields in database order.
 const STICKY = ['N', 'Specimen name']
@@ -179,7 +181,7 @@ const status = computed(() => {
 })
 
 const selected = computed(() => Number(route.query.specimen))
-const open = (N: number) => setQuery({ specimen: String(N) })
+const open = (id: number) => setQuery({ specimen: String(id) })
 </script>
 
 <style scoped lang="scss">
