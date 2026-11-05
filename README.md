@@ -26,7 +26,7 @@ unused.
 
 You need:
 
-- [Node](https://nodejs.org) 26 and [pnpm](https://pnpm.io) 11
+- [Node](https://nodejs.org) 26 (npm comes with it)
 - [uv](https://docs.astral.sh/uv/) (`make install` also sets up the unused backend)
 - Python 3.9+ to export a new dataset
 - [git-lfs](https://git-lfs.com), set to HTTP/1.1 for ENAC-IT's LFS server
@@ -55,14 +55,14 @@ Commits follow [Conventional Commits](https://www.conventionalcommits.org)
 
 ```text
 EESD's workbook and folders               frontend/public/data/                 frontend/src/assets/data/
-ModernMasonryDatabase_EIA.xlsx ── export-csv.py ──▶ *.csv ───── pnpm convert ─────▶ *.json ──▶ bundled in the app
+ModernMasonryDatabase_EIA.xlsx ── export-csv.py ──▶ *.csv ──── npm run convert ───▶ *.json ──▶ bundled in the app
 02_fd_curve/ … 06_bilinear_curve_EPFL/ ──────────▶ *.csv ───── served as /data/… ─────────▶ loaded by the F-d chart
 07_fig_setup/ … 10_fig_cracks/ ──────────────────▶ *.jpg ── optimize-images ──▶ -512.webp, -1920.webp (shown)
 ```
 
 - `frontend/public/data/` holds the delivery as EESD sends it. The site
   serves it as is, so every download is the original file.
-- `pnpm convert` (`frontend/scripts/convert-data.ts`) turns the CSVs into the
+- `npm run convert` (`frontend/scripts/convert-data.ts`) turns the CSVs into the
   JSON the app bundles. It refuses a delivery whose columns, references, flags
   or files disagree.
 - Photos are git-lfs objects. The site shows their WebP web versions;

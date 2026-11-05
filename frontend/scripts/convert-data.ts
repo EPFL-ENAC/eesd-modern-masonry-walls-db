@@ -1,5 +1,5 @@
 /**
- * public/data/*.csv → src/assets/data/*.json (`pnpm convert`).
+ * public/data/*.csv → src/assets/data/*.json (`npm run convert`).
  *
  * Fails loudly on anything that would otherwise show up as a silent gap in the
  * app: a lossy (non-UTF-8) or BOM-less export, a column with no Fields row, a reference ID
@@ -210,7 +210,7 @@ function scanFiles(dir: string, known: Set<number>): Map<number, string[]> {
   const missing = missingVariants(all)
   if (missing.length)
     fail(
-      `${missing.length} photo web versions missing, e.g. ${missing[0]}: run \`pnpm optimize-images\``
+      `${missing.length} photo web versions missing, e.g. ${missing[0]}: run \`npm run optimize-images\``
     )
   return files
 }

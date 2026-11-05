@@ -99,7 +99,7 @@ describe('summary.json', () => {
 })
 
 describe('committed JSON', () => {
-  it('is what `pnpm convert` writes today', () => {
+  it('is what `npm run convert` writes today', () => {
     const fresh = convert(new URL('../public/data', import.meta.url).pathname)
     expect(JSON.parse(JSON.stringify(fresh))).toEqual({ specimens, fields, references, meta })
   })

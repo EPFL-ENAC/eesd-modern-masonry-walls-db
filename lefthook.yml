@@ -5,7 +5,7 @@ min_version: 1.7.0
 commit-msg:
   commands:
     commitlint:
-      run: pnpm exec commitlint --edit {1}
+      run: npx --no -- commitlint --edit {1}
 
 pre-commit:
   parallel: true
@@ -13,13 +13,13 @@ pre-commit:
     - name: frontend-eslint
       glob: "frontend/**/*.{js,cjs,mjs,ts,cts,mts,vue}"
       root: "frontend/"
-      run: pnpm exec eslint --fix {staged_files}
+      run: npx --no -- eslint --fix {staged_files}
       stage_fixed: true
 
     - name: frontend-prettier
       glob: "frontend/**/*.{js,cjs,mjs,ts,cts,mts,vue,css,scss,html,json,md,yml,yaml}"
       root: "frontend/"
-      run: pnpm exec prettier --write --ignore-unknown {staged_files}
+      run: npx --no -- prettier --write --ignore-unknown {staged_files}
       stage_fixed: true
 
     - name: backend-pre-commit
@@ -33,7 +33,7 @@ pre-push:
   jobs:
     - name: frontend-type-check
       root: "frontend/"
-      run: pnpm run type-check
+      run: npm run type-check
 
     - name: backend-pre-commit-all
       root: "backend/"

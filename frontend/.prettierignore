@@ -1,7 +1,7 @@
 dist/
 coverage/
 .quasar/
-pnpm-lock.yaml
+package-lock.json
 # Delivered or generated as-is
 public/data/
 src/assets/data/

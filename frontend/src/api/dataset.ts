@@ -1,4 +1,4 @@
-/** The only module that reads the dataset: JSON from `pnpm convert`, raw files under /data. */
+/** The only module that reads the dataset: JSON from `npm run convert`, raw files under /data. */
 import specimensJson from '../assets/data/specimens.json'
 import fieldsJson from '../assets/data/fields.json'
 import referencesJson from '../assets/data/references.json'
@@ -19,7 +19,7 @@ export const referenceById = new Map(references.map((r) => [r.id, r]))
 /** URL of a dataset file, e.g. fileUrl('02_fd_curve/fd_curve_0189.csv'). */
 export const fileUrl = (path: string) => `${import.meta.env.BASE_URL}data/${path}`
 
-/** URL of a photo's web version (pnpm optimize-images); downloads keep the original. */
+/** URL of a photo's web version (npm run optimize-images); downloads keep the original. */
 export const photoUrl = (path: string, width: PhotoWidth) => fileUrl(variant(path, width))
 
 export const DATABASE_CSV = 'ModernMasonryDatabase_EIA_Database.csv'

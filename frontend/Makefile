@@ -3,20 +3,20 @@
 help:                   ## Show available targets
 	@grep -E '^[a-zA-Z_%-]+:.*?## .*$$' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-20s\033[0m %s\n", $$1, $$2}'
 
-install:                ## pnpm install
-	pnpm install
+install:                ## npm install
+	npm install
 
 dev:                    ## Quasar dev server on $$FRONTEND_PORT
-	pnpm run dev
+	npm run dev
 
 test:                   ## vitest, one run
-	pnpm run test:unit run
+	npm run test:unit -- run
 
 lint:                   ## ESLint + stylelint
-	pnpm run lint
+	npm run lint
 
 convert:                ## public/data CSVs -> src/assets/data JSON
-	pnpm run convert
+	npm run convert
 
 optimize-images:        ## public/data photos -> 512/1920 px WebP beside them
-	pnpm run optimize-images
+	npm run optimize-images

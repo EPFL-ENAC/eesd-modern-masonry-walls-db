@@ -1,7 +1,7 @@
 /**
  * Web versions of the specimen photos, as in sxl-recrete-atlas: `<name>-512.webp`
  * and `<name>-1920.webp` beside each original, which stays for download.
- * Written by `pnpm optimize-images`, checked by `pnpm convert`.
+ * Written by `npm run optimize-images`, checked by `npm run convert`.
  */
 export const PHOTO_FOLDERS = [
   '07_fig_setup',

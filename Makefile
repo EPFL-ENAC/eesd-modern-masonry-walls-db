@@ -3,8 +3,8 @@
 help:                   ## Show available targets
 	@grep -E '^[a-zA-Z_%-]+:.*?## .*$$' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-20s\033[0m %s\n", $$1, $$2}'
 
-install:                ## pnpm (git hooks) + backend + frontend deps
-	pnpm install
+install:                ## npm (git hooks) + backend + frontend deps
+	npm install
 	$(MAKE) -C backend install
 	$(MAKE) -C frontend install
 

@@ -3,17 +3,15 @@
 # ==============================================================================
 FROM node:26.5.0-alpine AS build
 
-# Installed with npm: corepack no longer ships with recent Node images.
-RUN npm install -g pnpm@11
 WORKDIR /app
 
-COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
+COPY package.json package-lock.json ./
 # --ignore-scripts: `quasar prepare` (postinstall) needs the sources, it runs
 # again as part of `quasar build` below.
-RUN pnpm install --frozen-lockfile --ignore-scripts
+RUN npm ci --ignore-scripts
 
 COPY . .
-RUN pnpm run build
+RUN npm run build
 
 # ==============================================================================
 # Production stage: unprivileged nginx on 8080
