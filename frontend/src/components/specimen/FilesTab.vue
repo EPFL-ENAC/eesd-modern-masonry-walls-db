@@ -25,12 +25,12 @@
           </a>
         </li>
         <li class="files-row">
-          <span>specimen_{{ pad(row.N) }}.csv</span>
+          <span>specimen_{{ pad(row.id) }}.csv</span>
           <span class="files-desc">{{ t('specimen.files.desc.row', { n: fields.length }) }}</span>
           <button
             type="button"
             class="files-icon"
-            :aria-label="t('specimen.files.download', { name: `specimen_${pad(row.N)}.csv` })"
+            :aria-label="t('specimen.files.download', { name: `specimen_${pad(row.id)}.csv` })"
             @click="run(() => saveSpecimenRow(row))"
           >
             <q-icon :name="matFileDownload" size="1.25rem" />

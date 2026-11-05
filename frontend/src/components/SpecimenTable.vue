@@ -37,12 +37,12 @@
         <tbody>
           <tr
             v-for="r in pageRows"
-            :key="r.N"
+            :key="r.id"
             tabindex="0"
-            :class="{ sel: r.N === selected }"
-            :aria-selected="r.N === selected"
-            @click="open(r.N)"
-            @keydown.enter="open(r.N)"
+            :class="{ sel: r.id === selected }"
+            :aria-selected="r.id === selected"
+            @click="open(r.id)"
+            @keydown.enter="open(r.id)"
           >
             <td v-for="(f, i) in columns" :key="f.n" class="td" :class="cellClass(f, i)">
               {{ display(r.values[f.key]) }}
@@ -181,7 +181,7 @@ const status = computed(() => {
 })
 
 const selected = computed(() => Number(route.query.specimen))
-const open = (N: number) => setQuery({ specimen: String(N) })
+const open = (id: number) => setQuery({ specimen: String(id) })
 </script>
 
 <style scoped lang="scss">

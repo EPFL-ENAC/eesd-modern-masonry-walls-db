@@ -1,4 +1,4 @@
-import { DATABASE_CSV, byN, databaseCsv, databaseTable, fetchFile } from '../api/dataset.ts'
+import { DATABASE_CSV, byId, databaseCsv, databaseTable, fetchFile } from '../api/dataset.ts'
 import { BOM, toCsv } from './csv.ts'
 import type { Row } from './derive.ts'
 
@@ -20,11 +20,11 @@ export async function zip(entries: [path: string, data: Blob | string][]): Promi
   return z.generateAsync({ type: 'blob' })
 }
 
-export const pad = (N: number) => String(N).padStart(4, '0')
+export const pad = (n: number) => String(n).padStart(4, '0')
 
 /** The specimen's database row alone, as its own CSV. */
 export async function saveSpecimenRow(r: Row) {
-  saveBlob(new Blob([await databaseCsv(new Set([r.N]))]), `specimen_${pad(r.N)}.csv`)
+  saveBlob(new Blob([await databaseCsv(new Set([r.id]))]), `specimen_${pad(r.id)}.csv`)
 }
 
 /** Every file of one specimen plus its database row, in the dataset's folders. */
@@ -32,8 +32,8 @@ export async function saveSpecimenZip(r: Row) {
   const entries: [string, Blob | string][] = await Promise.all(
     r.files.map(async (p): Promise<[string, Blob]> => [p, await fetchFile(p)])
   )
-  entries.push([`specimen_${pad(r.N)}.csv`, await databaseCsv(new Set([r.N]))])
-  saveBlob(await zip(entries), `specimen_${pad(r.N)}.zip`)
+  entries.push([`specimen_${pad(r.id)}.csv`, await databaseCsv(new Set([r.id]))])
+  saveBlob(await zip(entries), `specimen_${pad(r.id)}.zip`)
 }
 
 /**
@@ -57,7 +57,7 @@ export async function saveStarterKit(readme: string) {
   // N and N_id are the curator's: the example leaves both blank.
   const id = all[3]!.indexOf('N_id')
   const example = ['', '', ...all.find((r) => r[id] === String(EXAMPLE))!.slice(2)]
-  const r = byN.get(EXAMPLE)!
+  const r = byId.get(EXAMPLE)!
   const curves = await Promise.all(
     r.files
       .filter((p) => /^0[2-6]_/.test(p))

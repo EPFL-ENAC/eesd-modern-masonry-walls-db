@@ -14,7 +14,7 @@
       </button>
       <!-- Missing photo: dashed placeholder with the expected file name (HANDOFF §5.2). -->
       <div v-else class="fig-img fig-missing">
-        {{ t('specimen.gallery.missing', { file: `${fig.stem}_${pad(row.N)}` }) }}
+        {{ t('specimen.gallery.missing', { file: `${fig.stem}_${pad(row.id)}` }) }}
       </div>
       <FieldRows :row="row" :keys="fig.fields" class="fig-kv" />
     </figure>

@@ -19,10 +19,11 @@ describe('derive() against build_charts.py', () => {
   // ALR was an assumption the dataset owners replaced by σ₀ (open question 1).
   // specimen/reference come from the old cp1252 export, which lost ć, Ž, ’.
   // bin_H0_H splits the handoff's '≤ 0.5' into '< 0.5' and '= 0.5' (requested 2026-10-23).
-  const skip = new Set(['ALR', 'bin_ALR', 'specimen', 'reference', 'bin_H0_H'])
+  // N is checked against id by the test below.
+  const skip = new Set(['N', 'ALR', 'bin_ALR', 'specimen', 'reference', 'bin_H0_H'])
 
   it('has one row per specimen, in order', () => {
-    expect(rows.map((r) => r.N)).toEqual(oracle.map((o) => Number(o[0])))
+    expect(rows.map((r) => r.id)).toEqual(oracle.map((o) => Number(o[0])))
   })
 
   for (const [i, col] of header!.entries()) {
@@ -32,9 +33,9 @@ describe('derive() against build_charts.py', () => {
         const want = o[i]!
         const got = rows[j]![col as keyof Row]
         if (typeof got === 'number') {
-          if (want === '') expect(got, `N ${rows[j]!.N}`).toBeNaN()
-          else expect(got, `N ${rows[j]!.N}`).toBeCloseTo(Number(want), 9)
-        } else expect(got ?? '', `N ${rows[j]!.N}`).toBe(want)
+          if (want === '') expect(got, `N ${rows[j]!.id}`).toBeNaN()
+          else expect(got, `N ${rows[j]!.id}`).toBeCloseTo(Number(want), 9)
+        } else expect(got ?? '', `N ${rows[j]!.id}`).toBe(want)
       }
     })
   }
@@ -63,7 +64,7 @@ describe('summary.json', () => {
       ['> 1.0', summary.donuts.bin_H0_H['> 1.0']],
       ['n/a', summary.donuts.bin_H0_H['n/a']]
     ])
-    const bin = (v: string) => derive({ N: 0, values: { 'H0/H': v }, files: [] }).bin_H0_H
+    const bin = (v: string) => derive({ id: 0, values: { 'H0/H': v }, files: [] }).bin_H0_H
     expect(['0.4', '0.5', '0.75', '1', '1.5', ''].map(bin)).toEqual([
       '< 0.5',
       '= 0.5',
@@ -137,7 +138,7 @@ describe('committed JSON', () => {
 
   it('has 236 specimens, 72 fields and 31 references', () => {
     // N 237 has nothing but its number; Nref 32 and 33 nothing but theirs.
-    expect(specimens.map((s) => s.N)).toEqual(Array.from({ length: 236 }, (_, i) => i + 1))
+    expect(specimens.map((s) => s.id)).toEqual(Array.from({ length: 236 }, (_, i) => i + 1))
     expect(fields).toHaveLength(72)
     expect(references).toHaveLength(31)
     expect(references.find((r) => r.nref === 31)?.citation).toBeNull()

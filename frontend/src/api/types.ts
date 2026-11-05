@@ -5,7 +5,7 @@ export type Values = Record<string, string | null>
 
 export interface Specimen {
   /** N_id: names the files and the ?specimen= link, and never changes (#40). The N column only counts rows. */
-  N: number
+  id: number
   values: Values
   /** Dataset paths present for this specimen, e.g. '02_fd_curve/fd_curve_0227.csv'. */
   files: string[]

@@ -230,22 +230,22 @@ export function convert(dir: string): Dataset {
   const specimens: Specimen[] = rows.map((r) => {
     const values = Object.fromEntries(fields.map((f, i) => [f.key, nullable(r[i])]))
     // N_id, not N: it names the files and never changes once delivered (#40).
-    const N = values.N_id == null ? NaN : Number(values.N_id) // Number('') is 0
-    if (!Number.isInteger(N)) fail(`row N = ${values.N} has N_id = ${values.N_id}`)
+    const id = values.N_id == null ? NaN : Number(values.N_id) // Number('') is 0
+    if (!Number.isInteger(id)) fail(`row N = ${values.N} has N_id = ${values.N_id}`)
     if (!refIds.has(values.Reference!))
-      fail(`specimen ${N}: unknown reference "${values.Reference}"`)
-    return { N, values, files: [] }
+      fail(`specimen ${id}: unknown reference "${values.Reference}"`)
+    return { id, values, files: [] }
   })
-  const dup = specimens.find((s, i) => specimens.findIndex((t) => t.N === s.N) !== i)
-  if (dup) fail(`N_id ${dup.N} is used twice`)
-  const files = scanFiles(dir, new Set(specimens.map((s) => s.N)))
+  const dup = specimens.find((s, i) => specimens.findIndex((t) => t.id === s.id) !== i)
+  if (dup) fail(`N_id ${dup.id} is used twice`)
+  const files = scanFiles(dir, new Set(specimens.map((s) => s.id)))
   for (const s of specimens) {
-    s.files = files.get(s.N) ?? []
+    s.files = files.get(s.id) ?? []
     for (const [flag, folders] of Object.entries(FLAGS)) {
       const has = s.files.some((f) => folders.some((d) => f.startsWith(`${d}/`)))
       if (flagged(s.values[flag]) !== has)
         fail(
-          `specimen ${s.N}: "${flag}" is ${s.values[flag] ?? 'empty'} but ${folders.join(', ')} ${has ? 'has' : 'lacks'} its file`
+          `specimen ${s.id}: "${flag}" is ${s.values[flag] ?? 'empty'} but ${folders.join(', ')} ${has ? 'has' : 'lacks'} its file`
         )
     }
   }

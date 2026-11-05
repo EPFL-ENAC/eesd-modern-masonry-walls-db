@@ -175,7 +175,7 @@ function option(p: Plot, d: ReturnType<typeof scatterData>, svg = false): EChart
       },
       data: d.points
         .filter((pt) => pt.row.fm_group === g)
-        .map((pt) => ({ name: pt.row.specimen, value: [pt.x, pt.y, pt.row.N] }))
+        .map((pt) => ({ name: pt.row.specimen, value: [pt.x, pt.y, pt.row.id] }))
     }))
   }
 }
@@ -183,7 +183,7 @@ function option(p: Plot, d: ReturnType<typeof scatterData>, svg = false): EChart
 /** Hover: the specimen and its unjittered values. */
 const tip = (p: Plot) => (params: unknown) => {
   const { name, value } = params as { name: string; value: [number, number, number] }
-  const r = filtered.value.find((x) => x.N === value[2])!
+  const r = filtered.value.find((x) => x.id === value[2])!
   const v = (a: Axis) => `${format.encodeHTML(plain(a))}: ${+r[a.key].toFixed(3)}`
   return `<b>${t('visuals.tip', { n: value[2], name: format.encodeHTML(name) })}</b><br>${v(p.x)}<br>${v(p.y)}`
 }

@@ -95,7 +95,7 @@ async function download() {
           ? [DATABASE_CSV, await fetchFile(DATABASE_CSV)]
           : [
               DATABASE_CSV.replace('.csv', '_filtered.csv'),
-              await databaseCsv(new Set(set.map((r) => r.N)))
+              await databaseCsv(new Set(set.map((r) => r.id)))
             ]
       )
     }

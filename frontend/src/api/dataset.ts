@@ -13,7 +13,7 @@ export const fields = fieldsJson as Field[]
 export const references = referencesJson as Reference[]
 export const meta = metaJson as Meta
 
-export const byN = new Map(rows.map((r) => [r.N, r]))
+export const byId = new Map(rows.map((r) => [r.id, r]))
 export const referenceById = new Map(references.map((r) => [r.id, r]))
 
 /** URL of a dataset file, e.g. fileUrl('02_fd_curve/fd_curve_0189.csv'). */
