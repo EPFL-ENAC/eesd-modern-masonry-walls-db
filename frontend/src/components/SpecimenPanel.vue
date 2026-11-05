@@ -2,7 +2,7 @@
   <section class="panel" :aria-label="t('specimen.label', { name: row.specimen })">
     <div class="panel-head">
       <div class="panel-cell">
-        <div class="panel-eyebrow">{{ t('specimen.eyebrow', { n: row.N }) }}</div>
+        <div class="panel-eyebrow">{{ t('specimen.eyebrow', { n: row.values.N }) }}</div>
         <div class="panel-name">{{ row.specimen }}</div>
       </div>
       <div class="panel-cell">

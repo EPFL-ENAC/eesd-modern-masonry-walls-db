@@ -75,7 +75,7 @@ export const isActive = (f: Filters) => Object.values(filtersToQuery(f)).some(Bo
 
 function matches(r: Row, f: Filters, skip?: ListKey): boolean {
   const q = f.q.trim().toLowerCase()
-  if (q && ![String(r.N), r.specimen, r.reference].some((s) => s.toLowerCase().includes(q)))
+  if (q && ![r.values.N ?? '', r.specimen, r.reference].some((s) => s.toLowerCase().includes(q)))
     return false
   for (const k of Object.keys(LISTS) as ListKey[]) {
     const want = f[k]

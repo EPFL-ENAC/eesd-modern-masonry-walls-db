@@ -321,7 +321,7 @@
       "glossary": "Glossary of fields"
     },
     "about": "The database collects {n} shear and compression tests on modern masonry walls reported in the literature. Data are primarily taken from Morandi et al. (2018) and Morandi & Albanesi (2026), and further complemented.",
-    "filesIntro": "Every file is identified by the specimen number N from the database table. Curves are stored as drift [%] and force [kN].",
+    "filesIntro": "Every file is named after the specimen's N_id, the number that never changes; the N column only counts the rows. Curves are stored as drift [%] and force [kN].",
     "folders": {
       "01_references": "References",
       "02_fd_curve": "Force-displacement",

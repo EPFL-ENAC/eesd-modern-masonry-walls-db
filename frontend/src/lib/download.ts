@@ -45,7 +45,7 @@ export async function saveTemplateCsv() {
   saveBlob(new Blob([BOM + toCsv(header)]), 'ModernMasonryDatabase_EIA_template.csv')
 }
 
-const EXAMPLE = 227 // SW0.1: it has every response file
+const EXAMPLE = 227 // N_id of SW0.1: it has every response file
 
 /**
  * The starter kit: the submission folder as it should be, keyed by specimen name
@@ -54,7 +54,9 @@ const EXAMPLE = 227 // SW0.1: it has every response file
  */
 export async function saveStarterKit(readme: string) {
   const all = await databaseTable()
-  const example = ['', ...all.find((r) => r[0] === String(EXAMPLE))!.slice(1)]
+  // N and N_id are the curator's: the example leaves both blank.
+  const id = all[3]!.indexOf('N_id')
+  const example = ['', '', ...all.find((r) => r[id] === String(EXAMPLE))!.slice(2)]
   const r = byN.get(EXAMPLE)!
   const curves = await Promise.all(
     r.files

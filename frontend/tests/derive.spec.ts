@@ -115,6 +115,26 @@ describe('committed JSON', () => {
     expect(() => convert(dir)).toThrow(/no UTF-8 BOM/)
   })
 
+  it('rejects a row without N_id and skips .bib @comment blocks', () => {
+    const dir = mkdtempSync(join(tmpdir(), 'mmdb-'))
+    cpSync(new URL('../public/data', import.meta.url).pathname, dir, {
+      recursive: true,
+      filter: (src) => !/\.jpe?g$/i.test(src)
+    })
+    const bib = join(dir, '01_references/ModernMasonryDatabase_EIA_References.bib')
+    writeFileSync(
+      bib,
+      readFileSync(bib, 'utf8') + '\n@Comment{jabref-meta: databaseType:bibtex;}\n'
+    )
+    const db = join(dir, 'ModernMasonryDatabase_EIA_Database.csv')
+    const csv = readFileSync(db, 'utf8')
+    writeFileSync(db, csv.replace(/^1,1,/m, '1,,'))
+    expect(() => convert(dir)).toThrow(/row N = 1 has N_id = null/)
+    writeFileSync(db, csv)
+    // The copy has no photos, so convert stops at the photo check, past the .bib.
+    expect(() => convert(dir)).not.toThrow(/\.bib/)
+  })
+
   it('has 236 specimens, 72 fields and 31 references', () => {
     // N 237 has nothing but its number; Nref 32 and 33 nothing but theirs.
     expect(specimens.map((s) => s.N)).toEqual(Array.from({ length: 236 }, (_, i) => i + 1))

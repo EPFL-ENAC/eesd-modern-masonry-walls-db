@@ -152,7 +152,9 @@
                 <span v-if="REQUIRED.has(f.key)" class="pill required">{{
                   t('submit.required')
                 }}</span>
-                <span v-else-if="f.key === 'N'" class="guide-muted">{{ t('submit.curator') }}</span>
+                <span v-else-if="CURATOR.includes(f.key)" class="guide-muted">{{
+                  t('submit.curator')
+                }}</span>
                 <span class="dict-def">{{ f.definition }}</span>
               </li>
             </template>
@@ -187,10 +189,11 @@ const { t } = useI18n()
 // Open question 2: submissions become review requests on this repository.
 const REPO_NAME = 'EPFL-ENAC/eesd-modern-masonry-walls-db'
 const REPO = `https://github.com/${REPO_NAME}`
-// Required: the columns every specimen in the database fills (open question 2); N is the curator's.
+// Required: the columns every specimen in the database fills (open question 2); N and N_id are the curator's.
+const CURATOR = ['N', 'N_id']
 const REQUIRED = new Set(
   fields
-    .filter((f) => f.key !== 'N' && rows.every((r) => r.values[f.key] != null))
+    .filter((f) => !CURATOR.includes(f.key) && rows.every((r) => r.values[f.key] != null))
     .map((f) => f.key)
 )
 const CURVE = 'drift [%], horizontal_force [kN]'

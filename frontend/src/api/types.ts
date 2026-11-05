@@ -31,7 +31,8 @@ export interface Reference {
   citation: string | null
   linkDocument: string | null
   linkData: string | null
-  /** Its entry in the delivered .bib; null when EESD gave it no key. */
+  /** Its key and entry in the delivered .bib; null when EESD gave it none. */
+  bibKey: string | null
   bibtex: string | null
   /** Where the specimen photos come from, when it isn't the data's own publication. */
   figCitation: string | null

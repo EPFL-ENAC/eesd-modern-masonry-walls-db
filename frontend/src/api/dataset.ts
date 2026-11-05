@@ -44,6 +44,7 @@ export async function databaseTable(): Promise<string[][]> {
 export async function databaseCsv(ns: ReadonlySet<number>): Promise<string> {
   const all = await databaseTable()
   const id = all[3]!.indexOf('N_id')
+  if (id < 0) throw new Error(`${DATABASE_CSV} has no N_id column`)
   return BOM + toCsv([...all.slice(0, 4), ...all.slice(4).filter((r) => ns.has(Number(r[id])))])
 }
 

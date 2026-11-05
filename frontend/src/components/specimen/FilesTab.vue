@@ -79,19 +79,9 @@ const { t } = useI18n()
 const reference = computed(() => referenceById.get(props.row.reference))
 const name = (p: string) => p.split('/').pop()!
 const doi = (url: string) => url.replace(/^https?:\/\/(dx\.)?doi\.org\//, 'doi:')
-// '@article{petry_beyer_2015,' → 'petry_beyer_2015'
-const bibKey = (entry: string) => /\{([^,]+),/.exec(entry)![1]
-
 const saveBib = () => {
-  const bib = reference.value!.bibtex!
-  saveBlob(new Blob([bib]), `${bibKey(bib)}.bib`)
-}
-
-const copied = ref(false)
-async function copyBib() {
-  await navigator.clipboard.writeText(reference.value!.bibtex!)
-  copied.value = true
-  setTimeout(() => (copied.value = false), 2000)
+  const r = reference.value!
+  saveBlob(new Blob([r.bibtex!]), `${r.bibKey}.bib`)
 }
 
 const busy = ref(false)
@@ -107,6 +97,17 @@ async function run(job: () => Promise<void>) {
     busy.value = false
   }
 }
+const copied = ref(false)
+let copiedTimer: ReturnType<typeof setTimeout> | undefined
+// No clipboard on plain http or when the permission is denied: run() shows the error.
+const copyBib = () =>
+  run(async () => {
+    await navigator.clipboard.writeText(reference.value!.bibtex!)
+    copied.value = true
+    clearTimeout(copiedTimer)
+    copiedTimer = setTimeout(() => (copied.value = false), 2000)
+  })
+
 const all = () => run(() => saveSpecimenZip(props.row))
 </script>
 

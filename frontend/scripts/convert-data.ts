@@ -122,7 +122,8 @@ function readBib(dir: string) {
     text
       .split(/^(?=@)/m)
       .map((e) => e.trim())
-      .filter(Boolean)
+      // @comment, @string and @preamble blocks (JabRef adds them) are not references.
+      .filter((e) => e && !/^@(comment|string|preamble)\b/i.test(e))
       .map((e) => [
         /^@\w+\{([^,]+),/.exec(e)?.[1] ?? fail(`.bib entry without a key: ${e.slice(0, 40)}`),
         e
@@ -164,6 +165,7 @@ function readReferences(dir: string): Reference[] {
       citation: nullable(r.Reference),
       linkDocument: nullable(r['Link document']),
       linkData: nullable(r['Link data']),
+      bibKey: key && bib.has(key) ? key : null,
       bibtex: (key && bib.get(key)) || null,
       figCitation: nullable(figs.get(r.Nref)?.Reference),
       figLink: nullable(figs.get(r.Nref)?.['Link document'])
@@ -228,7 +230,7 @@ export function convert(dir: string): Dataset {
   const specimens: Specimen[] = rows.map((r) => {
     const values = Object.fromEntries(fields.map((f, i) => [f.key, nullable(r[i])]))
     // N_id, not N: it names the files and never changes once delivered (#40).
-    const N = Number(values.N_id)
+    const N = values.N_id == null ? NaN : Number(values.N_id) // Number('') is 0
     if (!Number.isInteger(N)) fail(`row N = ${values.N} has N_id = ${values.N_id}`)
     if (!refIds.has(values.Reference!))
       fail(`specimen ${N}: unknown reference "${values.Reference}"`)
