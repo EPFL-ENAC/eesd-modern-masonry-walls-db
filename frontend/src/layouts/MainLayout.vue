@@ -62,8 +62,6 @@
           <div>
             <h6>{{ t('footer.maintained') }}</h6>
             <p>{{ t('footer.lab') }}</p>
-            <!-- handoff-Q8 (#17): postal address pending from EESD. -->
-            <p>{{ t('footer.handoff-Q8-address') }}</p>
           </div>
         </div>
       </div>
