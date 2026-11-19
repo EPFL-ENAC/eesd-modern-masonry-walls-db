@@ -2,6 +2,10 @@ FROM python:3.12-slim AS build-stage
 WORKDIR /app
 COPY --from=ghcr.io/astral-sh/uv:latest /uv /usr/local/bin/uv
 ENV UV_LINK_MODE=copy UV_COMPILE_BYTECODE=1
+# uv needs git to fetch git dependencies (enacit4r-contrib, once published).
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends git \
+    && rm -rf /var/lib/apt/lists/*
 
 # Layer 1: deps only, cached until pyproject.toml / uv.lock change
 COPY pyproject.toml uv.lock /app/

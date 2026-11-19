@@ -195,7 +195,7 @@ const flowOption = computed<EChartsOption>(() => {
           fontWeight: 'bold',
           textBorderColor: white,
           textBorderWidth: 3,
-          // ponytail: build_charts.py's "label if taller than 9 px", as a share of specimens.
+          // build_charts.py's "label if taller than 9 px", as a share of specimens.
           formatter: (p) => ((p.value as number) / n > 0.025 ? nodeLabel(p.name) : '')
         }
       }

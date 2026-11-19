@@ -40,3 +40,40 @@ jobs:
       - run: uv sync --frozen
       - run: uv run pre-commit run --all-files
       - run: uv run pytest
+  submissions:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: List changed submissions
+        id: changed
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+        run: |
+          ids=$(git diff --name-only "$BASE_SHA" HEAD -- ../submissions \
+            | cut -d/ -f2 | sort -u | tr '\n' ' ')
+          echo "ids=$ids" >> "$GITHUB_OUTPUT"
+      - uses: astral-sh/setup-uv@v6
+        if: steps.changed.outputs.ids != ''
+        with:
+          enable-cache: true
+          cache-dependency-glob: "backend/uv.lock"
+      - name: Check each changed submission
+        if: steps.changed.outputs.ids != ''
+        env:
+          IDS: ${{ steps.changed.outputs.ids }}
+        run: |
+          uv sync --frozen
+          status=0
+          for id in $IDS; do
+            if [ ! -d "../submissions/$id" ]; then echo "skip $id: removed"; continue; fi
+            echo "::group::submissions/$id"
+            uv run python -m modernmasonrydatabase.contribution "../submissions/$id" || status=1
+            echo "::endgroup::"
+          done
+          exit $status

@@ -19,15 +19,15 @@ The site is a static Quasar app (`frontend/`) styled with the
 in [`frontend/vendor/epfl-design-system/`](frontend/vendor/epfl-design-system/README.md).
 Its fonts come from `enac-it-fonts.epfl.ch`, which serves `*.epfl.ch` sites, and
 `localhost` from the EPFL network or VPN. It reads the dataset from
-`frontend/public/data/` and calls no backend. `backend/` (FastAPI) is kept but
-unused.
+`frontend/public/data/`. Only the Submit page calls the backend (`backend/`,
+FastAPI), to check and send a contribution.
 
 ## Getting started
 
 You need:
 
 - [Node](https://nodejs.org) 26 and [pnpm](https://pnpm.io) 11
-- [uv](https://docs.astral.sh/uv/) (`make install` also sets up the unused backend)
+- [uv](https://docs.astral.sh/uv/) for the backend
 - Python 3.9+ to export a new dataset
 - [git-lfs](https://git-lfs.com), set to HTTP/1.1 for ENAC-IT's LFS server
   **before the first clone**. Over HTTP/2 its downloads break with
@@ -87,6 +87,51 @@ ModernMasonryDatabase_EIA.xlsx ── export-csv.py ──▶ *.csv ────
    versions (`<name>-512.webp`, `<name>-1920.webp`, git-lfs) beside them.
 3. `make -C frontend convert` rewrites `frontend/src/assets/data/*.json`.
 4. `make test`, then commit the CSVs, photos, web versions and JSON together.
+
+## How a contribution reaches the site
+
+```text
+contributor ── Submit page ──▶ POST /api/validate ──▶ report (errors, warnings)
+            ── Submit page ──▶ POST /api/contributions ──▶ branch contrib/<id> + PR into dev
+PR adds submissions/<id>/ ──▶ CI job "submissions" runs the validator on it
+curator ──▶ moves the test into EESD's xlsx ──▶ next delivery (see below)
+```
+
+1. The contributor fills the starter kit and uploads it on the Submit page.
+   The page sends it to `POST /api/validate`, which answers with a report.
+2. The contributor sends it with name, email and institution to
+   `POST /api/contributions`. The backend checks it again, commits it to
+   `submissions/<id>/` on branch `contrib/<id>`, and opens a PR into `dev`.
+3. CI runs the validator on each changed `submissions/<id>/`:
+   `cd backend && uv run python -m modernmasonrydatabase.contribution ../submissions/<id>`.
+4. The curator moves the test into EESD's workbook. EESD's workbook stays the
+   master. The test reaches the site with the next delivery.
+
+The validator is
+[`backend/modernmasonrydatabase/contribution.py`](backend/modernmasonrydatabase/contribution.py).
+It compares the contribution with the dataset on `CONTRIBUTIONS_BASE`, which it
+reads from GitHub and keeps for 10 minutes.
+
+### Contributions configuration
+
+The backend reads these environment variables.
+
+| Variable | Default | Meaning |
+| --- | --- | --- |
+| `CONTRIBUTIONS_REPO` | `EPFL-ENAC/eesd-modern-masonry-walls-db` | Repository that receives the PRs. |
+| `CONTRIBUTIONS_BASE` | `dev` | Branch the PRs target. The validator reads the dataset from it. |
+| `CONTRIBUTIONS_REVIEWERS` | empty | GitHub logins to ask for review, separated by commas. |
+| `CONTRIBUTIONS_MAX_OPEN` | `25` | Open contribution PRs above which new ones get a 429. |
+| `GITHUB_APP_ID` | none | GitHub App ID. |
+| `GITHUB_APP_PRIVATE_KEY` | none | GitHub App private key (PEM). |
+| `GITHUB_APP_INSTALLATION_ID` | none | GitHub App installation ID on the repository. |
+| `GITHUB_TOKEN` | none | A token to use instead of the App. |
+
+Contributions open when all three `GITHUB_APP_*` variables are set, or
+`GITHUB_TOKEN`. Without them, `/api/contributions` answers 503 and
+`/api/validate` still works. The App or token needs `contents: write` and
+`pull_requests: write` on the repository. The deployment does not set these
+credentials yet.
 
 ## Preparing a delivery (for EESD)
 
