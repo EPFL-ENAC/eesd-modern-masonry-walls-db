@@ -146,6 +146,7 @@
 
         <form class="submit-bar" @submit.prevent="send">
           <h2 class="submit-label">{{ t('submit.contributor') }}</h2>
+          <p class="submit-note">{{ t('submit.public') }}</p>
           <div class="contributor">
             <label v-for="k in FIELDS" :key="k" :class="{ wide: k === 'note' }">
               <span class="epfl-label"

@@ -502,6 +502,7 @@
     "chooseFolder": "Choose a folder",
     "chooseFiles": "Choose files",
     "addManual": "Add a specimen manually",
+    "public": "Your name, email address, institution and note appear on the public review request on GitHub.",
     "check": "Check now",
     "submit": "Submit for review",
     "note": "Submitting opens a review request on {repo} — a curator approves it before the data goes live.",
@@ -521,11 +522,11 @@
       "fd": "Force–drift curve —",
       "envelope": "Backbone envelope per direction, Pavia and EPFL; Pavia also per loading cycle M —",
       "bilinear": "Bilinear idealisation per direction, Pavia and EPFL; Pavia also per loading cycle M —",
-      "photos": "Photos: test setup, failure mode, materials, crack measurements"
+      "photos": "Photos: test setup, failure mode, materials, crack measurements. The upload does not take them yet: the curator asks for them during the review."
     },
     "downloadKit": "Download the starter kit",
     "noGuide": "No guide has been written for this database yet.",
-    "readme": "Modern Masonry Database — submission starter kit\n\nModernMasonryDatabase_EIA_Database.csv: the database's 4 header rows (column number, category, number in the category, name), then one row per specimen, {n} columns. Leave N blank: the curator assigns it. The row for SW0.1 is an example; replace it. Categories VI (Pavia) and VII (EPFL) hold the same variables for the two bilinear idealisations: the category row tells them apart.\n\nResponse files are named after the specimen and placed in the folder of their type:\n  02_fd_curve/fd_curve_{s}.csv\n  03_envelope_Pavia/ and 04_envelope_EPFL/envelope_{s}_pos.csv and _neg.csv\n  05_bilinear_curve_Pavia/ and 06_bilinear_curve_EPFL/bilinear_{s}_pos.csv and _neg.csv\n  Pavia also has one file per loading cycle M: envelope_{s}_pos_cycleM.csv, bilinear_{s}_neg_cycleM.csv…\n  07_fig_setup/ … 10_fig_cracks/fig_{k}_{s}.jpg\n\nCurves have two columns: drift [%], horizontal_force [kN].\nThe column definitions are in the data dictionary on the Documentation page.",
+    "readme": "Modern Masonry Database — submission starter kit\n\nModernMasonryDatabase_EIA_Database.csv: the database's 4 header rows (column number, category, number in the category, name), then one row per specimen, {n} columns. Leave N blank: the curator assigns it. The row for SW0.1 is an example; replace it. Categories VI (Pavia) and VII (EPFL) hold the same variables for the two bilinear idealisations: the category row tells them apart.\n\nResponse files are named after the specimen and placed in the folder of their type:\n  02_fd_curve/fd_curve_{s}.csv\n  03_envelope_Pavia/ and 04_envelope_EPFL/envelope_{s}_pos.csv and _neg.csv\n  05_bilinear_curve_Pavia/ and 06_bilinear_curve_EPFL/bilinear_{s}_pos.csv and _neg.csv\n  Pavia also has one file per loading cycle M: envelope_{s}_pos_cycleM.csv, bilinear_{s}_neg_cycleM.csv…\n  07_fig_setup/ … 10_fig_cracks/fig_{k}_{s}.jpg (the upload does not take photos yet: the curator asks for them during the review)\n\nCurves have two columns: drift [%], horizontal_force [kN].\nThe column definitions are in the data dictionary on the Documentation page.",
     "p2": "Measured responses are separate files, one per specimen, named after the specimen they belong to ({file} for the specimen named SW0.1) and placed in the folder of their type. Drop the folder, a zip of it, or the files themselves: they are matched to the specimens by name.",
     "files": "Files ({n})",
     "clear": "Clear",
