@@ -25,6 +25,13 @@ CURVE_FOLDERS = {
     "06_bilinear_curve_EPFL": "bilinear",
 }
 ALLOW: list[str] = [DATABASE_CSV, "README.txt"] + [f"{d}/*.csv" for d in CURVE_FOLDERS]
+# Photo folders of the starter kit: dropped with a warning until photos go to git-lfs.
+SKIP: list[str] = [
+    "07_fig_setup/*",
+    "08_fig_failmode/*",
+    "09_fig_materials/*",
+    "10_fig_cracks/*",
+]
 
 _PAVIA = ("neg", "pos", "neg_cycle1", "neg_cycle2", "pos_cycle1", "pos_cycle2")
 _EPFL = ("neg", "pos")

@@ -82,3 +82,15 @@ async def test_dataset_is_cached():
         for _ in range(2):
             assert (await c.post("/validate", files=_files(_kit()))).status_code == 200
     assert calls == [1]
+
+
+async def test_photos_are_skipped_not_committed():
+    repo = FakeRepo()
+    bundle = _kit(_example()) | {"07_fig_setup/fig_setup_SW0.1-new.jpg": b"\xff\xd8"}
+    person = {"name": "Ada", "email": "ada@example.org", "institution": "EPFL"}
+    async with _client(repo) as client:
+        r = await client.post("/contributions", files=_files(bundle), data=person)
+    assert r.status_code == 201
+    skipped = [i for i in r.json()["issues"] if i["file"].startswith("07_")]
+    assert [i["severity"] for i in skipped] == ["warning"]
+    assert not any(p.endswith(".jpg") for p in repo.commits[0]["files"])

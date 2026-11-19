@@ -17,7 +17,7 @@ from enacit4r_contrib.repo import Repo
 from enacit4r_contrib.sinks import GitHubPRSink
 from fastapi import APIRouter
 
-from modernmasonrydatabase.contribution import ALLOW, DATABASE_CSV, make_validator
+from modernmasonrydatabase.contribution import ALLOW, DATABASE_CSV, SKIP, make_validator
 
 log = logging.getLogger(__name__)
 
@@ -44,7 +44,7 @@ def fetch_dataset(url: str) -> Callable[[], Awaitable[bytes]]:
 def cached(
     load: Callable[[], Awaitable[bytes]], ttl: float = DATASET_TTL
 ) -> Callable[[], Awaitable[bytes]]:
-    """Keep the loaded dataset for `ttl` seconds. A failed refresh keeps the old copy."""
+    """Keep the dataset for `ttl` seconds. A failed refresh keeps the old copy."""
     data: bytes | None = None
     loaded_at = 0.0
 
@@ -104,4 +104,6 @@ def contribution_routes(
         sink,
         max_open=settings.contributions_max_open,
     )
-    return contribution_router(pipeline, enabled=repo is not None, allow=ALLOW)
+    return contribution_router(
+        pipeline, enabled=repo is not None, allow=ALLOW, skip=SKIP
+    )
