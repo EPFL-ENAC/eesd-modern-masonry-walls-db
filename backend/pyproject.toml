@@ -24,7 +24,7 @@ dev = [
 ]
 
 [tool.uv.sources]
-enacit4r-contrib = { path = "../../enacit4r-contrib", editable = true }
+enacit4r-contrib = { git = "https://github.com/EPFL-ENAC/enacit4r-contrib", tag = "0.1.0" }
 
 [build-system]
 requires = ["hatchling"]
