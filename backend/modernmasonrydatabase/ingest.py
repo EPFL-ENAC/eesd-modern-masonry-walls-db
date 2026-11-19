@@ -8,51 +8,35 @@ write, so an error leaves the dataset untouched.
 
 import argparse
 import csv
-import io
-import shutil
 import sys
 from pathlib import Path
 
-from enacit4r_contrib import Issue
+from enacit4r_contrib.ingest import IngestError, Plan, next_number, read_folder, run
 
 from modernmasonrydatabase.contribution import (
     CURVE_FOLDERS,
     DATABASE_CSV,
-    N,
     N_ID,
     REFERENCE,
     SPECIMEN,
     SUFFIXES,
+    N,
     _curve_path,
     _decode,
     _filled,
     _parse,
-    _read_folder,
     check_submission,
-    format_issue,
 )
+
+__all__ = ["IngestError", "ingest", "main"]
 
 CRACKS = "Crack measurements"
 REFERENCES_CSV = "01_references/ModernMasonryDatabase_EIA_References.csv"
 
 
-class IngestError(Exception):
-    def __init__(self, message: str, issues: list[Issue] | None = None):
-        super().__init__(message)
-        self.message = message
-        self.issues = issues or []
-
-
-def _number(v: str) -> int | None:
-    try:
-        return int(float(v))
-    except ValueError:
-        return None
-
-
 def ingest(submission: Path, data: Path) -> list[tuple[str, int]]:
     """Append the submission to `data/` and delete it; returns [(name, N)]."""
-    bundle = _read_folder(submission)
+    bundle = read_folder(submission)
     db_path = data / DATABASE_CSV
     db = db_path.read_bytes()
     errors = [i for i in check_submission(bundle, db) if i.severity == "error"]
@@ -80,53 +64,44 @@ def ingest(submission: Path, data: Path) -> list[tuple[str, int]]:
                 " ingested yet: set it to No, or add the specimen by hand"
             )
     # Placeholder rows (only N) count too: their N is taken.
-    taken = [_number(r[j]) for r in existing[4:] for j in (N, N_ID) if j < len(r)]
-    n = max(x for x in taken if x is not None)
-    new: list[tuple[str, int, list[str]]] = []
-    copies: list[tuple[bytes, Path]] = []
-    for r in rows:
-        n += 1
+    n = next_number(r[j] for r in existing[4:] for j in (N, N_ID) if j < len(r))
+    plan = Plan()
+    done: list[tuple[str, int]] = []
+    new: list[list[str]] = []
+    for n, r in enumerate(rows, start=n):
         name = r[SPECIMEN].strip()
         r = (r + [""] * width)[:width]
         r[N] = r[N_ID] = str(n)
-        new.append((name, n, r))
+        new.append(r)
+        done.append((name, n))
         for d in CURVE_FOLDERS:
             for x in SUFFIXES[d]:
                 src = _curve_path(d, name, x)
                 if src in bundle:
-                    copies.append((bundle[src], data / _curve_path(d, f"{n:04d}", x)))
-    for _, target in copies:
-        if target.exists():
-            raise IngestError(f"{target.relative_to(data)} already exists")
-
-    eol = "\r\n" if b"\r\n" in db else "\n"
-    out = io.StringIO()
-    csv.writer(out, lineterminator=eol).writerows(r for _, _, r in new)
-    lead = b"" if db.endswith(eol.encode()) else eol.encode()
-    with db_path.open("ab") as f:
-        f.write(lead + out.getvalue().encode("utf-8"))
-    for content, target in copies:
-        target.write_bytes(content)
-    shutil.rmtree(submission)
-    return [(name, n) for name, n, _ in new]
+                    plan.create(data / _curve_path(d, f"{n:04d}", x), bundle[src])
+    plan.append(db_path, new)
+    plan.remove(submission)
+    try:
+        plan.check()
+    except IngestError as e:
+        raise IngestError(
+            "; ".join(
+                f"{Path(i.file or '').relative_to(data)} {i.message}" for i in e.issues
+            )
+        ) from None
+    plan.apply()
+    return done
 
 
 def main(argv: list[str] | None = None) -> int:
-    default = Path(__file__).parents[2] / "frontend/public/data"
-    ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
-    ap.add_argument("submission", type=Path)
-    ap.add_argument("--data", type=Path, default=default)
-    a = ap.parse_args(argv)
-    try:
-        done = ingest(a.submission, a.data)
-    except IngestError as e:
-        print(e.message)
-        for i in e.issues:
-            print(format_issue(i))
-        return 1
-    for name, n in done:
-        print(f"ingested {name} as N={n}")
-    return 0
+    ap = argparse.ArgumentParser(add_help=False)
+    ap.add_argument(
+        "--data", type=Path, default=Path(__file__).parents[2] / "frontend/public/data"
+    )
+    a, rest = ap.parse_known_args(argv)
+    return run(
+        lambda s: [f"ingested {name} as N={n}" for name, n in ingest(s, a.data)], rest
+    )
 
 
 if __name__ == "__main__":

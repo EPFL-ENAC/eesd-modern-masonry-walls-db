@@ -15,6 +15,7 @@ from collections.abc import Awaitable, Callable
 from pathlib import Path
 
 from enacit4r_contrib import Bundle, Issue
+from enacit4r_contrib.ingest import format_issue, read_folder
 
 DATABASE_CSV = "ModernMasonryDatabase_EIA_Database.csv"
 CURVE_FOLDERS = {
@@ -288,27 +289,13 @@ def make_validator(
     return validate
 
 
-def _read_folder(folder: Path) -> Bundle:
-    return {
-        p.relative_to(folder).as_posix(): p.read_bytes()
-        for p in folder.rglob("*")
-        if p.is_file()
-    }
-
-
-def format_issue(i: Issue) -> str:
-    where = ":".join(str(x) for x in (i.file, i.row) if x is not None)
-    col = f" [{i.column}]" if i.column else ""
-    return f"{i.severity}: {where}{col}: {i.message}"
-
-
 def main(argv: list[str] | None = None) -> int:
     default = Path(__file__).parents[2] / "frontend/public/data" / DATABASE_CSV
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     ap.add_argument("folder", type=Path)
     ap.add_argument("--dataset", type=Path, default=default)
     a = ap.parse_args(argv)
-    issues = check_submission(_read_folder(a.folder), a.dataset.read_bytes())
+    issues = check_submission(read_folder(a.folder), a.dataset.read_bytes())
     for i in issues:
         print(format_issue(i))
     return 1 if any(i.severity == "error" for i in issues) else 0
