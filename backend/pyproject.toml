@@ -10,7 +10,8 @@ dependencies = [
   "pydantic>=2,<3",
   "dynaconf>=3.1.7,<4",
   "uvicorn>=0.30,<1",
-  "enacit4r-contrib",
+  "enacit4r-contrib[github]",
+  "httpx>=0.27,<1",
 ]
 
 [dependency-groups]
