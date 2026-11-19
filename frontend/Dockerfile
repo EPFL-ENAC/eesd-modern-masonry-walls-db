@@ -18,7 +18,7 @@ RUN pnpm run build
 # ==============================================================================
 # Production stage: unprivileged nginx on 8080
 # ==============================================================================
-FROM nginxinc/nginx-unprivileged:stable-alpine-slim
+FROM nginx/nginx-unprivileged:stable-alpine-slim
 
 # The alpine base lags Alpine's package repo: take every fixed package.
 USER root
