@@ -296,6 +296,12 @@ def _read_folder(folder: Path) -> Bundle:
     }
 
 
+def format_issue(i: Issue) -> str:
+    where = ":".join(str(x) for x in (i.file, i.row) if x is not None)
+    col = f" [{i.column}]" if i.column else ""
+    return f"{i.severity}: {where}{col}: {i.message}"
+
+
 def main(argv: list[str] | None = None) -> int:
     default = Path(__file__).parents[2] / "frontend/public/data" / DATABASE_CSV
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
@@ -304,9 +310,7 @@ def main(argv: list[str] | None = None) -> int:
     a = ap.parse_args(argv)
     issues = check_submission(_read_folder(a.folder), a.dataset.read_bytes())
     for i in issues:
-        where = ":".join(str(x) for x in (i.file, i.row) if x is not None)
-        col = f" [{i.column}]" if i.column else ""
-        print(f"{i.severity}: {where}{col}: {i.message}")
+        print(format_issue(i))
     return 1 if any(i.severity == "error" for i in issues) else 0
 
 
