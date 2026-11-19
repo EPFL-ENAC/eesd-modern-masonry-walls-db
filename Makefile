@@ -1,4 +1,4 @@
-.PHONY: help install dev-all dev-backend dev-frontend test lint ingest
+.PHONY: help install dev-all dev-backend dev-frontend test lint data
 
 help:                   ## Show available targets
 	@grep -E '^[a-zA-Z_%-]+:.*?## .*$$' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-20s\033[0m %s\n", $$1, $$2}'
@@ -7,6 +7,10 @@ install:                ## pnpm (git hooks) + backend + frontend deps
 	pnpm install
 	$(MAKE) -C backend install
 	$(MAKE) -C frontend install
+
+data:                   ## DATA_REF=dev SKIP_LFS=0: copy the dataset into frontend/public/data, then pnpm convert
+	bash frontend/scripts/fetch-data.sh
+	pnpm -C frontend convert
 
 dev-all:                ## backend + frontend in this terminal, Ctrl-C stops both
 	$(MAKE) -j2 --no-print-directory dev-backend dev-frontend
@@ -24,8 +28,3 @@ test:                   ## backend pytest + frontend vitest
 lint:                   ## backend ruff (pre-commit) + frontend ESLint
 	$(MAKE) -C backend lint
 	$(MAKE) -C frontend lint
-
-ingest:                 ## SUBMISSION=submissions/<id>: merge it into the dataset, then pnpm convert
-	@test -n "$(SUBMISSION)" || { echo "usage: make ingest SUBMISSION=submissions/<id>"; exit 1; }
-	cd backend && uv run python -m modernmasonrydatabase.ingest "$(abspath $(SUBMISSION))"
-	pnpm -C frontend convert

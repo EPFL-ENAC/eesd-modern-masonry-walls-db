@@ -7,3 +7,5 @@ node_modules/
 .claude/settings.local.json
 lefthook-local.yml
 .playwright-mcp/
+frontend/public/data/
+frontend/src/assets/data/*.json

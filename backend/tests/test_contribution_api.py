@@ -1,12 +1,53 @@
+import csv
+import io
+from pathlib import Path
+
 import httpx
 from enacit4r_contrib.testing import FakeRepo
 from fastapi import FastAPI
+from mmw_data.validate import DATABASE_CSV, main
 
 from modernmasonrydatabase.config import settings
-from modernmasonrydatabase.contribution import DATABASE_CSV, main
 from modernmasonrydatabase.contribution_api import contribution_routes
 
-from .test_contribution import COL, DATASET, _example, _kit
+# From the data repository: the 4 header rows, the row of N_id 227 with its
+# curve CSVs, and the row of N_id 1. Row 1 leaves "Crack measurements" blank,
+# so the validator does not require that column. The tests need no network.
+DATA = Path(__file__).parent / "fixtures"
+DATASET = (DATA / DATABASE_CSV).read_bytes()
+NAME = "SW0.1-new"
+
+
+def _rows(data: bytes) -> list[list[str]]:
+    return list(csv.reader(io.StringIO(data.decode("utf-8-sig"))))
+
+
+def _csv(rows: list[list[str]]) -> bytes:
+    out = io.StringIO()
+    csv.writer(out, lineterminator="\r\n").writerows(rows)
+    return ("\ufeff" + out.getvalue()).encode()
+
+
+HEADER = _rows(DATASET)[:4]
+COL = {n.strip(): j for j, n in enumerate(HEADER[3])}  # first occurrence
+
+
+def _example() -> list[str]:
+    row = next(r for r in _rows(DATASET)[4:] if r[1] == "227")
+    row = ["", "", *row[2:5], NAME, *row[6:]]
+    # SW0.1 has a crack method, which needs a photo the upload does not take yet.
+    row[HEADER[3].index("Crack measurements")] = ""
+    return row
+
+
+def _kit(*rows: list[str]) -> dict[str, bytes]:
+    bundle = {DATABASE_CSV: _csv(HEADER + list(rows or [_example()]))}
+    bundle["README.txt"] = b"note"
+    for p in DATA.glob("0[2-6]_*/*_0227*.csv"):
+        rel = p.relative_to(DATA).as_posix().replace("0227", NAME)
+        bundle[rel] = p.read_bytes()
+    return bundle
+
 
 CONTRIBUTOR = {"name": "Ada Tester", "email": "ada@example.org", "institution": "Lab"}
 
@@ -55,7 +96,8 @@ async def test_validate_and_contribute_open_a_pr(tmp_path):
     for path, data in files.items():
         (tmp_path / path).parent.mkdir(parents=True, exist_ok=True)
         (tmp_path / path).write_bytes(data)
-    assert main([str(tmp_path / "submissions" / id_)]) == 0
+    folder = str(tmp_path / "submissions" / id_)
+    assert main([folder, "--dataset", str(DATA / DATABASE_CSV)]) == 0
 
 
 async def test_filled_n_is_refused():

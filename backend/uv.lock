@@ -179,8 +179,8 @@ wheels = [
 
 [[package]]
 name = "enacit4r-contrib"
-version = "0.2.0"
-source = { git = "https://github.com/EPFL-ENAC/enacit4r-contrib?tag=0.2.0#6b17077a5c2cc6d7cae8a738a24269ecf9451307" }
+version = "0.4.0"
+source = { git = "https://github.com/EPFL-ENAC/enacit4r-contrib?tag=0.4.0#377fafca2b84a1299b7cf3ac78ed733cec0100f2" }
 dependencies = [
     { name = "fastapi" },
     { name = "pydantic" },
@@ -317,6 +317,14 @@ wheels = [
 ]
 
 [[package]]
+name = "mmw-data"
+version = "0.1.0"
+source = { git = "https://github.com/EPFL-ENAC/eesd-modern-masonry-walls-data?subdirectory=tools&tag=tools-0.1.0#2f322b4c38a96130b9a127d3e683a0321d7b851c" }
+dependencies = [
+    { name = "enacit4r-contrib" },
+]
+
+[[package]]
 name = "modernmasonrydatabase"
 version = "0.1.0"
 source = { editable = "." }
@@ -325,6 +333,7 @@ dependencies = [
     { name = "enacit4r-contrib", extra = ["github"] },
     { name = "fastapi" },
     { name = "httpx" },
+    { name = "mmw-data" },
     { name = "pydantic" },
     { name = "uvicorn" },
 ]
@@ -341,9 +350,10 @@ dev = [
 [package.metadata]
 requires-dist = [
     { name = "dynaconf", specifier = ">=3.1.7,<4" },
-    { name = "enacit4r-contrib", extras = ["github"], git = "https://github.com/EPFL-ENAC/enacit4r-contrib?tag=0.2.0" },
+    { name = "enacit4r-contrib", extras = ["github"], git = "https://github.com/EPFL-ENAC/enacit4r-contrib?tag=0.4.0" },
     { name = "fastapi", specifier = ">=0.115,<0.116" },
     { name = "httpx", specifier = ">=0.27,<1" },
+    { name = "mmw-data", git = "https://github.com/EPFL-ENAC/eesd-modern-masonry-walls-data?subdirectory=tools&tag=tools-0.1.0" },
     { name = "pydantic", specifier = ">=2,<3" },
     { name = "uvicorn", specifier = ">=0.30,<1" },
 ]

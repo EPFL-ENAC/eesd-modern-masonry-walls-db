@@ -5,12 +5,14 @@ conventions (`it4r-agent-kit`); this file only adds what is specific here.
 
 - The site is static except the Submit page. It calls the backend's contribution
   API (`/api/validate`, `/api/contributions`). A contribution lands as a PR that
-  adds `submissions/<id>/`. The validator is
-  `backend/modernmasonrydatabase/contribution.py`.
-- The dataset lives in `frontend/public/data/` (photos in git-lfs). Its CSVs are
-  the master copy (no xlsx). `pnpm convert` turns them into
-  `frontend/src/assets/data/*.json`. Commit both. Accepted contributions arrive
-  by the `ingest` workflow (`backend/modernmasonrydatabase/ingest.py`).
+  adds `submissions/<id>/` in the data repository. The validator is
+  `mmw_data.validate` (package `mmw-data` from that repository).
+- The dataset lives in EPFL-ENAC/eesd-modern-masonry-walls-data, under `data/`
+  (photos in git-lfs). Its CSVs are the master copy (no xlsx). This repository
+  holds no dataset. `make data` copies it into `frontend/public/data/` and runs
+  `pnpm convert`, which writes `frontend/src/assets/data/*.json`. Git ignores
+  both. Run `make data` before tests and type-check. Corrections and ingests
+  happen in the data repository.
 - CSVs are UTF-8 with a BOM (Windows Excel needs it), the dataset's and every one
   the browser generates. `scripts/export-csv.py` only imports a workbook once.
   `pnpm convert` rejects a BOM-less CSV.

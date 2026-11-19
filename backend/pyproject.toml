@@ -12,6 +12,7 @@ dependencies = [
   "uvicorn>=0.30,<1",
   "enacit4r-contrib[github]",
   "httpx>=0.27,<1",
+  "mmw-data",
 ]
 
 [dependency-groups]
@@ -24,7 +25,8 @@ dev = [
 ]
 
 [tool.uv.sources]
-enacit4r-contrib = { git = "https://github.com/EPFL-ENAC/enacit4r-contrib", tag = "0.2.0" }
+enacit4r-contrib = { git = "https://github.com/EPFL-ENAC/enacit4r-contrib", tag = "0.4.0" }
+mmw-data = { git = "https://github.com/EPFL-ENAC/eesd-modern-masonry-walls-data", tag = "tools-0.1.0", subdirectory = "tools" }
 
 [build-system]
 requires = ["hatchling"]

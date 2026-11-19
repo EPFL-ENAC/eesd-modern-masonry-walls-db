@@ -1,12 +1,13 @@
 /**
  * public/data/*.csv → src/assets/data/*.json (`pnpm convert`).
+ * DATA_DIR (relative to frontend/) overrides public/data.
  *
  * Fails loudly on anything that would otherwise show up as a silent gap in the
  * app: a lossy (non-UTF-8) or BOM-less export, a column with no Fields row, a reference ID
  * with no entry, a file for an unknown specimen, a flag without its file.
  */
-import { readdirSync, readFileSync, writeFileSync } from 'node:fs'
-import { join } from 'node:path'
+import { mkdirSync, readdirSync, readFileSync, writeFileSync } from 'node:fs'
+import { join, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { BOM, parseCsv } from '../src/lib/csv.ts'
 import type { Dataset, Field, Meta, Reference, Specimen } from '../src/api/types.ts'
@@ -255,7 +256,9 @@ export function convert(dir: string): Dataset {
 if (process.argv[1] === fileURLToPath(import.meta.url)) {
   const root = fileURLToPath(new URL('..', import.meta.url))
   const out = join(root, 'src/assets/data')
-  for (const [name, value] of Object.entries(convert(join(root, 'public/data')))) {
+  mkdirSync(out, { recursive: true })
+  const dir = resolve(root, process.env.DATA_DIR ?? 'public/data')
+  for (const [name, value] of Object.entries(convert(dir))) {
     writeFileSync(join(out, `${name}.json`), JSON.stringify(value, null, 1) + '\n')
     console.log(`wrote src/assets/data/${name}.json`)
   }
