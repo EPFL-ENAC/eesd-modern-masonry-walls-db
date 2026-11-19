@@ -61,7 +61,7 @@ def ingest(submission: Path, data: Path) -> list[tuple[str, int]]:
         if _filled(v) and v != "No":
             raise IngestError(
                 f'{r[SPECIMEN].strip()}: "{CRACKS}" is {v} but photos are not'
-                " ingested yet: set it to No, or add the specimen by hand"
+                " ingested yet: leave it empty, or add the specimen by hand"
             )
     # Placeholder rows (only N) count too: their N is taken.
     n = next_number(r[j] for r in existing[4:] for j in (N, N_ID) if j < len(r))

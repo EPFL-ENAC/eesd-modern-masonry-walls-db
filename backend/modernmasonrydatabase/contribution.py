@@ -112,10 +112,13 @@ class _Dataset:
         self.required = [
             j for j in range(2, self.width) if all(_filled(v) for v in col[j])
         ]
+        # Crack measurements names a method and needs a 10_fig_cracks photo.
+        self.cracks = [n.strip() for n in names].index("Crack measurements")
         self.categorical = [
             j
             for j in range(6, self.width)
             if j not in self.numeric
+            and j != self.cracks
             and len({v for v in col[j] if v}) <= 15
             and any(col[j])
         ]
@@ -200,6 +203,16 @@ def _check_database(
             if _filled(v) and v not in ds.known[j]:
                 known = ", ".join(sorted(k for k in ds.known[j] if k))
                 err(f"new value {v} (known: {known})", line, j, v, "warning")
+        v = r[ds.cracks].strip()
+        if _filled(v) and v != "No":
+            err(
+                "the curator needs the crack photo (10_fig_cracks) before this"
+                " specimen can be added: leave it empty if there is no photo",
+                line,
+                ds.cracks,
+                v,
+                "warning",
+            )
         ref, name = r[REFERENCE].strip(), r[SPECIMEN].strip()
         if name in specimens:
             err("specimen name repeated in the submission", line, SPECIMEN, name)

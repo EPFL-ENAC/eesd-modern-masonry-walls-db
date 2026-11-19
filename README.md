@@ -146,7 +146,7 @@ credentials yet.
    (and its entry to the .bib file). Push this commit to the PR branch, then
    merge. Otherwise the ingest fails.
 3. A row with "Crack measurements" set needs its crack photo, and the ingest
-   does not take photos. Set the value to No, or add the test by hand.
+   does not take photos. Leave the value empty, or add the test by hand.
 4. If the `ingest` workflow fails, read its log. Fix the cause on `dev`. Then
    run `make ingest SUBMISSION=submissions/<id>` on your computer, commit the
    result and push it.
