@@ -33,7 +33,11 @@ pre-push:
   jobs:
     - name: frontend-type-check
       root: "frontend/"
-      run: pnpm run type-check
+      # The dataset comes from eesd-modern-masonry-walls-data: without it, the JSON imports fail.
+      run: >-
+        test -f src/assets/data/specimens.json
+        || { echo "No dataset here: run 'make data' first (it fetches eesd-modern-masonry-walls-data)."; exit 1; };
+        pnpm run type-check
 
     - name: backend-pre-commit-all
       root: "backend/"
