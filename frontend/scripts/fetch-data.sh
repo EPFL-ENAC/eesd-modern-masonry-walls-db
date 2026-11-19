@@ -29,6 +29,7 @@ fi
 sha=$(git -C "$tmp/repo" rev-parse HEAD)
 
 rm -rf "$out"
+mkdir -p "$(dirname "$out")"
 cp -R "$tmp/repo/data" "$out"
 printf '%s %s\n' "$sha" "$ref" >"$out/.data-ref"
 echo "data: $REPO $ref at $sha" >&2
