@@ -54,39 +54,34 @@ Commits follow [Conventional Commits](https://www.conventionalcommits.org)
 ## How data reaches the site
 
 ```text
-EESD's workbook and folders               frontend/public/data/                 frontend/src/assets/data/
-ModernMasonryDatabase_EIA.xlsx ── export-csv.py ──▶ *.csv ───── pnpm convert ─────▶ *.json ──▶ bundled in the app
-02_fd_curve/ … 06_bilinear_curve_EPFL/ ──────────▶ *.csv ───── served as /data/… ─────────▶ loaded by the F-d chart
-07_fig_setup/ … 10_fig_cracks/ ──────────────────▶ *.jpg ── optimize-images ──▶ -512.webp, -1920.webp (shown)
+frontend/public/data/ (master copy)                      frontend/src/assets/data/
+*.csv ─────────────────────────────────── pnpm convert ─────▶ *.json ──▶ bundled in the app
+02_fd_curve/ … 06_bilinear_curve_EPFL/*.csv ── served as /data/… ──▶ loaded by the F-d chart
+07_fig_setup/ … 10_fig_cracks/*.jpg ── optimize-images ──▶ -512.webp, -1920.webp (shown)
 ```
 
-- `frontend/public/data/` holds the delivery as EESD sends it. The site
-  serves it as is, so every download is the original file.
+- `frontend/public/data/` holds the dataset itself. A change to it is a pull
+  request: a correction by hand, or an accepted contribution that the
+  `ingest` workflow adds (see below). The site serves the files as they are,
+  so every download is the original file.
 - `pnpm convert` (`frontend/scripts/convert-data.ts`) turns the CSVs into the
-  JSON the app bundles. It refuses a delivery whose columns, references, flags
+  JSON the app bundles. It refuses a dataset whose columns, references, flags
   or files disagree.
-- Photos are git-lfs objects. The site shows their WebP web versions;
-  downloads keep the originals.
+- Photos are git-lfs objects. The site shows their WebP web versions.
+  Downloads keep the originals.
 - In the app, `src/api/dataset.ts` is the only module that reads the dataset,
   and `src/lib/derive.ts` holds the derived values (drift, τ, bins…).
 
 ## Updating the dataset
 
-1. Replace the files in `frontend/public/data/`, then write the CSVs from the
-   workbook:
-
-   ```bash
-   python3 frontend/scripts/export-csv.py path/to/ModernMasonryDatabase_EIA.xlsx frontend/public/data
-   ```
-
-   It writes the Database, Fields, References and Fig_references CSVs as UTF-8
-   with a BOM, the same on any machine. Excel's own CSV export depends on its
-   language and code page: it can lose σ, δ and μ, and the converter rejects it.
-
+1. Edit the CSVs or the files in `frontend/public/data/`. Keep the CSVs in
+   UTF-8 with a BOM. Excel's own CSV export depends on its language and code
+   page: it can lose σ, δ and μ, and the converter rejects it.
 2. New or changed photos: `make -C frontend optimize-images` writes their web
    versions (`<name>-512.webp`, `<name>-1920.webp`, git-lfs) beside them.
 3. `make -C frontend convert` rewrites `frontend/src/assets/data/*.json`.
-4. `make test`, then commit the CSVs, photos, web versions and JSON together.
+4. `make test`, then commit the CSVs, photos, web versions and JSON together
+   in one pull request into `dev`.
 
 ## How a contribution reaches the site
 
