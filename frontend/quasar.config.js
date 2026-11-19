@@ -54,7 +54,15 @@ export default defineConfig(() => ({
   devServer: {
     // FRONTEND_PORT overrides Quasar's default 9000.
     port: Number(process.env.FRONTEND_PORT) || 9000,
-    open: false
+    open: false,
+    // The ingress strips /api in production; do the same against the local backend.
+    proxy: {
+      '/api': {
+        target: `http://127.0.0.1:${process.env.BACKEND_PORT || 8000}`,
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/api/, '')
+      }
+    }
   },
 
   framework: {

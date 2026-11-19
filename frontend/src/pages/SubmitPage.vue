@@ -52,38 +52,140 @@
           </p>
         </div>
 
-        <!-- handoff-Q2: drop zone, manual row editor, check and submit are drawn but have no
-             backend yet; their states (matched / unmatched files, errors, submitted) are not designed. -->
-        <div class="drop" aria-disabled="true">
+        <div
+          class="drop"
+          :class="{ 'drop-over': over }"
+          @dragover.prevent="over = true"
+          @dragleave="over = false"
+          @drop.prevent="onDrop"
+        >
           <q-icon :name="matUpload" size="1.5rem" />
           <p class="drop-title">{{ t('submit.dropTitle') }}</p>
           <p class="drop-text">{{ t('submit.dropText') }}</p>
           <div class="drop-actions">
-            <button type="button" class="epfl-btn epfl-btn-secondary epfl-btn-sm" disabled>
+            <button
+              type="button"
+              class="epfl-btn epfl-btn-secondary epfl-btn-sm"
+              @click="folderInput?.click()"
+            >
               <q-icon :name="matFolderOpen" />{{ t('submit.chooseFolder') }}
             </button>
-            <button type="button" class="epfl-btn epfl-btn-secondary epfl-btn-sm" disabled>
+            <button
+              type="button"
+              class="epfl-btn epfl-btn-secondary epfl-btn-sm"
+              @click="filesInput?.click()"
+            >
               <q-icon :name="matUpload" />{{ t('submit.chooseFiles') }}
             </button>
           </div>
+          <input ref="folderInput" type="file" webkitdirectory hidden @change="onInput" />
+          <input
+            ref="filesInput"
+            type="file"
+            multiple
+            accept=".csv,.zip,.gz,.tgz,.txt"
+            hidden
+            @change="onInput"
+          />
         </div>
 
+        <section v-if="picked.files.length || picked.skipped.length" class="picked">
+          <div class="picked-head">
+            <h2 class="submit-label">{{ t('submit.files', { n: picked.files.length }) }}</h2>
+            <button type="button" class="submit-tool" @click="clear">
+              <q-icon :name="matClose" />{{ t('submit.clear') }}
+            </button>
+          </div>
+          <ul class="picked-list">
+            <li v-for="f in picked.files" :key="f.path">
+              <code>{{ f.path }}</code>
+            </li>
+          </ul>
+          <p v-if="picked.skipped.length" class="picked-skipped">
+            {{ t('submit.skipped', { n: picked.skipped.length }) }}
+            <code v-for="p in picked.skipped" :key="p">{{ p }}</code>
+          </p>
+        </section>
+
+        <section v-if="check" class="issues" aria-live="polite">
+          <p class="epfl-alert" :class="check.valid ? 'epfl-alert-success' : 'epfl-alert-danger'">
+            {{
+              check.valid
+                ? t('submit.valid', { n: check.files.length })
+                : t('submit.invalid', { n: errorCount })
+            }}
+            <template v-if="warningCount">{{ t('submit.warnings', { n: warningCount }) }}</template>
+          </p>
+          <div v-for="g in groups" :key="g.file ?? ''" class="issue-group">
+            <h3 class="issue-file">
+              <code v-if="g.file">{{ g.file }}</code
+              ><template v-else>{{ t('submit.general') }}</template>
+            </h3>
+            <ul class="issue-list">
+              <li v-for="(i, n) in g.issues" :key="n" class="issue" :class="i.severity">
+                <span class="issue-severity">{{ t(`submit.severity.${i.severity}`) }}</span>
+                <span v-if="i.row != null || i.column" class="issue-where">{{
+                  [
+                    i.row != null ? t('submit.row', { n: i.row }) : '',
+                    i.column ? t('submit.column', { c: i.column }) : ''
+                  ]
+                    .filter(Boolean)
+                    .join(' · ')
+                }}</span>
+                {{ i.message }}
+                <code v-if="i.value != null">{{ i.value }}</code>
+              </li>
+            </ul>
+          </div>
+        </section>
+
+        <!-- handoff-Q2: only the manual row editor is still closed; it has no design yet. -->
         <button type="button" class="add-manual" disabled>
           <q-icon :name="matAdd" />{{ t('submit.addManual') }}
         </button>
 
-        <div class="submit-bar" role="status">
-          <p class="submit-warning"><q-icon :name="matWarningAmber" />{{ t('submit.warning') }}</p>
+        <form class="submit-bar" @submit.prevent="send">
+          <h2 class="submit-label">{{ t('submit.contributor') }}</h2>
+          <div class="contributor">
+            <label v-for="k in FIELDS" :key="k" :class="{ wide: k === 'note' }">
+              <span class="epfl-label"
+                >{{ t(`submit.fields.${k}`) }}
+                <template v-if="!OPTIONAL.includes(k)">*</template></span
+              >
+              <textarea v-if="k === 'note'" v-model="who.note" class="epfl-input" rows="3" />
+              <input
+                v-else
+                v-model="who[k]"
+                class="epfl-input"
+                :type="k === 'email' ? 'email' : 'text'"
+                :required="!OPTIONAL.includes(k)"
+                :autocomplete="AUTOCOMPLETE[k]"
+              />
+            </label>
+          </div>
           <div class="submit-actions">
-            <button type="button" class="epfl-btn epfl-btn-secondary epfl-btn-sm" disabled>
-              {{ t('submit.check') }}
+            <button
+              type="button"
+              class="epfl-btn epfl-btn-secondary epfl-btn-sm"
+              :disabled="!picked.files.length || checking || sending"
+              @click="runCheck"
+            >
+              {{ checking ? t('submit.checking') : t('submit.check') }}
             </button>
-            <button type="button" class="epfl-btn epfl-btn-primary epfl-btn-sm" disabled>
-              <q-icon :name="matSend" />{{ t('submit.submit') }}
+            <button
+              type="submit"
+              class="epfl-btn epfl-btn-primary epfl-btn-sm"
+              :disabled="!canSubmit"
+            >
+              <q-icon :name="matSend" />{{ sending ? t('submit.sending') : t('submit.submit') }}
             </button>
           </div>
+          <p v-if="receipt" class="epfl-alert epfl-alert-success" role="status">
+            {{ t('submit.receipt', { id: receipt.id }) }}
+            <a :href="receipt.url" target="_blank" rel="noopener">{{ t('submit.reviewLink') }}</a>
+          </p>
           <p class="submit-note">{{ t('submit.note', { repo: REPO_NAME }) }}</p>
-        </div>
+        </form>
       </div>
 
       <aside id="guide" class="guide" :aria-label="t('submit.guideTitle')">
@@ -166,10 +268,11 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { computed, reactive, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import {
   matAdd,
+  matClose,
   matDescription,
   matFileDownload,
   matFolderOpen,
@@ -177,12 +280,23 @@ import {
   matMenuBook,
   matOpenInNew,
   matSend,
-  matUpload,
-  matWarningAmber
+  matUpload
 } from '@quasar/extras/material-icons'
 import { fields, rows } from '../api/dataset.ts'
 import FieldLabel from '../components/FieldLabel.vue'
 import { saveStarterKit, saveTemplateCsv } from '../lib/download.ts'
+import {
+  filesFromDrop,
+  filesFromInput,
+  groupIssues,
+  submit,
+  validate,
+  type Contributor,
+  type Failure,
+  type Issue,
+  type Picked,
+  type PickedFile
+} from '../api/contribute.ts'
 
 const { t } = useI18n()
 
@@ -232,6 +346,90 @@ async function run(job: () => Promise<void>) {
 // Placeholders as parameters: vue-i18n flags "<…>" in a message as HTML.
 const kit = () =>
   saveStarterKit(t('submit.readme', { n: fields.length, s: '<specimen>', k: '<kind>' }))
+
+const FIELDS = ['name', 'email', 'institution', 'orcid', 'note'] as const
+const OPTIONAL: string[] = ['orcid', 'note']
+const AUTOCOMPLETE: Record<string, string> = {
+  name: 'name',
+  email: 'email',
+  institution: 'organization',
+  orcid: 'off'
+}
+
+const folderInput = ref<HTMLInputElement>()
+const filesInput = ref<HTMLInputElement>()
+const over = ref(false)
+const picked = ref<Picked>({ files: [], skipped: [] })
+// The last check, with the files it ran on: Submit needs it valid for the current files.
+const check = ref<{ files: PickedFile[]; valid: boolean; issues: Issue[] } | null>(null)
+const checking = ref(false)
+const sending = ref(false)
+const receipt = ref<{ id: string; url: string } | null>(null)
+const who = reactive<Contributor>({ name: '', email: '', institution: '', orcid: '', note: '' })
+
+const groups = computed(() => groupIssues(check.value?.issues ?? []))
+const errorCount = computed(
+  () => check.value?.issues.filter((i) => i.severity === 'error').length ?? 0
+)
+const warningCount = computed(
+  () => check.value?.issues.filter((i) => i.severity === 'warning').length ?? 0
+)
+const canSubmit = computed(
+  () =>
+    !sending.value &&
+    !checking.value &&
+    check.value?.valid === true &&
+    check.value.files === picked.value.files &&
+    [who.name, who.email, who.institution].every((v) => v.trim())
+)
+
+const failed = (f: Failure) => f.message || t('submit.failed', { status: f.status })
+
+function use(p: Picked) {
+  picked.value = p
+  check.value = null
+  receipt.value = null
+  error.value = ''
+  if (p.files.length) void runCheck()
+}
+
+function onInput(e: Event) {
+  const input = e.target as HTMLInputElement
+  use(filesFromInput(input.files ?? []))
+  input.value = '' // picking the same folder again fires change again
+}
+
+async function onDrop(e: DragEvent) {
+  over.value = false
+  if (e.dataTransfer) use(await filesFromDrop(e.dataTransfer))
+}
+
+function clear() {
+  use({ files: [], skipped: [] })
+}
+
+async function runCheck() {
+  const files = picked.value.files
+  checking.value = true
+  error.value = ''
+  const r = await validate(files)
+  checking.value = false
+  if (files !== picked.value.files) return // the files changed while checking
+  if (r.kind === 'ok') check.value = { files, valid: r.valid, issues: r.issues }
+  else error.value = failed(r)
+}
+
+async function send() {
+  if (!canSubmit.value) return
+  const files = picked.value.files
+  sending.value = true
+  error.value = ''
+  const r = await submit(files, who)
+  sending.value = false
+  if (r.kind === 'ok') receipt.value = { id: r.id, url: r.url }
+  else if (r.kind === 'issues') check.value = { files, valid: false, issues: r.issues }
+  else error.value = failed(r)
+}
 </script>
 
 <style scoped lang="scss">
@@ -400,12 +598,90 @@ const kit = () =>
   border: var(--border-w) solid var(--border);
 }
 
-.submit-warning {
+.contributor {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
+  gap: var(--space-3);
+
+  .wide {
+    grid-column: 1 / -1;
+  }
+}
+
+.drop-over {
+  border-color: var(--primary);
+}
+
+.picked,
+.issues {
   display: flex;
+  flex-direction: column;
   gap: var(--space-2);
-  align-items: center;
+  font-size: var(--fs-sm);
+}
+
+.picked-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+}
+
+.picked-list {
+  max-height: 12rem;
   margin: 0;
+  padding: 0;
+  overflow-y: auto;
+  list-style: none;
+}
+
+.picked-skipped {
+  margin: 0;
+  color: var(--fg-muted);
+
+  code {
+    margin-left: var(--space-2);
+  }
+}
+
+.issues .epfl-alert {
+  margin: 0;
+}
+
+.issue-file {
+  margin: var(--space-2) 0 0;
+  font-size: var(--fs-sm);
   font-weight: var(--w-bold);
+}
+
+.issue-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.issue {
+  padding: var(--space-1) var(--space-2);
+  border-left: calc(3 * var(--border-w)) solid var(--warning);
+
+  &.error {
+    border-left-color: var(--danger);
+  }
+}
+
+.issue-severity {
+  margin-right: var(--space-2);
+  font-weight: var(--w-bold);
+  color: var(--warning-fg);
+  text-transform: uppercase;
+
+  .error & {
+    color: var(--danger-fg);
+  }
+}
+
+.issue-where {
+  margin-right: var(--space-2);
+  color: var(--fg-muted);
 }
 
 .submit-actions {
