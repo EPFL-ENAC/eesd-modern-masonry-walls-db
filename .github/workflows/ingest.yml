@@ -33,7 +33,7 @@ jobs:
           cache: "pnpm"
           cache-dependency-path: frontend/pnpm-lock.yaml
       - run: pnpm -C frontend install --frozen-lockfile
-      - uses: EPFL-ENAC/enacit4r-contrib/ingest@0.2.0
+      - uses: EPFL-ENAC/enacit4r-contrib/ingest@0.3.1
         with:
           pr-number: ${{ github.event.pull_request.number }}
           base: dev
