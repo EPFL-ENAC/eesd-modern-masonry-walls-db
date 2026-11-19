@@ -45,7 +45,7 @@ jobs:
         ref=dev
         if [[ "$GITHUB_REF" == refs/tags/v* ]]; then
           tag=$(git ls-remote --tags --sort=-v:refname "$repo" 'data-*' \
-            | sed -n 's#.*refs/tags/\(data-[^^]*\)$#\1#p' | head -n1)
+            | sed -n '/refs\/tags\/data-[^^]*$/{s#.*refs/tags/##p;q;}')
           ref=${tag:-main}
         fi
         DATA_REF=$ref bash frontend/scripts/fetch-data.sh >&2
