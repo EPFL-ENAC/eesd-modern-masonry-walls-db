@@ -1,2 +1,4 @@
+# No LFS file here. The deploy job reads this file to set the ENAC-IT LFS
+# header, which frontend/scripts/fetch-data.sh reuses for the data repository.
 [lfs]
 url = "https://enac-it-git-lfs.epfl.ch/api/EPFL-ENAC/eesd-modern-masonry-walls-db"

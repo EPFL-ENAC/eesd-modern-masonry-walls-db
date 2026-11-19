@@ -21,6 +21,9 @@ jobs:
           cache: "pnpm"
           cache-dependency-path: frontend/pnpm-lock.yaml
       - run: pnpm install --frozen-lockfile
+      # The dataset lives in EPFL-ENAC/eesd-modern-masonry-walls-data.
+      - run: SKIP_LFS=1 DATA_REF=dev bash scripts/fetch-data.sh
+      - run: pnpm convert
       - run: pnpm run type-check
       - run: pnpm run lint
       - run: pnpm run format:check
