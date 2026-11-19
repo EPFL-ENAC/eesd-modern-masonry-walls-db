@@ -1,9 +1,11 @@
 # Keeps a release PR open on `main`. Merging it writes the changelog, bumps the
 # version files and creates the `v*.*.*` tag, whose push deploys prod.
 #
-# RELEASE_PLEASE_TOKEN must be a PAT (contents + pull-requests write): a tag
-# created with the default GITHUB_TOKEN triggers no workflow, so prod would
-# never deploy. Fallback: gh workflow run deploy.yml --ref v<version>
+# The token comes from the GitHub App eesd-mmw-db-contributions (secrets
+# CONTRIB_APP_ID, CONTRIB_APP_PRIVATE_KEY): a tag created with the default
+# GITHUB_TOKEN triggers no workflow, so prod would never deploy. An App token
+# does not expire and is not tied to one person.
+# Fallback: gh workflow run deploy.yml --ref v<version>
 name: release-please
 
 on:
@@ -19,7 +21,12 @@ jobs:
   release-please:
     runs-on: ubuntu-latest
     steps:
+      - id: token
+        uses: actions/create-github-app-token@v2
+        with:
+          app-id: ${{ secrets.CONTRIB_APP_ID }}
+          private-key: ${{ secrets.CONTRIB_APP_PRIVATE_KEY }}
       - uses: googleapis/release-please-action@v4
         with:
           target-branch: main
-          token: ${{ secrets.RELEASE_PLEASE_TOKEN }}
+          token: ${{ steps.token.outputs.token }}
