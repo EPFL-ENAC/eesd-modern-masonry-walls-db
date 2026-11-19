@@ -93,9 +93,14 @@ class _Dataset:
         ]
         col = [[r[j].strip() for r in self.rows] for j in range(self.width)]
         self.numeric = [j for j, n in enumerate(names) if _UNIT.search(n)]
-        # ponytail: a non-float the dataset itself holds (fm,t and Gm "x(RILEM)/y
-        # (ASTM)") is accepted, else the dataset's own rows fail rule 6.
         self.known = [set(c) for c in col]
+        # fm,t and Gm hold "x(RILEM)/y (ASTM)" in the dataset: in such a column a
+        # new non-number is a warning for the curator, not an error.
+        self.textual = {
+            j
+            for j in self.numeric
+            if any(v not in ("", "NaN") and not _float(v) for v in col[j])
+        }
         self.required = [
             j for j in range(2, self.width) if all(_filled(v) for v in col[j])
         ]
@@ -178,6 +183,8 @@ def _check_database(
                 continue
             if v.count(",") == 1 and _float(v.replace(",", ".")):
                 err("use a dot as decimal separator", line, j, v)
+            elif j in ds.textual:
+                err("not a number: the curator checks it", line, j, v, "warning")
             else:
                 err("not a number (leave it empty or write NaN)", line, j, v)
         for j in ds.categorical:

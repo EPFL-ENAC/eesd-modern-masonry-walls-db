@@ -113,6 +113,11 @@ def test_rule6_not_a_number():
     assert "not a number" in _msgs(_with("L [m]", "abc"))[0]
 
 
+def test_rule6_new_text_in_a_textual_column_warns():
+    issues = check_submission(_with("Gm [MPa]", "900(RILEM)"), DATASET)
+    assert [(i.severity, i.column) for i in issues] == [("warning", "Gm [MPa]")]
+
+
 def test_rule6_dataset_rows_pass():
     ds = _Dataset(DATASET)
     rows = [r for r in _rows(DATASET)[4:] if any(c.strip() for c in r[2:])]
