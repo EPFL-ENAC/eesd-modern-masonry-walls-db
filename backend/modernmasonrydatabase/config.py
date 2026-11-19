@@ -10,9 +10,12 @@ settings = Dynaconf(
     validators=[
         Validator("root_path", default=""),
         Validator(
-            "contributions_repo", default="EPFL-ENAC/eesd-modern-masonry-walls-db"
+            "contributions_repo", default="EPFL-ENAC/eesd-modern-masonry-walls-data"
         ),
         Validator("contributions_base", default="dev"),
+        Validator(
+            "dataset_path", default="data/ModernMasonryDatabase_EIA_Database.csv"
+        ),
         Validator("contributions_reviewers", default=""),  # comma-separated logins
         Validator("contributions_max_open", default=25, cast=int),
         Validator("github_app_id", default=None),

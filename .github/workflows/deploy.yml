@@ -35,6 +35,18 @@ jobs:
       org: epfl-eesd
       repo: modernmasonrydatabase
       build_context: '["./backend", "./frontend"]'
-      # The specimen photos in frontend/public/data are git-lfs objects, on the
-      # ENAC-IT server named in .lfsconfig.
+      # lfs: sets the ENAC-IT LFS header (from .lfsconfig) that fetch-data.sh reuses.
       lfs: true
+      # The dataset comes from EPFL-ENAC/eesd-modern-masonry-walls-data, photos included.
+      # A v* tag (prod) takes its newest data-* tag (main if none), else dev.
+      # Only DATA_REF goes to stdout: stdout becomes Docker build args.
+      build_args_script: |
+        repo=https://github.com/EPFL-ENAC/eesd-modern-masonry-walls-data.git
+        ref=dev
+        if [[ "$GITHUB_REF" == refs/tags/v* ]]; then
+          tag=$(git ls-remote --tags --sort=-v:refname "$repo" 'data-*' \
+            | sed -n '/refs\/tags\/data-[^^]*$/{s#.*refs/tags/##p;q;}')
+          ref=${tag:-main}
+        fi
+        DATA_REF=$ref bash frontend/scripts/fetch-data.sh >&2
+        echo "DATA_REF=$ref"

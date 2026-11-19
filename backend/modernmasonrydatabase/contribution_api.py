@@ -2,7 +2,8 @@
 The contribution API: POST /validate and POST /contributions (enacit4r-contrib).
 
 A contribution becomes a pull request that adds `submissions/<id>/` on the
-contributions base branch. The validator compares it with the published dataset.
+contributions base branch of the data repository. The validator (`mmw_data`)
+compares it with the dataset on that branch.
 """
 
 import logging
@@ -16,8 +17,7 @@ from enacit4r_contrib.pipeline import Pipeline
 from enacit4r_contrib.repo import Repo
 from enacit4r_contrib.sinks import GitHubPRSink
 from fastapi import APIRouter
-
-from modernmasonrydatabase.contribution import ALLOW, DATABASE_CSV, SKIP, make_validator
+from mmw_data.validate import ALLOW, SKIP, make_validator
 
 log = logging.getLogger(__name__)
 
@@ -27,7 +27,7 @@ DATASET_TTL = 600.0  # seconds
 def dataset_url(settings) -> str:
     return (
         f"https://raw.githubusercontent.com/{settings.contributions_repo}/"
-        f"{settings.contributions_base}/frontend/public/data/{DATABASE_CSV}"
+        f"{settings.contributions_base}/{settings.dataset_path}"
     )
 
 

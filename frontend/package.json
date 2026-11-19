@@ -9,7 +9,7 @@
   "packageManager": "pnpm@11.25.0",
   "scripts": {
     "dev": "quasar dev",
-    "build": "quasar build",
+    "build": "node scripts/convert-data.ts && quasar build",
     "postinstall": "quasar prepare",
     "type-check": "vue-tsc --noEmit",
     "lint": "eslint . && stylelint \"src/**/*.{css,scss,vue}\"",
@@ -17,6 +17,7 @@
     "format:check": "prettier --check .",
     "test:unit": "vitest",
     "convert": "node scripts/convert-data.ts",
+    "data": "bash scripts/fetch-data.sh",
     "optimize-images": "node scripts/optimize-images.ts"
   },
   "dependencies": {
