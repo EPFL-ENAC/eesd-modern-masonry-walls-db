@@ -79,6 +79,33 @@ wheels = [
 ]
 
 [[package]]
+name = "enacit4r-contrib"
+version = "0.1.0"
+source = { editable = "../../enacit4r-contrib" }
+dependencies = [
+    { name = "fastapi" },
+    { name = "pydantic" },
+    { name = "python-multipart" },
+]
+
+[package.metadata]
+requires-dist = [
+    { name = "fastapi", specifier = ">=0.115" },
+    { name = "githubkit", extras = ["auth-app"], marker = "extra == 'github'", specifier = ">=0.12,<0.13" },
+    { name = "pydantic", specifier = ">=2.9" },
+    { name = "python-multipart", specifier = ">=0.0.9" },
+]
+provides-extras = ["github"]
+
+[package.metadata.requires-dev]
+dev = [
+    { name = "httpx", specifier = ">=0.27" },
+    { name = "pytest", specifier = ">=8.3" },
+    { name = "pytest-asyncio", specifier = ">=0.24" },
+    { name = "ruff", specifier = ">=0.9" },
+]
+
+[[package]]
 name = "fastapi"
 version = "0.115.14"
 source = { registry = "https://pypi.org/simple" }
@@ -171,6 +198,7 @@ version = "0.1.0"
 source = { editable = "." }
 dependencies = [
     { name = "dynaconf" },
+    { name = "enacit4r-contrib" },
     { name = "fastapi" },
     { name = "pydantic" },
     { name = "uvicorn" },
@@ -188,6 +216,7 @@ dev = [
 [package.metadata]
 requires-dist = [
     { name = "dynaconf", specifier = ">=3.1.7,<4" },
+    { name = "enacit4r-contrib", editable = "../../enacit4r-contrib" },
     { name = "fastapi", specifier = ">=0.115,<0.116" },
     { name = "pydantic", specifier = ">=2,<3" },
     { name = "uvicorn", specifier = ">=0.30,<1" },
@@ -351,6 +380,15 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/0c/57/250bd238b966cece44328235eb85290045d059265fdaf7527a3a958123db/python_discovery-1.6.1.tar.gz", hash = "sha256:cf87d3627dfb4412437fdd5b13eae402607722998d21567993aedbc59b23c15e", size = 84338, upload-time = "2026-09-18T01:31:53.971Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/16/7d/e9ffbadfbf89c93848412d04594135c4ae8c1d37d9e053b9c3ed718fabc4/python_discovery-1.6.1-py3-none-any.whl", hash = "sha256:d43fcdef879fe795352bd13ccf8d185ba5a9f86f36cfcd00529f596e737442b3", size = 38664, upload-time = "2026-09-18T01:31:52.448Z" },
+]
+
+[[package]]
+name = "python-multipart"
+version = "0.0.34"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/7e/c0/c753d487a83d873f6946cee6cbc26cea3fe59a476ad0de99a14938a2fbd8/python_multipart-0.0.34.tar.gz", hash = "sha256:b998ae90ca6e1e363261ce2e0e230281b8af53867b757970abd69ee9edcd843a", size = 52456, upload-time = "2026-11-16T10:40:38.261Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/f5/0e/090c52b122d8ec5fa37942c1410fea9cf04ce98bca0c84dde7f0aa11594d/python_multipart-0.0.34-py3-none-any.whl", hash = "sha256:ebacd224bd686eee2f9aa1066a657affe07435a185834e05e5235e2e59173e91", size = 32585, upload-time = "2026-11-16T10:40:37.119Z" },
 ]
 
 [[package]]

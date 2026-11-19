@@ -10,6 +10,7 @@ dependencies = [
   "pydantic>=2,<3",
   "dynaconf>=3.1.7,<4",
   "uvicorn>=0.30,<1",
+  "enacit4r-contrib",
 ]
 
 [dependency-groups]
@@ -20,6 +21,9 @@ dev = [
   "pre-commit>=3.0.4,<4",
   "ruff>=0.9,<1",
 ]
+
+[tool.uv.sources]
+enacit4r-contrib = { path = "../../enacit4r-contrib", editable = true }
 
 [build-system]
 requires = ["hatchling"]
