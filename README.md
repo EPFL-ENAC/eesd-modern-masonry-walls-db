@@ -94,7 +94,8 @@ ModernMasonryDatabase_EIA.xlsx ── export-csv.py ──▶ *.csv ────
 contributor ── Submit page ──▶ POST /api/validate ──▶ report (errors, warnings)
             ── Submit page ──▶ POST /api/contributions ──▶ branch contrib/<id> + PR into dev
 PR adds submissions/<id>/ ──▶ CI job "submissions" runs the validator on it
-curator ──▶ moves the test into EESD's xlsx ──▶ next delivery (see below)
+curator ──▶ reviews the PR ──▶ merges it
+workflow "ingest" ──▶ next N, rows appended, curves renamed, pnpm convert ──▶ push to dev ──▶ deploy
 ```
 
 1. The contributor fills the starter kit and uploads it on the Submit page.
@@ -104,8 +105,12 @@ curator ──▶ moves the test into EESD's xlsx ──▶ next delivery (see b
    `submissions/<id>/` on branch `contrib/<id>`, and opens a PR into `dev`.
 3. CI runs the validator on each changed `submissions/<id>/`:
    `cd backend && uv run python -m modernmasonrydatabase.contribution ../submissions/<id>`.
-4. The curator moves the test into EESD's workbook. EESD's workbook stays the
-   master. The test reaches the site with the next delivery.
+4. A curator reviews the PR and merges it.
+5. The `ingest` workflow ([`.github/workflows/ingest.yml`](.github/workflows/ingest.yml))
+   runs `make ingest SUBMISSION=submissions/<id>`. It gives each new test the
+   next free N and appends its row to the Database CSV. It renames the curve
+   files after N and runs `pnpm convert`. Then it deletes the submission
+   folder, pushes the result to `dev` and starts the deploy.
 
 The validator is
 [`backend/modernmasonrydatabase/contribution.py`](backend/modernmasonrydatabase/contribution.py).
@@ -133,30 +138,33 @@ Contributions open when all three `GITHUB_APP_*` variables are set, or
 `pull_requests: write` on the repository. The deployment does not set these
 credentials yet.
 
-## Preparing a delivery (for EESD)
+## Reviewing a contribution (for curators)
 
-The dataset's owners prepare each version in `ModernMasonryDatabase_EIA.xlsx`
-and its folders (`02_fd_curve/` … `10_fig_cracks/`, as in its `readme.txt`).
-Before sending one:
+1. Read the warnings in the PR body. The validator lists them there.
+2. A new reference must be in the dataset before the merge. Add its row to
+   `frontend/public/data/01_references/ModernMasonryDatabase_EIA_References.csv`
+   (and its entry to the .bib file). Push this commit to the PR branch, then
+   merge. Otherwise the ingest fails.
+3. A row with "Crack measurements" set needs its crack photo, and the ingest
+   does not take photos. Set the value to No, or add the test by hand.
+4. If the `ingest` workflow fails, read its log. Fix the cause on `dev`. Then
+   run `make ingest SUBMISSION=submissions/<id>` on your computer, commit the
+   result and push it.
 
-1. **Keep every test's number.** A number N given in a delivered version
-   always refers to the same test: new tests take new numbers, and a removed
-   test's number is never reused. Links, citations and file names depend on it
-   ([#40](https://github.com/EPFL-ENAC/eesd-modern-masonry-walls-db/issues/40)).
-2. **Write the CSVs with
-   [`export-csv.py`](frontend/scripts/export-csv.py)**, not Excel's "Save as":
-   download the script next to the workbook and run
-   `python3 export-csv.py ModernMasonryDatabase_EIA.xlsx` (Python 3.9+,
-   nothing to install). It writes the Database, Fields, References and
-   Fig_references CSVs beside the workbook, in UTF-8.
-3. **Check the workbook and folders:**
-   - every row of the Database sheet has data, not just its N;
-   - each Reference ID appears once in the References sheet, and every
-     Reference in the Database sheet is one of them;
-   - "Yes" in F-d data, Env curve or Bil curve, or a method in Crack
-     measurements, comes with its files named after N (`fd_curve_0227.csv`,
-     `fig_cracks_0227.jpg`…), and every file belongs to a test in the table;
-   - no template or empty files are left in the folders.
+## Correcting the dataset
+
+The CSVs in `frontend/public/data/` are the master copy. EESD's workbook is
+no longer the source. To correct the data, open a PR that edits the CSVs. Run
+`pnpm convert` and commit the JSON with the CSVs.
+
+Keep every test's number. A number N always refers to the same test: new
+tests take new numbers, and the number of a removed test is never used again.
+Links, citations and file names depend on it
+([#40](https://github.com/EPFL-ENAC/eesd-modern-masonry-walls-db/issues/40)).
+
+[`export-csv.py`](frontend/scripts/export-csv.py) stays only for a one-time
+import of a workbook. It writes the Database, Fields, References and
+Fig_references CSVs in UTF-8 with a BOM.
 
 ## Troubleshooting
 
@@ -164,9 +172,9 @@ Before sending one:
 | --- | --- |
 | `LFS: unexpected EOF` on clone or pull | Set git-lfs to HTTP/1.1 (see [Getting started](#getting-started)), then `git lfs pull`. |
 | Photos are broken, or are ~130-byte text files | git-lfs wasn't installed when you cloned: `git lfs install && git lfs pull`. |
-| `convert-data: … has no UTF-8 BOM`, or a header with `?` | The CSV came from Excel's "Save as": write it with `export-csv.py`. |
-| `Database.csv must start with its "#1, #2…" row` | Same: Excel kept the workbook's title row. |
-| `specimen N: "F-d data" is Yes but 02_fd_curve lacks its file` (or the reverse) | A flag and the files disagree: fix the workbook or the folder, and tell EESD. |
+| `convert-data: … has no UTF-8 BOM`, or a header with `?` | The CSV came from Excel's "Save as": save it again as "CSV UTF-8", or write it with `export-csv.py`. |
+| `Database.csv must start with its "#1, #2…" row` | Same: Excel kept the title row of the sheet. |
+| `specimen N: "F-d data" is Yes but 02_fd_curve lacks its file` (or the reverse) | A flag and the files disagree: fix the CSV or the folder. |
 | `…: no specimen N in the database` | A file for a test the table doesn't have: a leftover template, or a renumbered test. |
 | `N photo web versions missing` | `make -C frontend optimize-images`. |
 

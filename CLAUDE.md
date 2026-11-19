@@ -7,11 +7,13 @@ conventions (`it4r-agent-kit`); this file only adds what is specific here.
   API (`/api/validate`, `/api/contributions`). A contribution lands as a PR that
   adds `submissions/<id>/`. The validator is
   `backend/modernmasonrydatabase/contribution.py`.
-- The dataset lives in `frontend/public/data/` (photos in git-lfs).
-  `pnpm convert` turns its CSVs into `frontend/src/assets/data/*.json`; commit both.
+- The dataset lives in `frontend/public/data/` (photos in git-lfs). Its CSVs are
+  the master copy (no xlsx). `pnpm convert` turns them into
+  `frontend/src/assets/data/*.json`. Commit both. Accepted contributions arrive
+  by the `ingest` workflow (`backend/modernmasonrydatabase/ingest.py`).
 - CSVs are UTF-8 with a BOM (Windows Excel needs it), the dataset's and every one
-  the browser generates. `scripts/export-csv.py` writes the dataset's from the
-  xlsx; `pnpm convert` rejects a BOM-less export.
+  the browser generates. `scripts/export-csv.py` only imports a workbook once.
+  `pnpm convert` rejects a BOM-less CSV.
 - The Pavia [VI] and EPFL [VII] bilinear columns share their names (`Vbil+`, `δu+`…):
   read values by `Field.key` (EPFL keys end in ` [VII]`, see `METHOD_SUFFIX`), never by name.
 - Photos show as WebP web versions (`pnpm optimize-images`, `src/lib/photos.ts`);
