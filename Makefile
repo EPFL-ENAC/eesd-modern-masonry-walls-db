@@ -1,4 +1,4 @@
-.PHONY: help install dev-all dev-backend dev-frontend test lint
+.PHONY: help install dev-all dev-backend dev-frontend test lint ingest
 
 help:                   ## Show available targets
 	@grep -E '^[a-zA-Z_%-]+:.*?## .*$$' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-20s\033[0m %s\n", $$1, $$2}'
@@ -24,3 +24,8 @@ test:                   ## backend pytest + frontend vitest
 lint:                   ## backend ruff (pre-commit) + frontend ESLint
 	$(MAKE) -C backend lint
 	$(MAKE) -C frontend lint
+
+ingest:                 ## SUBMISSION=submissions/<id>: merge it into the dataset, then pnpm convert
+	@test -n "$(SUBMISSION)" || { echo "usage: make ingest SUBMISSION=submissions/<id>"; exit 1; }
+	cd backend && uv run python -m modernmasonrydatabase.ingest "$(abspath $(SUBMISSION))"
+	pnpm -C frontend convert

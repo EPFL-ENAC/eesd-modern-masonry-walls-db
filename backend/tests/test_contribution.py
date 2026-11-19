@@ -33,7 +33,10 @@ COL = {n.strip(): j for j, n in enumerate(HEADER[3])}  # first occurrence
 
 def _example() -> list[str]:
     row = next(r for r in _rows(DATASET)[4:] if r[1] == "227")
-    return ["", "", *row[2:5], NAME, *row[6:]]
+    row = ["", "", *row[2:5], NAME, *row[6:]]
+    # SW0.1 has a crack method, which needs a photo the upload does not take yet.
+    row[_rows(DATASET)[3].index("Crack measurements")] = ""
+    return row
 
 
 def _kit(*rows: list[str]) -> dict[str, bytes]:
@@ -203,3 +206,12 @@ def test_cli_exit_codes(tmp_path, capsys):
     (tmp_path / f"02_fd_curve/fd_curve_{NAME}.csv").unlink()
     assert main([str(tmp_path), "--dataset", str(DATA / DATABASE_CSV)]) == 1
     assert '"F-d data" is Yes' in capsys.readouterr().out
+
+
+def test_crack_method_warns_that_a_photo_is_needed():
+    issues = check_submission(_with("Crack measurements", "DIC + ACDM v2.0"), DATASET)
+    assert [(i.severity, i.column) for i in issues] == [
+        ("warning", "Crack measurements")
+    ]
+    assert "crack photo" in issues[0].message
+    assert check_submission(_with("Crack measurements", "No"), DATASET) == []

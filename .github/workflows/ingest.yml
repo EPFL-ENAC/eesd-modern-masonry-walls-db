@@ -1,0 +1,41 @@
+# Merges each accepted submission into the dataset and pushes the result to dev.
+# The push uses GITHUB_TOKEN, and a push with GITHUB_TOKEN starts no workflow.
+# So the action then starts deploy.yml by workflow_dispatch (needs actions: write).
+name: ingest
+
+on:
+  pull_request:
+    types: [closed]
+    branches: [dev]
+
+jobs:
+  ingest:
+    if: github.event.pull_request.merged && startsWith(github.head_ref, 'contrib/')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      actions: write
+      pull-requests: read
+    concurrency:
+      group: ingest-dev
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: dev
+          fetch-depth: 0
+          lfs: false
+      - uses: astral-sh/setup-uv@v6
+      - uses: pnpm/action-setup@v6 # version from packageManager in package.json
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "lts/*"
+          cache: "pnpm"
+          cache-dependency-path: frontend/pnpm-lock.yaml
+      - run: pnpm -C frontend install --frozen-lockfile
+      - uses: EPFL-ENAC/enacit4r-contrib/ingest@0.2.0
+        with:
+          pr-number: ${{ github.event.pull_request.number }}
+          base: dev
+          command: make ingest SUBMISSION="$SUBMISSION"
+          deploy-workflow: deploy.yml

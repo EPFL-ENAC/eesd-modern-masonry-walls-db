@@ -179,8 +179,8 @@ wheels = [
 
 [[package]]
 name = "enacit4r-contrib"
-version = "0.1.0"
-source = { git = "https://github.com/EPFL-ENAC/enacit4r-contrib?tag=0.1.0#708eee4cc3c96e68fc8b4f9d0df94fed198f79d4" }
+version = "0.2.0"
+source = { git = "https://github.com/EPFL-ENAC/enacit4r-contrib?tag=0.2.0#6b17077a5c2cc6d7cae8a738a24269ecf9451307" }
 dependencies = [
     { name = "fastapi" },
     { name = "pydantic" },
@@ -341,7 +341,7 @@ dev = [
 [package.metadata]
 requires-dist = [
     { name = "dynaconf", specifier = ">=3.1.7,<4" },
-    { name = "enacit4r-contrib", extras = ["github"], git = "https://github.com/EPFL-ENAC/enacit4r-contrib?tag=0.1.0" },
+    { name = "enacit4r-contrib", extras = ["github"], git = "https://github.com/EPFL-ENAC/enacit4r-contrib?tag=0.2.0" },
     { name = "fastapi", specifier = ">=0.115,<0.116" },
     { name = "httpx", specifier = ">=0.27,<1" },
     { name = "pydantic", specifier = ">=2,<3" },
