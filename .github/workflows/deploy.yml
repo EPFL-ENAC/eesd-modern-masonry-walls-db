@@ -24,7 +24,7 @@ jobs:
       contents: read
       packages: write
     # v3.11.0+: pulls LFS from the server named in .lfsconfig (ENAC-IT's).
-    uses: EPFL-ENAC/epfl-enac-build-push-deploy-action/.github/workflows/deploy.yml@v3.11.0
+    uses: EPFL-ENAC/epfl-enac-build-push-deploy-action/.github/workflows/deploy.yml@v4.2.0
     secrets:
       token: ${{ secrets.CD_TOKEN }}
       # ENAC-IT Git LFS server, full-access token (Infisical epfl-enac/git-lfs):
@@ -32,6 +32,7 @@ jobs:
       lfs_username: ${{ secrets.GIT_LFS_AUTH_USERNAME }}
       lfs_password: ${{ secrets.GIT_LFS_AUTH_PASSWORD }}
     with:
+      skip_vulnerability_scan: false
       org: epfl-eesd
       repo: modernmasonrydatabase
       build_context: '["./backend", "./frontend"]'
