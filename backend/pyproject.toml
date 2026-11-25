@@ -25,8 +25,8 @@ dev = [
 ]
 
 [tool.uv.sources]
-enacit4r-contrib = { git = "https://github.com/EPFL-ENAC/enacit4r-contrib", tag = "0.6.0" }
-mmw-data = { git = "https://github.com/EPFL-ENAC/eesd-modern-masonry-walls-data", tag = "tools-0.2.0", subdirectory = "tools" }
+enacit4r-contrib = { git = "https://github.com/EPFL-ENAC/enacit4r-contrib", tag = "0.6.1" }
+mmw-data = { git = "https://github.com/EPFL-ENAC/eesd-modern-masonry-walls-data", tag = "tools-0.2.1", subdirectory = "tools" }
 
 [build-system]
 requires = ["hatchling"]
