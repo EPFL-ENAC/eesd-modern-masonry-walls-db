@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.3.1](https://github.com/EPFL-ENAC/eesd-modern-masonry-walls-db/compare/v0.3.0...v0.3.1) (2026-11-25)
+
+
+### Bug Fixes
+
+* **deps:** take enacit4r-contrib 0.6.0 and the data tools 0.2.0 ([b9dc893](https://github.com/EPFL-ENAC/eesd-modern-masonry-walls-db/commit/b9dc893c6b7cdf6731ce97578a1e51251f8f8418))
+* **deps:** take enacit4r-contrib 0.6.1 and the data tools 0.2.1 ([34ea7e3](https://github.com/EPFL-ENAC/eesd-modern-masonry-walls-db/commit/34ea7e35f0877d428cf4ceabc1ad310a115a10c1))
+* **deps:** take enacit4r-contrib 0.6.1 and the data tools 0.2.1 ([2fd1575](https://github.com/EPFL-ENAC/eesd-modern-masonry-walls-db/commit/2fd1575ccd9232dc9cd07d8f6368ae0a75b0380c))
+
 ## [0.3.0](https://github.com/EPFL-ENAC/eesd-modern-masonry-walls-db/compare/v0.1.0...v0.3.0) (2026-11-19)
 
 
