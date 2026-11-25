@@ -179,8 +179,8 @@ wheels = [
 
 [[package]]
 name = "enacit4r-contrib"
-version = "0.4.0"
-source = { git = "https://github.com/EPFL-ENAC/enacit4r-contrib?tag=0.4.0#377fafca2b84a1299b7cf3ac78ed733cec0100f2" }
+version = "0.6.0"
+source = { git = "https://github.com/EPFL-ENAC/enacit4r-contrib?tag=0.6.0#cac9bf286e6d0090338e8f55dd412449bf9687a4" }
 dependencies = [
     { name = "fastapi" },
     { name = "pydantic" },
@@ -217,23 +217,49 @@ wheels = [
 
 [[package]]
 name = "githubkit"
-version = "0.12.16"
+version = "0.17.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "anyio" },
-    { name = "hishel" },
+    { name = "githubkit-schemas" },
+    { name = "hishel", extra = ["async", "httpx"] },
     { name = "httpx" },
     { name = "pydantic" },
     { name = "typing-extensions" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/6b/d8/36079d37e8868ee1b515536e92101e3cee9c9f58130b6fd8f63090631442/githubkit-0.12.16.tar.gz", hash = "sha256:5a5abf19cc0e1478f436fe4d421b2664107fcd07287f1df49187c6567499af06", size = 2149499, upload-time = "2025-07-14T04:13:46.591Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/52/00/c6bdf4f48a71255232a742a1b473cba9c129a5a21b0ad3e88621aa15edbd/githubkit-0.17.1.tar.gz", hash = "sha256:ea15afe3992d54478dca2906701d34a5f5caa4e5b0d5aebb8224da609ee75a9e", size = 40501, upload-time = "2026-11-06T06:09:16.972Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/76/1f/b9105ffb2ca4a379f91ec059c7b3955e9fa15eda9959875a76e7fd300e56/githubkit-0.12.16-py3-none-any.whl", hash = "sha256:821803c3a5b61c5873dadf435d89ae53e55dc154d852b47ce1007ebd315d1fbd", size = 5800376, upload-time = "2025-07-14T04:13:44.7Z" },
+    { url = "https://files.pythonhosted.org/packages/dc/ef/29208aa0a927eb5c6918ac46f2b364e40cbd3559abe12446d8744f286817/githubkit-0.17.1-py3-none-any.whl", hash = "sha256:d341a048e8c15cd594cbedc9f8e9a62e14bd2c33c248006de2a911ce47009bf9", size = 43922, upload-time = "2026-11-06T06:09:15.86Z" },
 ]
 
 [package.optional-dependencies]
 auth-app = [
     { name = "pyjwt", extra = ["crypto"] },
+]
+
+[[package]]
+name = "githubkit-schemas"
+version = "26.11.19"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "githubkit" },
+    { name = "githubkit-schemas-2026-03-10" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/a8/7b/de6bb6baef77627e6424c6ab236b5d41be1be587bf68a6439b22f078f9e3/githubkit_schemas-26.11.19.tar.gz", hash = "sha256:8bf3bb6a372df9bd9a6d8af8378c8ef4a03a52ecab16c557a42f7c372d2cac12", size = 134316, upload-time = "2026-11-19T10:13:33.148Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/5f/23/fc889c6b0733b9424c42063d58da2f8116689d7a52125d7d28198a767042/githubkit_schemas-26.11.19-py3-none-any.whl", hash = "sha256:9d0630a2c18640b90477343422aaa737e703e82156dc9ca4c885e8341fd12281", size = 136851, upload-time = "2026-11-19T10:13:23.964Z" },
+]
+
+[[package]]
+name = "githubkit-schemas-2026-03-10"
+version = "26.11.19"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "githubkit-schemas" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/0c/ec/2a2442d7b82512149ed14ed795fd3d10d36ced57f9feb99a291511a3f8bd/githubkit_schemas_2026_03_10-26.11.19.tar.gz", hash = "sha256:ab9c12a34006b330901d8d139cfcf2ea8827d3c5f018627b4f59cc248c0ddf0b", size = 1667259, upload-time = "2026-11-19T10:13:35.74Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/38/9a/4b110fba6f67bd96cd411fb82fc9e86887ab329514e3c8cbc5ef39ab3c9a/githubkit_schemas_2026_03_10-26.11.19-py3-none-any.whl", hash = "sha256:328397e81806a0cde7c0e44e1a131ea5db67223635098afb71aff5024a1e3cb3", size = 3843449, upload-time = "2026-11-19T10:13:27.165Z" },
 ]
 
 [[package]]
@@ -247,18 +273,26 @@ wheels = [
 
 [[package]]
 name = "hishel"
-version = "0.1.5"
+version = "1.4.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "anyio" },
-    { name = "anysqlite" },
-    { name = "httpx" },
     { name = "msgpack" },
     { name = "typing-extensions" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/e5/64/a104ccac48f123f853254483617b16e0efc1649bd7e35bcdc5a5a5ef0ae2/hishel-0.1.5.tar.gz", hash = "sha256:9d40c682cd94fd6e1394fb05713ae20a75ed8aeba6f5272380444039ce6257f2", size = 75468, upload-time = "2025-10-18T13:32:41.854Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/c6/ff/efba29288e1d304359491fa3aab83174c3ef24a63819e6acad6873d8c0a9/hishel-1.4.0.tar.gz", hash = "sha256:e406b052c658ce28629fc31423b9914b637d47d7c923f5fe9e288ec47e4823d1", size = 813499, upload-time = "2026-09-16T15:38:54.085Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/70/83/4f8b77839e62114bb034375ee8e08cfb6af1164754b925b271d3f1ec06ee/hishel-0.1.5-py3-none-any.whl", hash = "sha256:0bfbe9a2b9342090eba82ba6de88258092e1c4c7b730cd4cb4b570e4b40e44a7", size = 92486, upload-time = "2025-10-18T13:32:40.333Z" },
+    { url = "https://files.pythonhosted.org/packages/da/c5/2cf7b80da9833de6ae5099111b64cf541830ccb4ef26605ae86f23ed5604/hishel-1.4.0-py3-none-any.whl", hash = "sha256:38cb62d7d38fb437dc086f789c26d0cab41310d12497ec3f56dcead4b08571f0", size = 80795, upload-time = "2026-09-16T15:38:52.545Z" },
+]
+
+[package.optional-dependencies]
+async = [
+    { name = "anyio" },
+    { name = "anysqlite" },
+]
+httpx = [
+    { name = "anyio" },
+    { name = "anysqlite" },
+    { name = "httpx" },
 ]
 
 [[package]]
@@ -318,8 +352,8 @@ wheels = [
 
 [[package]]
 name = "mmw-data"
-version = "0.1.0"
-source = { git = "https://github.com/EPFL-ENAC/eesd-modern-masonry-walls-data?subdirectory=tools&tag=tools-0.1.0#2f322b4c38a96130b9a127d3e683a0321d7b851c" }
+version = "0.2.0"
+source = { git = "https://github.com/EPFL-ENAC/eesd-modern-masonry-walls-data?subdirectory=tools&tag=tools-0.2.0#da558fb95aecd21abb07bbd4f35b7a7d69d7dbe1" }
 dependencies = [
     { name = "enacit4r-contrib" },
 ]
@@ -350,10 +384,10 @@ dev = [
 [package.metadata]
 requires-dist = [
     { name = "dynaconf", specifier = ">=3.1.7,<4" },
-    { name = "enacit4r-contrib", extras = ["github"], git = "https://github.com/EPFL-ENAC/enacit4r-contrib?tag=0.4.0" },
+    { name = "enacit4r-contrib", extras = ["github"], git = "https://github.com/EPFL-ENAC/enacit4r-contrib?tag=0.6.0" },
     { name = "fastapi", specifier = ">=0.115,<0.116" },
     { name = "httpx", specifier = ">=0.27,<1" },
-    { name = "mmw-data", git = "https://github.com/EPFL-ENAC/eesd-modern-masonry-walls-data?subdirectory=tools&tag=tools-0.1.0" },
+    { name = "mmw-data", git = "https://github.com/EPFL-ENAC/eesd-modern-masonry-walls-data?subdirectory=tools&tag=tools-0.2.0" },
     { name = "pydantic", specifier = ">=2,<3" },
     { name = "uvicorn", specifier = ">=0.30,<1" },
 ]
